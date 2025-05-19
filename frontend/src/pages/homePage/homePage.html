@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="container">
-        <header>
+        <header class="header-container">
             <div class="header-left">
                 <button class="menu-toggle">
                     <span></span>
@@ -19,8 +19,8 @@
                 <nav class="main-nav">
                     <ul>
                         <li><a href="#">Home</a></li>
-                        <li><a href="#">Collections</a></li>
-                        <li><a href="#">New</a></li>
+                        <li><a href="#collection">Collections</a></li>
+                        <li><a href="#new">New</a></li>
                     </ul>
                 </nav>
             </div>
@@ -28,11 +28,13 @@
                 <div class="arrow-logo">▶</div>
             </div>
             <div class="header-right">
+                <!-- btn like -->
                 <a href="#" class="icon-button wishlist">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                     </svg>
                 </a>
+                <!-- btn cart -->
                 <a href="#" class="icon-button cart">
                     Cart
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -41,6 +43,7 @@
                         <path d="M16 10a4 4 0 0 1-8 0"></path>
                     </svg>
                 </a>
+                <!-- btn account -->
                 <a href="#" class="icon-button account">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -66,7 +69,7 @@
                     </svg>
                     <input type="text" placeholder="Search" class="search-input">
                 </div>
-                <div class="collection-intro">
+                <div class="collection-intro" id="collection">
                     <h1>NEW<br>COLLECTION</h1>
                     <p>Summer<br>2024</p>
                 </div>
@@ -86,18 +89,73 @@
                     </div>
                     <div class="product-slide">
                         <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-l0LYr1aNMg6Kc3iYVLPGAengEDYfDT.png" alt="Model in black t-shirt with white design" class="product-image">
-                    </div>
-                    
-                    <!-- <div class="carousel-controls">
-                        <button class="shop-button">Go To Shop <span class="arrow">→</span></button>
-                        <div class="carousel-arrows">
-                            <button class="prev-arrow">❮</button>
-                            <button class="next-arrow">❯</button>
-                        </div>
-                    </div> -->
+                    </div>                   
                 </div>              
             </main>      
         </div>
+
+        <!-- New this week section -->
+        <section class="new-this-week" id="new">
+    <div class="section-header">
+        <h2>NEW <br>THIS WEEK<span class="item-count">(50)</span></h2>
+        <a href="#" class="see-all">See All</a>
+    </div>
+    
+    <div class="products-grid">
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="/placeholder.svg?height=300&width=300" alt="Embroidered Seersucker Shirt" class="product-image">
+                <button class="add-to-cart">+</button>
+            </div>
+            <div class="product-info">
+                <span class="product-category">V-Neck T-Shirt</span>
+                <h3 class="product-name">Embroidered Seersucker Shirt</h3>
+                <span class="product-price">$99</span>
+            </div>
+        </div>
+        
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="/placeholder.svg?height=300&width=300" alt="Basic Slim Fit T-Shirt" class="product-image">
+                <button class="add-to-cart">+</button>
+            </div>
+            <div class="product-info">
+                <span class="product-category">Cotton T-Shirt <span class="badge">+5</span></span>
+                <h3 class="product-name">Basic Slim Fit T-Shirt</h3>
+                <span class="product-price">$99</span>
+            </div>
+        </div>
+        
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="/placeholder.svg?height=300&width=300" alt="Blurred Print T-Shirt" class="product-image">
+                <button class="add-to-cart">+</button>
+            </div>
+            <div class="product-info">
+                <span class="product-category">Henley T-Shirt <span class="badge">+3</span></span>
+                <h3 class="product-name">Blurred Print T-Shirt</h3>
+                <span class="product-price">$99</span>
+            </div>
+        </div>
+        
+        <div class="product-card">
+            <div class="product-image-container">
+                <img src="/placeholder.svg?height=300&width=300" alt="Full Sleeve Zipper" class="product-image">
+                <button class="add-to-cart">+</button>
+            </div>
+            <div class="product-info">
+                <span class="product-category">Crewneck T-Shirt <span class="badge">+2</span></span>
+                <h3 class="product-name">Full Sleeve Zipper</h3>
+                <span class="product-price">$99</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="pagination">
+        <button class="pagination-btn prev">❮</button>
+        <button class="pagination-btn next">❯</button>
+    </div>
+</section>
     </div>
 </body>
 </html>
