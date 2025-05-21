@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Shopping Cart</title>
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="cartPage.css">
+    <script src="cartPage.js"></script>
+
+<body>
+    <div class="navbar">
+        <div class="navbar-left">
+            <div class="navbar-menu">&#9776;</div>
+            <div class="navbar-links">
+                <a href="../homePage/homePage.html">Home</a>
+                <a href="#">Collections</a>
+                <a href="#">New</a>
+            </div>
+        </div>
+        <div class="navbar-right">
+            <a href="#" class="navbar-icon account">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="cart-section">
+            <div class="cart-header">
+                SHOPPING BAG
+                <span>FAVOURITES</span>
+            </div>
+            <div class="cart-items">
+                <div class="cart-item">
+                    <button class="cart-item-remove">&times;</button>
+                    <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=facearea&w=400&h=500&q=80"
+                        alt="Full Sleeve Zipper">
+                    <div class="cart-item-info">
+                        <div class="cart-item-title">Cotton T Shirt</div>
+                        <div class="cart-item-name">Full Sleeve Zipper</div>
+                        <div class="cart-item-options">
+                            <span class="cart-item-size">L</span>
+                            <span class="cart-item-color"></span>
+                        </div>
+                        <div class="cart-item-qty">
+                            <button>-</button>
+                            <input type="text" value="1" readonly>
+                            <button>+</button>
+                        </div>
+                        <div class="cart-item-bottom">
+                            <div></div>
+                            <div class="cart-item-price">$ 99</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cart-item">
+                    <button class="cart-item-remove">&times;</button>
+                    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=facearea&w=400&h=500&q=80"
+                        alt="Basic Slim Fit T-Shirt">
+                    <div class="cart-item-info">
+                        <div class="cart-item-title">Cotton T Shirt</div>
+                        <div class="cart-item-name">Basic Slim Fit T-Shirt</div>
+                        <div class="cart-item-options">
+                            <span class="cart-item-size">L</span>
+                            <span class="cart-item-color"></span>
+                        </div>
+                        <div class="cart-item-qty">
+                            <button>-</button>
+                            <input type="text" value="1" readonly>
+                            <button>+</button>
+                        </div>
+                        <div class="cart-item-bottom">
+                            <div></div>
+                            <div class="cart-item-price">$ 99</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="summary-section">
+            <div class="summary-title">ORDER SUMMARY</div>
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span>$180</span>
+            </div>
+            <div class="summary-row">
+                <span>Shipping</span>
+                <span>$10</span>
+            </div>
+            <div class="summary-total">
+                <span>TOTAL (TAX INCL.)</span>
+                <span>$190</span>
+            </div>
+            <div class="summary-checkbox">
+                <input type="checkbox" id="agree">
+                <label for="agree">I agree to the Terms and Conditions</label>
+            </div>
+            <button class="summary-btn">CONTINUE</button>
+        </div>
+    </div>
+</body>
+
+</html>
