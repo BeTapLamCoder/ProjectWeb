@@ -1,0 +1,89 @@
+.sidebar {
+  background-color: #222;
+  min-height: 100vh;
+  color: white;
+}
+.sidebar a {
+  color: white;
+  text-decoration: none;
+}
+.sidebar a:hover {
+  background-color: #333;
+}
+
+.profile-avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+.admin-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.status-badge {
+  padding: 0.2rem 0.5rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+}
+
+.in-stock {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.out-of-stock {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.low-stock {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.settings-nav .active {
+  background-color: #e9ecef;
+}
+
+.settings-tab {
+  display: none;
+}
+
+.settings-tab.active {
+  display: block;
+}
+
+.image-preview {
+  position: relative;
+  display: inline-block;
+  margin: 5px;
+}
+
+.image-preview img {
+  max-width: 100px;
+  border-radius: 5px;
+}
+
+.remove-image {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
