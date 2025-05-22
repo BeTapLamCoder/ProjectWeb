@@ -108,6 +108,7 @@ body {
     display: flex;
     padding: 2rem;
     max-width: 1200px;
+    height: 600px;
     margin: 0 auto;
     gap: 10rem; /* Khoảng cách giữa gallery và details */
 }
@@ -158,43 +159,6 @@ body {
     padding: 1.5rem;
     border: 1px solid var(--light-gray);
     background-color: var(--secondary-color);
-    position: relative; /* Thêm position relative để định vị nút yêu thích */
-}
-
-/* Nút yêu thích */
-.favorite-btn {
-    position: absolute;
-    top: 0.2rem;
-    right: 0.5rem;
-    background-color: var(--white);
-    border: none;
-    cursor: pointer;
-    z-index: 10;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-}
-
-.favorite-btn .material-symbols-outlined {
-    color: var(--medium-gray);
-    font-size: 24px;
-    transition: all 0.3s ease;
-}
-
-.favorite-btn:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-}
-
-.favorite-btn:hover .material-symbols-outlined {
-    color: var(--heart-color);
-}
-
-.favorite-btn.active .material-symbols-outlined {
-    color: var(--heart-color);
 }
 
 /* Thông báo */

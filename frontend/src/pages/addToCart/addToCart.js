@@ -25,43 +25,10 @@
                 document.getElementById('product-price').textContent = data.price;
                 document.getElementById('product-tax').textContent = data.tax_info;
                 document.getElementById('product-description').innerHTML = `<p>${data.description}</p>`;
-                
-                // Cập nhật trạng thái yêu thích
-                updateFavoriteButton(data.isFavorite);
-                
+                   
                 // Cập nhật hình ảnh và các tùy chọn khác có thể được thêm vào đây
             }
             
-            // Hàm cập nhật trạng thái nút yêu thích
-            function updateFavoriteButton(isFavorite) {
-                const favoriteBtn = document.getElementById('favorite-btn');
-                if (isFavorite) {
-                    favoriteBtn.classList.add('active');
-                    favoriteBtn.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 1";
-                } else {
-                    favoriteBtn.classList.remove('active');
-                    favoriteBtn.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 0";
-                }
-            }
-            
-            // Xử lý sự kiện cho nút yêu thích
-            document.getElementById('favorite-btn').addEventListener('click', function() {
-                // Đảo ngược trạng thái yêu thích
-                productData.isFavorite = !productData.isFavorite;
-                
-                // Cập nhật UI
-                updateFavoriteButton(productData.isFavorite);
-                
-                // Giả lập gọi API để cập nhật trạng thái yêu thích
-                console.log(`Product ${productData.id} favorite status: ${productData.isFavorite}`);
-                
-                // Hiển thị thông báo
-                const message = productData.isFavorite ? 
-                    'Đã thêm sản phẩm vào mục yêu thích' : 
-                    'Đã xóa sản phẩm khỏi mục yêu thích';
-                
-                showNotification(message);
-            });
             
             // Hàm hiển thị thông báo
             function showNotification(message) {
