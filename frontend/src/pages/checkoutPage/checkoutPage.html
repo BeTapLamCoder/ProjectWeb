@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../cartPage/cartPage.css">
+    <link rel="stylesheet" href="checkoutPage.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+</head>
+
+<body>
+    <div class="checkout-container">
+        <div class="checkout-left">
+            <div class="back-arrow">&#8592;</div>
+            <div class="checkout-title">CHECKOUT</div>
+            <div class="checkout-steps">
+                <button class="checkout-step active">INFORMATION</button>
+                <button class="checkout-step disabled">PAYMENT</button>
+            </div>
+            <form class="checkout-form">
+                <div class="checkout-section-title">CONTACT INFO</div>
+                <input type="email" placeholder="Email" required>
+                <input type="tel" placeholder="Phone" required>
+                <div class="checkout-section-title">SHIPPING ADDRESS</div>
+                <div class="checkout-form-row">
+                    <input type="text" placeholder="First Name" required>
+                    <input type="text" placeholder="Last Name" required>
+                </div>
+                <select required>
+                    <option value="">Country</option>
+                    <option value="vn">Vietnam</option>
+                    <option value="us">United States</option>
+                    <option value="jp">Japan</option>
+                </select>
+                <input type="text" placeholder="State / Region" required>
+                <input type="text" placeholder="Address" required>
+                <div class="checkout-form-row">
+                    <input type="text" placeholder="City" required>
+                    <input type="text" placeholder="Postal Code" required>
+                </div>
+                <button type="submit" class="payment-btn">
+                    Payment Method
+                    <span style="font-size:1.3em;">&#8594;</span>
+                </button>
+            </form>
+        </div>
+        <div class="checkout-right">
+            <div class="order-summary-header">
+                <div class="order-summary-title">YOUR ORDER</div>
+                <span>(2)</span>
+            </div>
+            <div class="order-list">
+                <div class="order-item">
+                    <img class="order-item-img"
+                        src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=facearea&w=400&h=500&q=80"
+                        alt="Basic Heavy T-Shirt">
+                    <div class="order-item-info">
+                        <div class="order-item-title">Basic Heavy T-Shirt</div>
+                        <div class="order-item-desc">Black/L</div>
+                        <div class="order-item-change">Change</div>
+                        <div class="order-item-qty">(1)</div>
+                    </div>
+                    <div class="order-item-price">$ 99</div>
+                </div>
+                <div class="order-item">
+                    <img class="order-item-img"
+                        src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=facearea&w=400&h=500&q=80"
+                        alt="Basic Fit T-Shirt">
+                    <div class="order-item-info">
+                        <div class="order-item-title">Basic Fit T-Shirt</div>
+                        <div class="order-item-desc">Black/L</div>
+                        <div class="order-item-change">Change</div>
+                        <div class="order-item-qty">(1)</div>
+                    </div>
+                    <div class="order-item-price">$ 90</div>
+                </div>
+            </div>
+            <div class="order-summary-totals">
+                <div class="order-summary-row">
+                    <span>Subtotal</span>
+                    <span>$180.00</span>
+                </div>
+                <div class="order-summary-row">
+                    <span>Shipping</span>
+                    <span style="color:#888;">Calculated at next step</span>
+                </div>
+                <div class="order-summary-row total">
+                    <span>Total</span>
+                    <span>$180.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="checkoutPage.js"></script>
+</body>
+
+
+</html>

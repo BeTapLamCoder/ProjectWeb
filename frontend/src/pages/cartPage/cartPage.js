@@ -43,4 +43,10 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.summary-row span')[3].textContent = `$${shipping}`;
         document.querySelector('.summary-total span:last-child').textContent = `$${subtotal + shipping}`;
     }
+    const continueBtn = document.querySelector('.summary-btn');
+    if (continueBtn) {
+        continueBtn.addEventListener('click', function () {
+            window.location.href = '../checkoutPage/checkoutPage.html';
+        });
+    }
 });
