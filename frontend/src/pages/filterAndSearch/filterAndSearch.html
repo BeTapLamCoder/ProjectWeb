@@ -11,49 +11,44 @@
 </head>
 
 <body>
-    <header>
-        <nav class="navbar">
-            <div class="nav-left">
+    <div class="container">
+    <header class="header-container">
+            <div class="header-left">
                 <button class="menu-toggle">
                     <span></span>
                     <span></span>
                     <span></span>
                 </button>
-                <ul class="nav-links">
-                    <li><a href="../homePage/homePage.html" class="active">Home</a></li>
-                    <li><a href="#">Collections</a></li>
-                    <li><a href="#">New</a></li>
-                </ul>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="../homePage/homePage.html">Home</a></li>
+                        <li><a href="#collection">Collections</a></li>
+                        <li><a href="#new">New</a></li>
+                    </ul>
+                </nav>
             </div>
-            <div class="logo">▶</div>
-            <div class="nav-right">
-                <a href="#" class="icon-btn wishlist">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path
-                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                        </path>
-                    </svg>
-                </a>
-                <a href="#" class="icon-btn cart">
+            <div class="logo">
+                <div class="arrow-logo">▶</div>
+            </div>
+            <div class="header-right">
+                <!-- btn cart -->
+                <a href="../cartPage/cartPage.html" class="icon-button cart">
                     Cart
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
                         <line x1="3" y1="6" x2="21" y2="6"></line>
                         <path d="M16 10a4 4 0 0 1-8 0"></path>
                     </svg>
                 </a>
-                <a href="#" class="icon-btn account">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <!-- btn account -->
+                <a href="#" class="icon-button account">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>
                     </svg>
                 </a>
             </div>
-        </nav>
-    </header>
+        </header>
 
     <main>
         <div class="breadcrumb">
@@ -244,6 +239,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </main>
 
