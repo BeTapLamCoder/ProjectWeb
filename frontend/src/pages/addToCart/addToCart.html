@@ -8,36 +8,44 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 </head>
 <body>
-    <header class="navbar">
-        <div class="navbar-left">
-            <button class="menu-btn">
-                <span class="material-symbols-outlined">menu</span>
-            </button>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="../homePage/homePage.html" class="nav-link">Home</a></li>
-                    <li><a href="#collection" class="nav-link">Collections</a></li>
-                    <li><a href="#new" class="nav-link">New</a></li>
-                </ul>
-            </nav>
-        </div>
-        
-        <div class="logo">
-            <div class="logo-icon">▶</div>
-        </div>
-        
-        <div class="navbar-right">
-            <div class="cart-container">
-                <button class="cart-btn">
-                    Cart
-                    <span class="material-symbols-outlined">shopping_bag</span>
+    <div class="container">
+    <header class="header-container">
+            <div class="header-left">
+                <button class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </button>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="../homePage/homePage.html">Home</a></li>
+                        <li><a href="#collection">Collections</a></li>
+                        <li><a href="#new">New</a></li>
+                    </ul>
+                </nav>
             </div>
-            <button class="icon-btn account-btn">
-                <span class="material-symbols-outlined">person</span>
-            </button>
-        </div>
-    </header>
+            <div class="logo">
+                <div class="arrow-logo">▶</div>
+            </div>
+            <div class="header-right">
+                <!-- btn cart -->
+                <a href="#" class="icon-button cart">
+                    Cart
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                </a>
+                <!-- btn account -->
+                <a href="#" class="icon-button account">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
+            </div>
+        </header>
 
     <main class="product-container">
         <div class="product-gallery">
@@ -102,6 +110,7 @@
             </div>
             
             <button id="add-to-cart" class="add-to-cart-btn">ADD</button>
+        </div>
         </div>
     </main>
 
