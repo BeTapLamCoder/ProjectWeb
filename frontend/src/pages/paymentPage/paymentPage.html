@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Payment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../cartPage/cartPage.css">
+    <link rel="stylesheet" href="paymentPage.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+
+</head>
+
+<body>
+    <div class="payment-container">
+        <div class="payment-left">
+            <div class="back-arrow" onclick="window.history.back();">&#8592;</div>
+            <div class="payment-title">CHECKOUT</div>
+            <div class="payment-steps">
+                <button class="payment-step disabled">INFORMATION</button>
+                <button class="payment-step active">PAYMENT</button>
+            </div>
+            <div class="payment-section-title">PAYMENT METHOD</div>
+            <form id="paymentForm">
+                <div class="payment-methods">
+                    <label class="payment-method selected">
+                        <input type="radio" name="paymethod" value="credit" checked>
+                        Credit/Debit Card
+                    </label>
+                    <label class="payment-method">
+                        <input type="radio" name="paymethod" value="paypal">
+                        PayPal
+                    </label>
+                    <label class="payment-method">
+                        <input type="radio" name="paymethod" value="cod">
+                        Cash on Delivery
+                    </label>
+                </div>
+                <button type="submit" class="payment-btn">
+                    Pay Now
+                    <span style="font-size:1.3em;">&#8594;</span>
+                </button>
+            </form>
+        </div>
+        <div class="payment-right">
+            <div class="order-summary-header">
+                <div class="order-summary-title">YOUR ORDER</div>
+                <span>(2)</span>
+            </div>
+            <div class="order-list">
+                <div class="order-item">
+                    <img class="order-item-img"
+                        src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=facearea&w=400&h=500&q=80"
+                        alt="Basic Heavy T-Shirt">
+                    <div class="order-item-info">
+                        <div class="order-item-title">Basic Heavy T-Shirt</div>
+                        <div class="order-item-desc">Black/L</div>
+                        <div class="order-item-qty">(1)</div>
+                    </div>
+                    <div class="order-item-price">$ 99</div>
+                </div>
+                <div class="order-item">
+                    <img class="order-item-img"
+                        src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=facearea&w=400&h=500&q=80"
+                        alt="Basic Fit T-Shirt">
+                    <div class="order-item-info">
+                        <div class="order-item-title">Basic Fit T-Shirt</div>
+                        <div class="order-item-desc">Black/L</div>
+                        <div class="order-item-qty">(1)</div>
+                    </div>
+                    <div class="order-item-price">$ 90</div>
+                </div>
+            </div>
+            <div class="order-summary-totals">
+                <div class="order-summary-row">
+                    <span>Subtotal</span>
+                    <span>$180.00</span>
+                </div>
+                <div class="order-summary-row">
+                    <span>Shipping</span>
+                    <span>$0.00</span>
+                </div>
+                <div class="order-summary-row total">
+                    <span>Total</span>
+                    <span>$180.00</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="paymentPage.js"></script>
+</body>
+
+</html>
