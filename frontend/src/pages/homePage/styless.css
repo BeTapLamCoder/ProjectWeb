@@ -212,7 +212,7 @@ h1 {
   width: 100%;
   position: relative;
   overflow: hidden;
-  height: 380px; /* Fixed height */
+  height: 500px; /* Tăng từ 380px lên 500px */
   z-index: 1; /* Lower z-index */
 }
 
@@ -236,11 +236,20 @@ h1 {
 
 .product-carousel .product-image {
   width: 100%;
-  max-width: 366px;
-  height: 380px;
-  object-fit: cover;
+  max-width: 100%;
+  height: 500px; /* Tăng từ 380px lên 500px */
+  object-fit: contain;
   position: relative;
   z-index: 1;
+  border-radius: 12px !important;
+}
+
+.product-slide .product-image {
+  border-radius: 12px !important;
+}
+
+.product-carousel img {
+  border-radius: 12px !important;
 }
 
 .carousel-controls {
@@ -364,8 +373,10 @@ h1 {
 
 .product-image-container {
   position: relative;
-  padding-bottom: 100%;
+  padding-bottom: 120%; /* Tăng từ 100% lên 120% để hình cao hơn */
   background-color: #f8f7f5;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .product-image {
@@ -375,6 +386,7 @@ h1 {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 8px; /* Added border radius */
 }
 
 .product-image-container .product-image {
@@ -384,6 +396,7 @@ h1 {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 8px; /* Added border radius */
 }
 
 .add-to-cart {
@@ -575,6 +588,8 @@ h1 {
   position: relative;
   padding-bottom: 133%;
   background-color: #f8f7f5;
+  border-radius: 8px; /* Added border radius to container */
+  overflow: hidden;
 }
 
 .collection-image {
@@ -584,6 +599,7 @@ h1 {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 8px; /* Added border radius */
 }
 
 .collection-info {
@@ -665,22 +681,28 @@ h1 {
 
 .approach-gallery {
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: repeat(2, auto);
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 1fr;
   gap: 20px;
-  height: 500px;
+  height: 400px;
+  width: 100%;
 }
 
 .gallery-item {
   overflow: hidden;
   position: relative;
+  border-radius: 12px;
+  width: 100%;
+  height: 100%;
 }
 
 .gallery-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   transition: transform 0.5s ease;
+  border-radius: 12px;
+  background-color: #f8f7f5;
 }
 
 .gallery-item:hover .gallery-image {
@@ -688,25 +710,23 @@ h1 {
 }
 
 .item-1 {
-  grid-column: 1 / span 4;
-  grid-row: 1 / span 2;
+  grid-column: 1;
+  grid-row: 1;
 }
 
 .item-2 {
-  grid-column: 5 / span 3;
-  grid-row: 1 / span 2;
-  margin-top: 60px;
+  grid-column: 2;
+  grid-row: 1;
 }
 
 .item-3 {
-  grid-column: 8 / span 3;
-  grid-row: 1 / span 2;
+  grid-column: 3;
+  grid-row: 1;
 }
 
 .item-4 {
-  grid-column: 11 / span 2;
-  grid-row: 1 / span 1;
-  margin-top: 120px;
+  grid-column: 4;
+  grid-row: 1;
 }
 
 /* Footer Styles */
@@ -864,16 +884,41 @@ h1 {
   }
 
   .approach-gallery {
-    grid-template-columns: repeat(6, 1fr);
-    height: auto;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    height: 500px;
   }
 
-  .item-1,
-  .item-2,
-  .item-3,
+  .item-1 {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .item-2 {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .item-3 {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
   .item-4 {
-    grid-column: span 6;
-    margin-top: 0;
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .product-carousel {
+    height: 400px; /* Chiều cao carousel trên mobile */
+  }
+
+  .product-carousel .product-image {
+    height: 400px; /* Chiều cao hình ảnh carousel trên mobile */
+  }
+
+  .product-image-container {
+    padding-bottom: 130%; /* Tăng chiều cao product cards trên mobile */
   }
 }
 
