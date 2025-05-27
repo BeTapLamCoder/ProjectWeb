@@ -225,5 +225,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Thêm cursor grab để gợi ý có thể kéo
         categoryFilters.style.cursor = 'grab';
+
+        const productCards = document.querySelectorAll('.product-card');
+
+        productCards.forEach(card => {
+            card.addEventListener('click', function () {
+                // Lấy thông tin sản phẩm
+                const productData = {
+                    id: this.dataset.productId || 'default-id',
+                    name: this.querySelector('.product-name').textContent,
+                    price: this.querySelector('.product-price').textContent,
+                    type: this.querySelector('.product-type').textContent,
+                    image: this.querySelector('.product-image img').src
+                };
+
+                // Lưu thông tin sản phẩm vào localStorage
+                localStorage.setItem('selectedProduct', JSON.stringify(productData));
+
+                // Chuyển hướng đến trang addToCart
+                window.location.href = '../addToCart/addToCart.html';
+            });
+        });
     }
 });
