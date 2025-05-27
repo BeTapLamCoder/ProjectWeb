@@ -11,129 +11,30 @@
 </head>
 
 <body>
-    <div class="container">
-    <header class="header-container">
-            <div class="header-left">
-                <button class="menu-toggle">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                <nav class="main-nav">
-                    <ul>
-                        <li><a href="../homePage/homePage.html">Home</a></li>
-                        <li><a href="#collection">Collections</a></li>
-                        <li><a href="#new">New</a></li>
-                    </ul>
-                </nav>
+
+    <body>
+        <div id="navbar-placeholder"></div>
+        <script>
+            fetch('../../compoments/navbar.html')
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById('navbar-placeholder').innerHTML = html;
+                    const link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.href = '../../compoments/navbar.css';
+                    document.head.appendChild(link);
+                    const script = document.createElement('script');
+                    script.src = '../../compoments/navbar.js';
+                    document.body.appendChild(script);
+                });
+        </script>
+
+        <main>
+            <div class="breadcrumb">
+                <a href="../homePage/homePage.html">Home</a> / <span>Products</span>
             </div>
-            <div class="logo">
-                <div class="arrow-logo">▶</div>
-            </div>
-            <div class="header-right">
-                <!-- btn cart -->
-                <a href="../cartPage/cartPage.html" class="icon-button cart">
-                    Cart
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <path d="M16 10a4 4 0 0 1-8 0"></path>
-                    </svg>
-                </a>
-                <!-- btn account -->
-                <a href="#" class="icon-button account">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                </a>
-            </div>
-        </header>
 
-    <main>
-        <div class="breadcrumb">
-            <a href="../homePage/homePage.html">Home</a> / <span>Products</span>
-        </div>
-
-        <h1 class="page-title">PRODUCTS</h1>
-
-        <div class="content-wrapper">
-            <aside class="filters-sidebar">
-                <h2>Filters</h2>
-
-                <div class="filter-group">
-                    <h3>Size</h3>
-                    <div class="size-options">
-                        <button class="size-btn">XS</button>
-                        <button class="size-btn">S</button>
-                        <button class="size-btn">M</button>
-                        <button class="size-btn">L</button>
-                        <button class="size-btn">XL</button>
-                        <button class="size-btn">2X</button>
-                    </div>
-                </div>
-
-                <div class="filter-group">
-                    <div class="filter-header">
-                        <h3>Availability</h3>
-                        <span class="toggle-icon">▼</span>
-                    </div>
-                    <div class="filter-options">
-                        <label class="checkbox-container">
-                            <input type="checkbox">
-                            <span class="checkmark"></span>
-                            Availability <span class="count">(450)</span>
-                        </label>
-                        <label class="checkbox-container">
-                            <input type="checkbox">
-                            <span class="checkmark"></span>
-                            Out Of Stack <span class="count">(18)</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="filter-group">
-                    <div class="filter-header">
-                        <h3>Category</h3>
-                        <span class="toggle-icon">▶</span>
-                    </div>
-                </div>
-
-                <div class="filter-group">
-                    <div class="filter-header">
-                        <h3>Colors</h3>
-                        <span class="toggle-icon">▶</span>
-                    </div>
-                </div>
-
-                <div class="filter-group">
-                    <div class="filter-header">
-                        <h3>Price Range</h3>
-                        <span class="toggle-icon">▶</span>
-                    </div>
-                </div>
-
-                <div class="filter-group">
-                    <div class="filter-header">
-                        <h3>Collections</h3>
-                        <span class="toggle-icon">▶</span>
-                    </div>
-                </div>
-
-                <div class="filter-group">
-                    <div class="filter-header">
-                        <h3>Tags</h3>
-                        <span class="toggle-icon">▶</span>
-                    </div>
-                </div>
-
-                <div class="filter-group">
-                    <div class="filter-header">
-                        <h3>Ratings</h3>
-                        <span class="toggle-icon">▶</span>
-                    </div>
-                </div>
-            </aside>
+            <h1 class="page-title">PRODUCTS</h1>
 
             <div class="main-content">
                 <div class="search-bar">
@@ -184,7 +85,8 @@
                                 alt="Basic Heavy Weight T-Shirt">
                         </div>
                         <div class="product-info">
-                            <div class="product-type">Crewneck T-Shirt <span class="color-option">+6</span></div>
+                            <div class="product-type">Crewneck T-Shirt <span class="color-option">+6</span>
+                            </div>
                             <h3 class="product-name">Basic Heavy Weight T-Shirt</h3>
                             <div class="product-price">$ 199</div>
                         </div>
@@ -239,11 +141,11 @@
                     </div>
                 </div>
             </div>
-        </div>
-        </div>
-    </main>
+            </div>
+            </div>
+        </main>
 
-    <script src="main.js"></script>
-</body>
+        <script src="main.js"></script>
+    </body>
 
 </html>
