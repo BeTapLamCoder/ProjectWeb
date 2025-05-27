@@ -1,52 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-commerce Product Page</title>
     <link rel="stylesheet" href="./styles.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 </head>
-<body>
-    <div class="container">
-    <header class="header-container">
-            <div class="header-left">
-                <button class="menu-toggle">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                <nav class="main-nav">
-                    <ul>
-                        <li><a href="../homePage/homePage.html">Home</a></li>
-                        <li><a href="#collection">Collections</a></li>
-                        <li><a href="#new">New</a></li>
-                    </ul>
-                </nav>
-            </div>
-            <div class="logo">
-                <div class="arrow-logo">▶</div>
-            </div>
-            <div class="header-right">
-                <!-- btn cart -->
-                <a href="../cartPage/cartPage.html" class="icon-button cart">
-                    Cart
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <path d="M16 10a4 4 0 0 1-8 0"></path>
-                    </svg>
-                </a>
-                <!-- btn account -->
-                <a href="#" class="icon-button account">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                </a>
-            </div>
-        </header>
 
+<body>
+    <div id="navbar-placeholder"></div>
+
+    <!-- Script để load navbar -->
+    <script>
+        fetch('../../compoments/navbar.html')
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('navbar-placeholder').innerHTML = html;
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = '../../compoments/navbar.css';
+                document.head.appendChild(link);
+                const script = document.createElement('script');
+                script.src = '../../compoments/navbar.js';
+                script.onload = function () {
+                    window.initNavbar();
+                };
+                document.body.appendChild(script);
+            });
+    </script>
     <main class="product-container">
         <div class="product-gallery">
             <div class="main-image">
@@ -72,30 +56,32 @@
         </div>
 
         <div class="product-details">
-           <!-- Cấu trúc HTML cho phần chi tiết sản phẩm -->
-            
+            <!-- Cấu trúc HTML cho phần chi tiết sản phẩm -->
+
             <h1 id="product-title" class="product-title">ABSTRACT PRINT SHIRT</h1>
             <p id="product-price" class="product-price">$99</p>
             <p id="product-tax" class="product-tax">MRP incl. of all taxes</p>
-            
+
             <div id="product-description" class="product-description">
                 <p>Relaxed-fit shirt. Camp collar and short sleeves. Button-up front.</p>
-            </div> 
-            
-            
+            </div>
+
+
             <div class="product-options">
                 <div class="color-options">
                     <h3>Color</h3>
                     <div class="color-selector">
                         <button class="color-option" style="background-color: #d3d3d3;" data-color="gray"></button>
                         <button class="color-option" style="background-color: #888888;" data-color="darkgray"></button>
-                        <button class="color-option active" style="background-color: #222222;" data-color="black"></button>
+                        <button class="color-option active" style="background-color: #222222;"
+                            data-color="black"></button>
                         <button class="color-option" style="background-color: #8dd3c7;" data-color="mint"></button>
-                        <button class="color-option" style="background-color: #ffffff; border: 1px solid #e0e0e0;" data-color="white"></button>
+                        <button class="color-option" style="background-color: #ffffff; border: 1px solid #e0e0e0;"
+                            data-color="white"></button>
                         <button class="color-option" style="background-color: #c6d9f0;" data-color="lightblue"></button>
                     </div>
                 </div>
-                
+
                 <div class="size-options">
                     <h3>Size</h3>
                     <div class="size-selector">
@@ -108,13 +94,14 @@
                     </div>
                 </div>
             </div>
-            
+
             <button id="add-to-cart" class="add-to-cart-btn">ADD</button>
         </div>
         </div>
     </main>
 
     <script src="./addToCart.js"></script>
-       
+
 </body>
+
 </html>
