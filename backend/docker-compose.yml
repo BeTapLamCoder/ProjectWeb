@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:latest
+    container_name: jeanshop_container
+    environment:
+      POSTGRES_USER: jeanshopdev
+      POSTGRES_PASSWORD: jeanshopdev
+      POSTGRES_DB: jeanshop
+    ports:
+      - "5433:5432"
+    volumes:
+      - jeanshop_data:/var/lib/postgresql/data
+
+volumes:
+  jeanshop_data:
