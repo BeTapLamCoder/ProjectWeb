@@ -3,10 +3,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize all functionality
   initMobileMenu()
   initProductCarousel()
-  initSearch()
+  initSearch() // Declare initSearch function here
   initAddToCart()
   initCollectionFilters()
-  initSortDropdown()
   initLoadMore()
   initPagination()
   initGalleryEffects()
@@ -195,96 +194,86 @@ function initAddToCart() {
   })
 }
 
-// Collection Filters
+// Collection Filters - FIXED VERSION
 function initCollectionFilters() {
   const filterTabs = document.querySelectorAll(".filter-tab")
   const collectionCards = document.querySelectorAll(".collection-card")
 
+  console.log("Filter tabs found:", filterTabs.length) // Debug
+  console.log("Collection cards found:", collectionCards.length) // Debug
+
   filterTabs.forEach((tab) => {
     tab.addEventListener("click", function () {
+      console.log("Tab clicked:", this.textContent) // Debug
+
       // Remove active class from all tabs
       filterTabs.forEach((t) => t.classList.remove("active"))
       // Add active class to clicked tab
       this.classList.add("active")
 
-      // Get filter value
-      const filter = this.textContent.toLowerCase().replace("(", "").replace(")", "")
-
-      console.log("Filter selected:", filter) // Debug log
+      // Get filter value from data-filter attribute
+      const filter = this.getAttribute("data-filter")
+      console.log("Filter value:", filter) // Debug
 
       // Get ALL collection cards (including newly added ones)
       const allCollectionCards = document.querySelectorAll(".collection-card")
+      console.log("Cards to filter:", allCollectionCards.length) // Debug
 
-      // Filter products with animation
-      allCollectionCards.forEach((card, index) => {
-        const cardCategory = card.dataset.category
+      // Reset loaded product index when changing filters
+      loadedProductIndex = 0;
 
-        setTimeout(() => {
-          if (filter === "all" || cardCategory === filter) {
-            // Show card
-            card.style.display = "block"
-            card.style.opacity = "0"
-            card.style.transform = "translateY(20px)"
+      // Group cards by category
+      const cardsByCategory = {
+        men: [],
+        women: [],
+        kid: []
+      };
 
-            setTimeout(() => {
-              card.style.transition = "opacity 0.5s ease, transform 0.5s ease"
-              card.style.opacity = "1"
-              card.style.transform = "translateY(0)"
-            }, 50)
-          } else {
-            // Hide card
-            card.style.transition = "opacity 0.3s ease, transform 0.3s ease"
-            card.style.opacity = "0"
-            card.style.transform = "translateY(-20px)"
-
-            setTimeout(() => {
-              card.style.display = "none"
-            }, 300)
-          }
-        }, index * 50) // Giảm delay để nhanh hơn
-      })
-    })
-  })
-}
-
-// Sort Dropdown
-function initSortDropdown() {
-  const sortDropdown = document.querySelector(".sort-dropdown")
-  const sortOptions = document.querySelectorAll(".sort-option")
-
-  if (!sortDropdown) return
-
-  sortOptions.forEach((option) => {
-    option.addEventListener("click", function () {
-      const sortType = this.textContent.toLowerCase()
-      const collectionCards = Array.from(document.querySelectorAll(".collection-card"))
-      const container = document.querySelector(".collections-grid")
-
-      collectionCards.sort((a, b) => {
-        const priceA = Number.parseInt(
-          a.querySelector(".collection-price").textContent.replace("$", "").replace(" ", ""),
-        )
-        const priceB = Number.parseInt(
-          b.querySelector(".collection-price").textContent.replace("$", "").replace(" ", ""),
-        )
-
-        if (sortType.includes("less to more")) {
-          return priceA - priceB
-        } else {
-          return priceB - priceA
+      // Categorize all cards
+      allCollectionCards.forEach(card => {
+        const category = card.getAttribute("data-category");
+        if (category && cardsByCategory[category]) {
+          cardsByCategory[category].push(card);
         }
-      })
+      });
 
-      collectionCards.forEach((card, index) => {
-        setTimeout(() => {
-          container.appendChild(card)
-          card.style.animation = "slideInUp 0.5s ease forwards"
-        }, index * 100)
-      })
+      // Hide all cards first
+      allCollectionCards.forEach(card => {
+        card.style.display = "none";
+        card.style.opacity = "0";
+      });
 
-      showNotification(`Sorted by ${this.textContent}`, "info")
+      // Show only the first 3 cards of the selected category or all categories
+      if (filter === "all") {
+        // For "all" filter, show 3 cards from each category if available
+        Object.keys(cardsByCategory).forEach(category => {
+          const cards = cardsByCategory[category].slice(0, 3);
+          showCards(cards);
+        });
+      } else {
+        // For specific category, show only first 3 cards
+        const cards = cardsByCategory[filter].slice(0, 3);
+        showCards(cards);
+      }
     })
   })
+
+  // Helper function to show cards with animation
+  function showCards(cards) {
+    cards.forEach((card, index) => {
+      setTimeout(() => {
+        card.style.display = "block";
+        card.style.opacity = "0";
+        card.style.transform = "translateY(20px)";
+
+        setTimeout(() => {
+          card.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+          card.style.opacity = "1";
+          card.style.transform = "translateY(0)";
+        }, 50);
+      }, index * 50);
+    });
+  }
 }
 
 // Load More Functionality
@@ -297,7 +286,12 @@ function initLoadMore() {
       this.disabled = true
 
       setTimeout(() => {
-        loadMoreProducts()
+        // Get the active filter
+        const activeFilter = document.querySelector(".filter-tab.active").getAttribute("data-filter");
+        
+        // Load more products based on the active filter
+        loadMoreProducts(activeFilter);
+        
         this.innerHTML =
           'More <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>'
         this.disabled = false
@@ -306,161 +300,41 @@ function initLoadMore() {
   }
 }
 
-const productDatabase = [
-  // Men Products
-  {
-    name: "Premium Cotton Hoodie",
-    category: "men",
-    price: "$299",
-    categoryDisplay: "Cotton Hoodie",
-    image: "https://buggy.yodycdn.com/images/product/3e279ed4c388b3be16807915f4abfbc0.webp?width=987&height=1316",
-  },
-  {
-    name: "Classic Denim Jacket",
-    category: "men",
-    price: "$399",
-    categoryDisplay: "Denim Jacket",
-    image: "https://buggy.yodycdn.com/images/product/a30d2627fbb012bbe5dfffd42e3cdff3.webp?width=987&height=1316",
-  },
-  {
-    name: "Casual Polo Shirt",
-    category: "men",
-    price: "$159",
-    categoryDisplay: "Polo Shirt",
-    image: "https://buggy.yodycdn.com/images/product/d712f0ca773a81df6c995e56c0da674e.webp?width=987&height=1316",
-  },
-  {
-    name: "Slim Fit Chinos",
-    category: "men",
-    price: "$229",
-    categoryDisplay: "Chinos Pants",
-    image: "https://buggy.yodycdn.com/images/product/3e279ed4c388b3be16807915f4abfbc0.webp?width=987&height=1316",
-  },
-
-  // Women Products
-  {
-    name: "Elegant Silk Blouse",
-    category: "women",
-    price: "$349",
-    categoryDisplay: "Silk Blouse",
-    image: "https://buggy.yodycdn.com/images/product/81a8890c1dfbbe97a2bc500604f58d72.webp?width=987&height=1316",
-  },
-  {
-    name: "Floral Summer Dress",
-    category: "women",
-    price: "$279",
-    categoryDisplay: "Summer Dress",
-    image: "https://buggy.yodycdn.com/images/product/feab5fe94eec59320275de33c6601515.webp?width=987&height=1316",
-  },
-  {
-    name: "Casual Knit Sweater",
-    category: "women",
-    price: "$199",
-    categoryDisplay: "Knit Sweater",
-    image: "https://buggy.yodycdn.com/images/product/094fea61615890b116739f045687fd89.webp?width=987&height=1316",
-  },
-  {
-    name: "High-Waist Jeans",
-    category: "women",
-    price: "$259",
-    categoryDisplay: "High-Waist Jeans",
-    image: "https://buggy.yodycdn.com/images/product/81a8890c1dfbbe97a2bc500604f58d72.webp?width=987&height=1316",
-  },
-
-  // Kids Products
-  {
-    name: "Colorful Graphic Tee",
-    category: "kid",
-    price: "$89",
-    categoryDisplay: "Kids T-Shirt",
-    image: "https://buggy.yodycdn.com/images/product/ec283b1650403c651eb83af735de39e7.webp?width=987&height=1316",
-  },
-  {
-    name: "Mini Denim Jacket",
-    category: "kid",
-    price: "$129",
-    categoryDisplay: "Kids Jacket",
-    image: "https://buggy.yodycdn.com/images/product/3e279ed4c388b3be16807915f4abfbc0.webp?width=987&height=1316",
-  },
-  {
-    name: "Comfortable Joggers",
-    category: "kid",
-    price: "$99",
-    categoryDisplay: "Kids Pants",
-    image: "https://buggy.yodycdn.com/images/product/a30d2627fbb012bbe5dfffd42e3cdff3.webp?width=987&height=1316",
-  },
-  {
-    name: "Cute Animal Hoodie",
-    category: "kid",
-    price: "$119",
-    categoryDisplay: "Kids Hoodie",
-    image: "https://buggy.yodycdn.com/images/product/ec283b1650403c651eb83af735de39e7.webp?width=987&height=1316",
-  },
-  {
-    name: "Rainbow Striped Dress",
-    category: "kid",
-    price: "$109",
-    categoryDisplay: "Kids Dress",
-    image: "https://buggy.yodycdn.com/images/product/3e279ed4c388b3be16807915f4abfbc0.webp?width=987&height=1316",
-  },
-  {
-    name: "Sports Shorts Set",
-    category: "kid",
-    price: "$79",
-    categoryDisplay: "Kids Sports Set",
-    image: "https://buggy.yodycdn.com/images/product/a30d2627fbb012bbe5dfffd42e3cdff3.webp?width=987&height=1316",
-  },
-]
-
 let loadedProductIndex = 0
 
-function loadMoreProducts() {
+function loadMoreProducts(activeFilter = "all") {
   const collectionsGrid = document.querySelector(".collections-grid")
   const productsPerLoad = 3
 
-  // Lấy 3 sản phẩm tiếp theo từ database
-  const nextProducts = productDatabase.slice(loadedProductIndex, loadedProductIndex + productsPerLoad)
+  // Filter products based on active filter
+  let filteredProducts = productDatabase;
+  if (activeFilter !== "all") {
+    filteredProducts = productDatabase.filter(product => product.category === activeFilter);
+  }
+
+  // Lấy 3 sản phẩm tiếp theo từ database đã lọc
+  const nextProducts = filteredProducts.slice(loadedProductIndex, loadedProductIndex + productsPerLoad)
 
   if (nextProducts.length === 0) {
     // Nếu hết sản phẩm, reset về đầu
     loadedProductIndex = 0
-    const resetProducts = productDatabase.slice(0, productsPerLoad)
+    const resetProducts = filteredProducts.slice(0, productsPerLoad)
     addProductsToGrid(resetProducts, collectionsGrid)
     loadedProductIndex = productsPerLoad
-    showNotification("Loaded more products (cycling through collection)", "info")
   } else {
     addProductsToGrid(nextProducts, collectionsGrid)
     loadedProductIndex += productsPerLoad
-    showNotification(`Loaded ${nextProducts.length} more products`, "success")
   }
 }
 
 // Thêm function này để thêm sản phẩm vào grid
+// Thêm function này để thêm sản phẩm vào grid
 function addProductsToGrid(products, container) {
-  // Lấy tab hiện tại đang active
-  const activeTab = document.querySelector(".filter-tab.active")
-  const currentFilter = activeTab ? activeTab.textContent.toLowerCase().replace("(", "").replace(")", "") : "all"
-
   products.forEach((product, index) => {
     setTimeout(() => {
       const productCard = createProductCard(product)
       container.appendChild(productCard)
-
-      // Kiểm tra xem sản phẩm có phù hợp với filter hiện tại không
-      if (currentFilter === "all" || product.category === currentFilter) {
-        // Hiển thị sản phẩm với animation
-        productCard.style.opacity = "0"
-        productCard.style.transform = "translateY(20px)"
-        productCard.style.animation = "fadeInUp 0.5s ease forwards"
-
-        setTimeout(() => {
-          productCard.style.opacity = "1"
-          productCard.style.transform = "translateY(0)"
-        }, 100)
-      } else {
-        // Ẩn sản phẩm nếu không phù hợp với filter hiện tại
-        productCard.style.display = "none"
-      }
+      productCard.style.animation = "fadeInUp 0.5s ease forwards"
     }, index * 200)
   })
 }
@@ -475,7 +349,7 @@ function applyCurrentFilter() {
 function createProductCard(product) {
   const card = document.createElement("div")
   card.className = "collection-card"
-  card.dataset.category = product.category
+  card.setAttribute("data-category", product.category)
 
   // Thêm badge ngẫu nhiên cho một số sản phẩm
   const hasBadge = Math.random() > 0.7
@@ -955,9 +829,9 @@ function initUserDropdown() {
 
 function handleOrdersClick() {
   setTimeout(() => {
-    window.location.href = '../manageOrder/manageOrder.html'
+    window.location.href = "../manageOrder/manageOrder.html"
   }, 1000)
-}   
+}
 
 function handleLogoutClick() {
   if (confirm("Bạn có chắc chắn muốn đăng xuất?")) {
@@ -973,8 +847,124 @@ function handleLogoutClick() {
   }
 }
 
+function initSearch() {
+  // Placeholder for search functionality
+  console.log("Search functionality initialized")
+}
+
+function handleProfileClick() {
+  // Placeholder for profile click functionality
+  console.log("Profile clicked")
+}
+
 window.FashionHome = {
   showNotification,
   updateCartCount,
   addToCartStorage,
 }
+
+const productDatabase = [
+  // Men Products
+  {
+    name: "Premium Cotton Hoodie",
+    category: "men",
+    price: "$299",
+    categoryDisplay: "Cotton Hoodie",
+    image: "https://buggy.yodycdn.com/images/product/bacf8829518f24b04db2236552e9e4c9.webp?width=987&height=1316",
+  },
+  {
+    name: "Classic Denim Jacket",
+    category: "men",
+    price: "$399",
+    categoryDisplay: "Denim Jacket",
+    image: "https://buggy.yodycdn.com/images/product/3e41fdc02b1f7908a2974283fd7905ab.webp?width=987&height=1316",
+  },
+  {
+    name: "Casual Polo Shirt",
+    category: "men",
+    price: "$159",
+    categoryDisplay: "Polo Shirt",
+    image: "https://buggy.yodycdn.com/images/product/b748d34111da5399e1868f073a549404.webp?width=987&height=1316",
+  },
+  {
+    name: "Slim Fit Chinos",
+    category: "men",
+    price: "$229",
+    categoryDisplay: "Chinos Pants",
+    image: "https://buggy.yodycdn.com/images/product/427a1a554e6cb9b91fbe67d9430d8411.webp?width=987&height=1316",
+  },
+
+  // Women Products
+  {
+    name: "Elegant Silk Blouse",
+    category: "women",
+    price: "$349",
+    categoryDisplay: "Silk Blouse",
+    image: "https://buggy.yodycdn.com/images/product/3e279ed4c388b3be16807915f4abfbc0.webp?width=987&height=1316",
+  },
+  {
+    name: "Floral Summer Dress",
+    category: "women",
+    price: "$279",
+    categoryDisplay: "Summer Dress",
+    image: "https://buggy.yodycdn.com/images/product/a30d2627fbb012bbe5dfffd42e3cdff3.webp?width=987&height=1316",
+  },
+  {
+    name: "Casual Knit Sweater",
+    category: "women",
+    price: "$199",
+    categoryDisplay: "Knit Sweater",
+    image: "https://buggy.yodycdn.com/images/product/d712f0ca773a81df6c995e56c0da674e.webp?width=987&height=1316",
+  },
+  {
+    name: "High-Waist Jeans",
+    category: "women",
+    price: "$259",
+    categoryDisplay: "High-Waist Jeans",
+    image: "https://buggy.yodycdn.com/images/product/3dd7b1ac0dc9a7c291cefc7c07c58d7a.webp?width=987&height=1316",
+  },
+
+  // Kids Products
+  {
+    name: "Colorful Graphic Tee",
+    category: "kid",
+    price: "$89",
+    categoryDisplay: "Kids T-Shirt",
+    image: "https://buggy.yodycdn.com/images/product/e3493ccb97b8279f07e663e0e2cba289.webp?width=987&height=1316",
+  },
+  {
+    name: "Mini Denim Jacket",
+    category: "kid",
+    price: "$129",
+    categoryDisplay: "Kids Jacket",
+    image: "https://buggy.yodycdn.com/images/product/f0f3cc2f66f7d351226d88e0762ae594.webp?width=987&height=1316",
+  },
+  {
+    name: "Comfortable Joggers",
+    category: "kid",
+    price: "$99",
+    categoryDisplay: "Kids Pants",
+    image: "https://buggy.yodycdn.com/images/product/b8720cd7b4a22ca3bedbe54ceb700219.webp?width=987&height=1316",
+  },
+  {
+    name: "Cute Animal Hoodie",
+    category: "kid",
+    price: "$119",
+    categoryDisplay: "Kids Hoodie",
+    image: "https://buggy.yodycdn.com/images/product/d7e1df48b2c7a678e10b2dbb8101d3e8.webp?width=987&height=1316",
+  },
+  {
+    name: "Rainbow Striped Dress",
+    category: "kid",
+    price: "$109",
+    categoryDisplay: "Kids Dress",
+    image: "https://buggy.yodycdn.com/images/product/3c59cf289ebe000508480b816917b297.webp?width=987&height=1316",
+  },
+  {
+    name: "Sports Shorts Set",
+    category: "kid",
+    price: "$79",
+    categoryDisplay: "Kids Sports Set",
+    image: "https://buggy.yodycdn.com/images/product/644c4edb9c3aa32a6b6678b511655866.webp?width=987&height=1316",
+  },
+]

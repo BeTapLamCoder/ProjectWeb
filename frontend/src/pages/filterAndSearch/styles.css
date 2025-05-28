@@ -275,7 +275,7 @@ main {
 }
 
 .product-image {
-    height: 300px;
+    /* height: 500px; */
     overflow: hidden;
 }
 

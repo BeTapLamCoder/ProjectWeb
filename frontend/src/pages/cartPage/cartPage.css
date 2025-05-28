@@ -68,6 +68,13 @@ header {
     transform: translateX(-50%);
 }
 
+.yody-logo {
+  height: 40px;
+  width: auto;
+  max-width: 120px;
+  object-fit: contain;
+}
+
 .arrow-logo {
     font-size: 24px;
     color: #000;
