@@ -82,12 +82,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Replace placeholder with actual product images
     // This is just a simulation - in a real app you'd load actual product images
     const productImageUrls = [
-        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-nryc6vecjiGdWviAcaKZKHK9QIxAES.png',
-        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-nryc6vecjiGdWviAcaKZKHK9QIxAES.png',
-        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-nryc6vecjiGdWviAcaKZKHK9QIxAES.png',
-        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-nryc6vecjiGdWviAcaKZKHK9QIxAES.png',
-        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-nryc6vecjiGdWviAcaKZKHK9QIxAES.png',
-        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-nryc6vecjiGdWviAcaKZKHK9QIxAES.png'
+        'https://buggy.yodycdn.com/images/product/b742a3cdd579680ccbbd3f647bd48986.webp?width=987&height=1316',
+        'https://buggy.yodycdn.com/images/product/ddc43b6ac3e829dece9920bfba10c97f.webp?width=987&height=1316',
+        'https://buggy.yodycdn.com/images/product/0f58acf17ddd64467cb44ada739199f8.webp?width=987&height=1316',
+        'https://buggy.yodycdn.com/images/product/17c251c27c4e8d1b6cd560181ff21107.webp?width=431&height=575',
+        'https://buggy.yodycdn.com/images/product/f266631d9a63474e7de510331be17e1d.webp?width=431&height=575',
+        'https://buggy.yodycdn.com/images/product/ab01a7978591b6021fffdad365999d8c.webp?width=431&height=575',
+        'https://buggy.yodycdn.com/images/product/bf1bdbdf1ea8347b3070b99ba2e95726.webp?width=431&height=575'
     ];
 
     productImages.forEach((img, index) => {
