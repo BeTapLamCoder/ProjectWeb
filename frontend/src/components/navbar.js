@@ -15,15 +15,13 @@ window.initNavbar = function () {
 
     const upPath = '../'.repeat(upStepsCount);
 
-    const componentsPath = upPath + 'components/';
-
-    document.querySelector('.navbar-icon.search').href = componentsPath + '../pages/filterAndSearch/filterAndSearch.html';
-    document.querySelector('.navbar-icon.cart').href = componentsPath + '../pages/cartPage/cartPage.html';
+    document.querySelector('.navbar-icon.search').href = upPath + 'pages/filterAndSearch/filterAndSearch.html';
+    document.querySelector('.navbar-icon.cart').href = upPath + 'pages/cartPage/cartPage.html';
 
     // Gán click logo về trang homePage
     document.getElementById('shopLogo').addEventListener('click', () => {
         console.log('Logo clicked, redirecting to home page');
-        window.location.href = componentsPath + '../index.html';
+        window.location.href = upPath + 'index.html';
     });
 
     const userBtn = document.getElementById('userBtn');
@@ -55,7 +53,7 @@ window.initNavbar = function () {
                 </div>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="${componentsPath}../manageOrder/manageOrder.html" class="dropdown-item">
+                        <a href="${upPath}manageOrder/manageOrder.html" class="dropdown-item">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
                                 <line x1="3" y1="6" x2="21" y2="6"/>
@@ -79,7 +77,7 @@ window.initNavbar = function () {
         } else {
             dropdown.innerHTML = `
                 <div class="dropdown-menu">
-                    <a href="${componentsPath}../loginAndRegist/loginAndRegist.html" class="dropdown-item">
+                    <a href="${upPath}loginAndRegist/loginAndRegist.html" class="dropdown-item">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
                             <polyline points="10 17 15 12 10 7"/>
@@ -100,7 +98,7 @@ window.initNavbar = function () {
                 localStorage.removeItem('currentUser');
                 updateDropdownContent();
                 dropdown.classList.remove('show');
-                window.location.href = componentsPath + '../loginAndRegist/loginAndRegist.html';
+                window.location.href = upPath + 'loginAndRegist/loginAndRegist.html';
             };
         }
     }
