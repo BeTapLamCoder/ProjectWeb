@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yody</title>
+    <link rel="stylesheet" href="./pages/homePage/styless.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <script src="./pages/homePage/homePage.js"></script>
+</head>
+
+<body>
+    <div id="navbar-placeholder"></div>
+    <script>
+        fetch('./components/navbar.html')
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('navbar-placeholder').innerHTML = html;
+                // Thêm stylesheet cho navbar
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = './components/navbar.css';
+                document.head.appendChild(link);
+
+                // Thêm script navbar.js
+                const script = document.createElement('script');
+                script.src = './components/navbar.js';
+                script.onload = function () {
+                    window.initNavbar();
+                };
+                document.body.appendChild(script);
+            });
+
+    </script>
+    <div class="container">
+        <!-- Xóa phần header cũ nếu có -->
+        <!-- ...phần còn lại giữ nguyên... -->
+        <div class="content">
+            <div class="sidebar">
+                <div class="collection-intro" id="collection">
+                    <h1>NEW<br>COLLECTION</h1>
+                    <p>Summer<br>2024</p>
+                </div>
+                <div class="carousel-controls">
+                    <button class="shop-button">Go To Shop <span class="arrow">→</span></button>
+                    <div class="carousel-arrows">
+                        <button class="prev-arrow">❮</button>
+                        <button class="next-arrow">❯</button>
+                    </div>
+                </div>
+            </div>
+
+            <main>
+                <div class="product-carousel">
+                    <div class="product-slide">
+                        <img src="https://buggy.yodycdn.com/images/product/637da379e845bfb561422190348a8f22.webp?width=987&height=1316"
+                            alt="Model in white outfit with tan shoes" class="product-image">
+                    </div>
+                    <div class="product-slide">
+                        <img src="https://buggy.yodycdn.com/images/product/9f59cc43a64500af79f58f67ae36bd56.webp?width=987&height=1316"
+                            alt="Model in black t-shirt with white design" class="product-image">
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- New this week section -->
+        <section class="new-this-week" id="new">
+            <div class="section-header">
+                <h2>NEW <br>THIS WEEK<span class="item-count">(50)</span></h2>
+                <a href="./pages/filterAndSearch/filterAndSearch.html" class="see-all">See All</a>
+            </div>
+
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img src="https://buggy.yodycdn.com/images/product/81a8890c1dfbbe97a2bc500604f58d72.webp?width=987&height=1316"
+                            alt="Embroidered Seersucker Shirt" class="product-image">
+                        <button class="add-to-cart">+</button>
+                    </div>
+                    <div class="product-info">
+                        <span class="product-category">V-Neck T-Shirt</span>
+                        <h3 class="product-name">Embroidered Seersucker Shirt</h3>
+                        <span class="product-price">$99</span>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img src="https://buggy.yodycdn.com/images/product/feab5fe94eec59320275de33c6601515.webp?width=987&height=1316"
+                            alt="Basic Slim Fit T-Shirt" class="product-image">
+                        <button class="add-to-cart">+</button>
+                    </div>
+                    <div class="product-info">
+                        <span class="product-category">Cotton T-Shirt <span class="badge">+5</span></span>
+                        <h3 class="product-name">Basic Slim Fit T-Shirt</h3>
+                        <span class="product-price">$99</span>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img src="https://buggy.yodycdn.com/images/product/094fea61615890b116739f045687fd89.webp?width=987&height=1316"
+                            alt="Blurred Print T-Shirt" class="product-image">
+                        <button class="add-to-cart">+</button>
+                    </div>
+                    <div class="product-info">
+                        <span class="product-category">Henley T-Shirt <span class="badge">+3</span></span>
+                        <h3 class="product-name">Blurred Print T-Shirt</h3>
+                        <span class="product-price">$99</span>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img src="https://buggy.yodycdn.com/images/product/ec283b1650403c651eb83af735de39e7.webp?width=987&height=1316"
+                            alt="Full Sleeve Zipper" class="product-image">
+                        <button class="add-to-cart">+</button>
+                    </div>
+                    <div class="product-info">
+                        <span class="product-category">Crewneck T-Shirt <span class="badge">+2</span></span>
+                        <h3 class="product-name">Full Sleeve Zipper</h3>
+                        <span class="product-price">$99</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pagination">
+                <button class="pagination-btn prev">❮</button>
+                <button class="pagination-btn next">❯</button>
+            </div>
+        </section>
+
+        <!-- XIV Collection -->
+        <section class="xiv-collections">
+            <div class="collections-header">
+                <h2>XIV<br>COLLECTIONS<br>23-24</h2>
+
+                <div class="collections-filters">
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-filter="all">(ALL)</button>
+                        <button class="filter-tab" data-filter="men">Men</button>
+                        <button class="filter-tab" data-filter="women">Women</button>
+                        <button class="filter-tab" data-filter="kid">KID</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collections-grid">
+                <!-- Men Products -->
+                <div class="collection-card" data-category="men">
+                    <div class="collection-image-container">
+                        <img src="https://buggy.yodycdn.com/images/product/bacf8829518f24b04db2236552e9e4c9.webp?width=987&height=1316"
+                            alt="Basic Heavy Weight T-Shirt in gray" class="collection-image">
+                        <button class="add-to-cart">+</button>
+                    </div>
+                    <div class="collection-info">
+                        <span class="collection-category">Cotton T Shirt</span>
+                        <h3 class="collection-name">Basic Heavy Weight T-Shirt</h3>
+                        <span class="collection-price">$ 199</span>
+                    </div>
+                </div>
+
+                <div class="collection-card" data-category="men">
+                    <div class="collection-image-container">
+                        <img src="https://buggy.yodycdn.com/images/product/3e41fdc02b1f7908a2974283fd7905ab.webp?width=987&height=1316"
+                            alt="Soft Wash Straight Fit Jeans" class="collection-image">
+                        <button class="add-to-cart">+</button>
+                    </div>
+                    <div class="collection-info">
+                        <span class="collection-category">Cotton jeans <span class="badge">+5</span></span>
+                        <h3 class="collection-name">Soft Wash Straight Fit Jeans</h3>
+                        <span class="collection-price">$ 199</span>
+                    </div>
+                </div>
+
+                <div class="collection-card" data-category="men">
+                    <div class="collection-image-container">
+                        <img src="https://buggy.yodycdn.com/images/product/b748d34111da5399e1868f073a549404.webp?width=987&height=1316"
+                            alt="Basic Heavy Weight T-Shirt in beige" class="collection-image">
+                        <button class="add-to-cart">+</button>
+                    </div>
+                    <div class="collection-info">
+                        <span class="collection-category">Cotton T Shirt <span class="badge">+5</span></span>
+                        <h3 class="collection-name">Basic Heavy Weight T-Shirt</h3>
+                        <span class="collection-price">$ 199</span>
+                    </div>
+                </div>
+
+                <!-- Women Products -->
+                <div class="collection-card" data-category="women">
+                    <div class="collection-image-container">
+                        <img src="https://buggy.yodycdn.com/images/product/3dd7b1ac0dc9a7c291cefc7c07c58d7a.webp?width=987&height=1316"
+                            alt="Women's Elegant Blouse" class="collection-image">
+                        <button class="add-to-cart">+</button>
+                    </div>
+                    <div class="collection-info">
+                        <span class="collection-category">Silk Blouse</span>
+                        <h3 class="collection-name">Women's Elegant Blouse</h3>
+                        <span class="collection-price">$ 249</span>
+                    </div>
+                </div>
+
+                <div class="collection-card" data-category="women">
+                    <div class="collection-image-container">
+                        <img src="https://buggy.yodycdn.com/images/product/d712f0ca773a81df6c995e56c0da674e.webp?width=987&height=1316"
+                            alt="Women's Summer Dress" class="collection-image">
+                        <button class="add-to-cart">+</button>
+                    </div>
+                    <div class="collection-info">
+                        <span class="collection-category">Summer Dress <span class="badge">+3</span></span>
+                        <h3 class="collection-name">Women's Summer Dress</h3>
+                        <span class="collection-price">$ 299</span>
+                    </div>
+                </div>
+
+                <div class="collection-card" data-category="women">
+                    <div class="collection-image-container">
+                        <img src="https://buggy.yodycdn.com/images/product/3e279ed4c388b3be16807915f4abfbc0.webp?width=987&height=1316"
+                            alt="Women's Casual Top" class="collection-image">
+                        <button class="add-to-cart">+</button>
+                    </div>
+                    <div class="collection-info">
+                        <span class="collection-category">Casual Top</span>
+                        <h3 class="collection-name">Women's Casual Top</h3>
+                        <span class="collection-price">$ 179</span>
+                    </div>
+                </div>
+
+                <!-- Kids Products -->
+                <div class="collection-card" data-category="kid">
+                    <div class="collection-image-container">
+                        <img src="https://buggy.yodycdn.com/images/product/e3493ccb97b8279f07e663e0e2cba289.webp?width=987&height=1316"
+                            alt="Kids Colorful T-Shirt" class="collection-image">
+                        <button class="add-to-cart">+</button>
+                    </div>
+                    <div class="collection-info">
+                        <span class="collection-category">Kids T-Shirt</span>
+                        <h3 class="collection-name">Kids Colorful T-Shirt</h3>
+                        <span class="collection-price">$ 89</span>
+                    </div>
+                </div>
+
+                <div class="collection-card" data-category="kid">
+                    <div class="collection-image-container">
+                        <img src="https://buggy.yodycdn.com/images/product/f0f3cc2f66f7d351226d88e0762ae594.webp?width=987&height=1316"
+                            alt="Kids Denim Jacket" class="collection-image">
+                        <button class="add-to-cart">+</button>
+                    </div>
+                    <div class="collection-info">
+                        <span class="collection-category">Kids Jacket <span class="badge">+2</span></span>
+                        <h3 class="collection-name">Kids Denim Jacket</h3>
+                        <span class="collection-price">$ 129</span>
+                    </div>
+                </div>
+
+                <div class="collection-card" data-category="kid">
+                    <div class="collection-image-container">
+                        <img src="https://buggy.yodycdn.com/images/product/b8720cd7b4a22ca3bedbe54ceb700219.webp?width=987&height=1316"
+                            alt="Kids Casual Pants" class="collection-image">
+                        <button class="add-to-cart">+</button>
+                    </div>
+                    <div class="collection-info">
+                        <span class="collection-category">Kids Pants</span>
+                        <h3 class="collection-name">Kids Casual Pants</h3>
+                        <span class="collection-price">$ 99</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="load-more">
+                <button class="load-more-btn">
+                    More
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- Our Approach -->
+        <section class="our-approach">
+            <div class="approach-content">
+                <h2 class="approach-title">OUR APPROACH TO FASHION DESIGN</h2>
+                <p class="approach-description">
+                    at elegant vogue, we blend creativity with craftsmanship to create
+                    fashion that transcends trends and stands the test of time each
+                    design is meticulously crafted, ensuring the highest quality
+                    exquisite finish
+                </p>
+            </div>
+
+            <div class="approach-gallery">
+                <div class="gallery-item item-1">
+                    <img src="https://buggy.yodycdn.com/images/home-grid-dt/ac86da3160af474c1e24322ff4b12fe7.webp?width=648&height=864"
+                        alt="Man in light coat and gray shirt" class="gallery-image">
+                </div>
+                <div class="gallery-item item-2">
+                    <img src="https://buggy.yodycdn.com/images/home-grid-dt/032b910eac2c682cc1edb1b5c0fd4c71.webp?width=648&height=864"
+                        alt="Man in brown coat and hat" class="gallery-image">
+                </div>
+                <div class="gallery-item item-3">
+                    <img src="https://buggy.yodycdn.com/images/home-grid-dt/915ff90bf2e5d84006848b20ac06c236.webp?width=648&height=864"
+                        alt="Person in white pants and tan shoes" class="gallery-image">
+                </div>
+                <div class="gallery-item item-4">
+                    <img src="https://buggy.yodycdn.com/images/home-grid-dt/4c09e8305a7b197297bec46c9c3acb55.webp?width=648&height=864"
+                        alt="White fabric detail" class="gallery-image">
+                </div>
+            </div>
+        </section>
+    </div>
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-column">
+                <h4 class="footer-heading">INFO</h4>
+                <ul class="footer-links">
+                    <li><a href="#">PRICING</a></li>
+                    <li><a href="#">ABOUT</a></li>
+                    <li><a href="#">CONTACTS</a></li>
+                </ul>
+
+                <h4 class="footer-heading languages-heading">LANGUAGES</h4>
+                <ul class="footer-links language-links">
+                    <li><a href="#" class="active">ENG</a></li>
+                    <li><a href="#">ESP</a></li>
+                    <li><a href="#">SVE</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column footer-logo-column">
+                <div class="footer-logo">
+                    <div class="logo-arrow">▶</div>
+                    <div class="logo-text">
+                        <span>XIV</span>
+                        <span>QR</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-heading">TECHNOLOGIES</h4>
+                <p class="footer-tech">Near-field communication</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="copyright">© 2024 — copyright</div>
+            <div class="privacy-link"><a href="#">privacy</a></div>
+        </div>
+    </footer>
+</body>
+
+</html>
