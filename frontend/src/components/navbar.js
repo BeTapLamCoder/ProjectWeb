@@ -55,7 +55,7 @@ window.initNavbar = function () {
                 </div>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="../manageOrder/manageOrder.html" class="dropdown-item">
+                        <a href="${componentsPath}../manageOrder/manageOrder.html" class="dropdown-item">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
                                 <line x1="3" y1="6" x2="21" y2="6"/>
@@ -79,7 +79,7 @@ window.initNavbar = function () {
         } else {
             dropdown.innerHTML = `
                 <div class="dropdown-menu">
-                    <a href="../loginAndRegist/loginAndRegist.html" class="dropdown-item">
+                    <a href="${componentsPath}../loginAndRegist/loginAndRegist.html" class="dropdown-item">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
                             <polyline points="10 17 15 12 10 7"/>
@@ -100,7 +100,7 @@ window.initNavbar = function () {
                 localStorage.removeItem('currentUser');
                 updateDropdownContent();
                 dropdown.classList.remove('show');
-                window.location.href = '../loginAndRegist/loginAndRegist.html';
+                window.location.href = componentsPath + '../loginAndRegist/loginAndRegist.html';
             };
         }
     }
