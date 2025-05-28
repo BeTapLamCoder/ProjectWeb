@@ -2,15 +2,16 @@ window.initNavbar = function () {
     const userBtn = document.getElementById('userBtn');
     if (!userBtn) return;
 
-    // Tạo dropdown động
+    // Create dropdown
     const dropdown = document.createElement('div');
     dropdown.className = 'user-dropdown';
 
-    // Kiểm tra trạng thái đăng nhập
+    // Check login status
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
     function updateDropdownContent() {
-        if (isLoggedIn) {
+        if (isLoggedIn && currentUser) {
             dropdown.innerHTML = `
                 <div class="user-info">
                     <div class="user-avatar">
@@ -21,8 +22,8 @@ window.initNavbar = function () {
                         </svg>
                     </div>
                     <div style="color: #333;">
-                        <div style="font-weight: 500;">Người dùng</div>
-                        <div style="font-size: 0.9em; color: #666;">user@example.com</div>
+                        <div style="font-weight: 500;">${currentUser.firstName} ${currentUser.lastName}</div>
+                        <div style="font-size: 0.9em; color: #666;">${currentUser.email}</div>
                     </div>
                 </div>
                 <ul class="dropdown-menu">
@@ -33,7 +34,7 @@ window.initNavbar = function () {
                                 <line x1="3" y1="6" x2="21" y2="6"/>
                                 <path d="M16 10a4 4 0 0 1-8 0"/>
                             </svg>
-                            Đơn hàng của tôi
+                            Manage Orders
                         </a>
                     </li>
                     <li>
@@ -43,7 +44,7 @@ window.initNavbar = function () {
                                 <polyline points="16 17 21 12 16 7"/>
                                 <line x1="21" y1="12" x2="9" y2="12"/>
                             </svg>
-                            Đăng xuất
+                            Logout
                         </a>
                     </li>
                 </ul>
@@ -51,56 +52,45 @@ window.initNavbar = function () {
         } else {
             dropdown.innerHTML = `
                 <div class="dropdown-menu">
-                    <a href="../loginAndRegist/loginAndRegist.html" class="dropdown-item" id="loginBtn">
+                    <a href="../loginAndRegist/loginAndRegist.html" class="dropdown-item">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
                             <polyline points="10 17 15 12 10 7"/>
                             <line x1="15" y1="12" x2="3" y2="12"/>
                         </svg>
-                        Đăng nhập
+                        Login / Register
                     </a>
                 </div>
             `;
         }
 
-        // Gắn sự kiện cho các nút mới
-        const loginBtn = dropdown.querySelector('#loginBtn');
+        // Handle logout
         const logoutBtn = dropdown.querySelector('#logoutBtn');
-
-        if (loginBtn) {
-            loginBtn.onclick = function (e) {
-                e.preventDefault();
-                localStorage.setItem('isLoggedIn', 'true');
-                updateDropdownContent();
-                dropdown.classList.remove('show');
-                alert('Đăng nhập thành công!');
-            };
-        }
-
         if (logoutBtn) {
             logoutBtn.onclick = function (e) {
                 e.preventDefault();
-                localStorage.setItem('isLoggedIn', 'false');
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('currentUser');
                 updateDropdownContent();
                 dropdown.classList.remove('show');
-                alert('Đăng xuất thành công!');
+                window.location.href = '../loginAndRegist/loginAndRegist.html';
             };
         }
     }
 
-    // Khởi tạo nội dung dropdown
+    // Initialize dropdown content
     updateDropdownContent();
 
-    // Thêm dropdown vào DOM
+    // Add dropdown to DOM
     userBtn.parentNode.appendChild(dropdown);
 
-    // Xử lý sự kiện click
+    // Handle click events
     userBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         dropdown.classList.toggle('show');
     });
 
-    // Đóng dropdown khi click ra ngoài
+    // Close dropdown when clicking outside
     document.addEventListener('click', function (e) {
         if (!dropdown.contains(e.target) && !userBtn.contains(e.target)) {
             dropdown.classList.remove('show');
