@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Kiểm tra giỏ hàng
         if (cart.length === 0) {
-            alert('Giỏ hàng trống!');
+            alert('Cart is empty. Please add items to your cart before proceeding.');
             return;
         }
 

@@ -12,59 +12,78 @@
 </head>
 
 <body>
+    <div id="navbar-placeholder"></div>
+    <script>
+        fetch('../../compoments/navbar.html')
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('navbar-placeholder').innerHTML = html;
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = '../../compoments/navbar.css';
+                document.head.appendChild(link);
+                const script = document.createElement('script');
+                script.src = '../../compoments/navbar.js';
+                script.onload = function () {
+                    window.initNavbar();
+                };
+                document.body.appendChild(script);
+            });
+    </script>
     <div class="payment-container">
-        <div class="payment-left">
-            <div class="back-arrow" onclick="window.history.back();">&#8592;</div>
-            <div class="payment-title">CHECKOUT</div>
-            <div class="payment-steps">
-                <button class="payment-step disabled">INFORMATION</button>
-                <button class="payment-step active">PAYMENT</button>
-            </div>
-            <div class="payment-section-title">PAYMENT METHOD</div>
-            <form id="paymentForm">
-                <div class="payment-methods">
-                    <label class="payment-method selected">
-                        <input type="radio" name="paymethod" value="credit" checked>
-                        Credit/Debit Card
-                    </label>
-                    <label class="payment-method">
-                        <input type="radio" name="paymethod" value="paypal">
-                        PayPal
-                    </label>
-                    <label class="payment-method">
-                        <input type="radio" name="paymethod" value="cod">
-                        Cash on Delivery
-                    </label>
+        <div class="payment-container">
+            <div class="payment-left">
+                <div class="back-arrow" onclick="window.history.back();">&#8592;</div>
+                <div class="payment-title">CHECKOUT</div>
+                <div class="payment-steps">
+                    <button class="payment-step disabled">INFORMATION</button>
+                    <button class="payment-step active">PAYMENT</button>
                 </div>
-                <button type="submit" class="payment-btn">
-                    Pay Now
-                    <span style="font-size:1.3em;">&#8594;</span>
-                </button>
-            </form>
-        </div>
-        <div class="payment-right">
-            <div class="order-summary-header">
-                <div class="order-summary-title">YOUR ORDER</div>
-                <span>(2)</span>
+                <div class="payment-section-title">PAYMENT METHOD</div>
+                <form id="paymentForm">
+                    <div class="payment-methods">
+                        <label class="payment-method selected">
+                            <input type="radio" name="paymethod" value="credit" checked>
+                            Credit/Debit Card
+                        </label>
+                        <label class="payment-method">
+                            <input type="radio" name="paymethod" value="paypal">
+                            PayPal
+                        </label>
+                        <label class="payment-method">
+                            <input type="radio" name="paymethod" value="cod">
+                            Cash on Delivery
+                        </label>
+                    </div>
+                    <button type="submit" class="payment-btn">
+                        Pay Now
+                        <span style="font-size:1.3em;">&#8594;</span>
+                    </button>
+                </form>
             </div>
-            <div class="order-list">
-                <!-- Nội dung sẽ được điền bởi JavaScript -->
-            </div>
-            <div class="order-summary-totals">
-                <div class="order-summary-row">
-                    <span>Subtotal</span>
-                    <span>$0.00</span>
+            <div class="payment-right">
+                <div class="order-summary-header">
+                    <div class="order-summary-title">YOUR ORDER</div>
+                    <span>(2)</span>
                 </div>
-                <div class="order-summary-row">
-                    <span>Shipping</span>
-                    <span>$10.00</span>
+                <div class="order-list">
+                    <!-- Nội dung sẽ được điền bởi JavaScript -->
                 </div>
-                <div class="order-summary-row total">
-                    <span>Total</span>
-                    <span>$0.00</span>
+                <div class="order-summary-totals">
+                    <div class="order-summary-row">
+                        <span>Subtotal</span>
+                        <span>$0.00</span>
+                    </div>
+                    <div class="order-summary-row">
+                        <span>Shipping</span>
+                        <span>$10.00</span>
+                    </div>
+                    <div class="order-summary-row total">
+                        <span>Total</span>
+                        <span>$0.00</span>
+                    </div>
                 </div>
-            </div>
-            <script src="paymentPage.js"></script>
+                <script src="paymentPage.js"></script>
 </body>
 
 </html>
