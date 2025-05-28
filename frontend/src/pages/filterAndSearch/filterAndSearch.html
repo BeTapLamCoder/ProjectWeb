@@ -25,6 +25,9 @@
                     document.head.appendChild(link);
                     const script = document.createElement('script');
                     script.src = '../../compoments/navbar.js';
+                    script.onload = function () {
+                        window.initNavbar();
+                    };
                     document.body.appendChild(script);
                 });
         </script>

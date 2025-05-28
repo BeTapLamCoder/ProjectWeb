@@ -98,9 +98,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 payment: selectedPayment.value,
                 status: 'pending',
                 date: new Date().toISOString(),
-                total: parseFloat(document.querySelector('.order-summary-row.total span:last-child').textContent.replace(/[^0-9.-]+/g, ''))
+                total: parseFloat(document.querySelector('.order-summary-row.total span:last-child')
+                    .textContent.replace(/[^0-9.-]+/g, '')),
+                tracking: [
+                    { title: 'Order Placed', date: new Date().toLocaleString(), completed: true },
+                    { title: 'Order Confirmed', date: '', completed: false },
+                    { title: 'Preparing Order', date: '', completed: false },
+                    { title: 'Shipped', date: '', completed: false },
+                    { title: 'Delivered Successfully', date: '', completed: false }
+                ]
             };
-
             // Lưu đơn hàng vào localStorage
             const orders = JSON.parse(localStorage.getItem('orders')) || [];
             orders.push(order);
@@ -110,8 +117,14 @@ document.addEventListener('DOMContentLoaded', function () {
             localStorage.removeItem('cart');
             localStorage.removeItem('checkoutInfo');
 
-            // Chuyển đến trang thành công với order number
-            window.location.href = `../successPage/successPage.html?order=${order.orderNumber}`;
+            // Hiển thị loading animation
+            submitBtn.innerHTML = 'Processing... <div class="loader"></div>';
+
+            // Delay chuyển trang để người dùng thấy trạng thái xử lý
+            setTimeout(() => {
+                window.location.href = `../successPage/successPage.html?order=${order.orderNumber}`;
+            }, 1500);
+
         } catch (error) {
             console.error('Error processing order:', error);
             alert('Có lỗi xảy ra. Vui lòng thử lại!');

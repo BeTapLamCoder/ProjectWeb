@@ -12,9 +12,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (cart.length === 0) {
             cartItemsContainer.innerHTML = `
                 <div class="empty-cart">
-                    <p>Giỏ hàng trống</p>
+                    <p>Cart is empty</p>
                     <a href="../filterAndSearch/filterAndSearch.html" class="continue-shopping">
-                        Tiếp tục mua sắm
+                        Continue Shopping
                     </a>
                 </div>
             `;
