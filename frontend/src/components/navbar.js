@@ -1,4 +1,31 @@
 window.initNavbar = function () {
+    const currentPath = window.location.pathname;
+    const currentFolder = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
+
+    function countFolders(path) {
+        const srcIndex = path.indexOf('/src/');
+        if (srcIndex === -1) return 0;
+        const subPath = path.substring(srcIndex + 5);
+        const trimmed = subPath.endsWith('/') ? subPath.slice(0, -1) : subPath;
+        if (!trimmed) return 0;
+        return trimmed.split('/').length;
+    }
+
+    const upStepsCount = countFolders(currentFolder);
+
+    const upPath = '../'.repeat(upStepsCount);
+
+    const componentsPath = upPath + 'components/';
+
+    document.querySelector('.navbar-icon.search').href = componentsPath + '../pages/filterAndSearch/filterAndSearch.html';
+    document.querySelector('.navbar-icon.cart').href = componentsPath + '../pages/cartPage/cartPage.html';
+
+    // Gán click logo về trang homePage
+    document.getElementById('shopLogo').addEventListener('click', () => {
+        console.log('Logo clicked, redirecting to home page');
+        window.location.href = componentsPath + '../index.html';
+    });
+
     const userBtn = document.getElementById('userBtn');
     if (!userBtn) return;
 
@@ -96,4 +123,5 @@ window.initNavbar = function () {
             dropdown.classList.remove('show');
         }
     });
+
 };

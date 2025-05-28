@@ -13,16 +13,16 @@
 <body>
     <div id="navbar-placeholder"></div>
     <script>
-        fetch('../../compoments/navbar.html')
+        fetch('../../components/navbar.html')
             .then(res => res.text())
             .then(html => {
                 document.getElementById('navbar-placeholder').innerHTML = html;
                 const link = document.createElement('link');
                 link.rel = 'stylesheet';
-                link.href = '../../compoments/navbar.css';
+                link.href = '../../components/navbar.css';
                 document.head.appendChild(link);
                 const script = document.createElement('script');
-                script.src = '../../compoments/navbar.js';
+                script.src = '../../components/navbar.js';
                 script.onload = function () {
                     window.initNavbar();
                 };

@@ -149,7 +149,7 @@ function initProductCarousel() {
   if (shopButton) {
     shopButton.addEventListener("click", (e) => {
       e.preventDefault()
-      window.location.href = "../filterAndSearch/filterAndSearch.html"
+      window.location.href = "./pages/filterAndSearch/filterAndSearch.html"
     })
   }
 }
@@ -829,7 +829,7 @@ function initUserDropdown() {
 
 function handleOrdersClick() {
   setTimeout(() => {
-    window.location.href = "../manageOrder/manageOrder.html"
+    window.location.href = ".pages/manageOrder/manageOrder.html"
   }, 1000)
 }
 
