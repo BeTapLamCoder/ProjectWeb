@@ -1,131 +1,118 @@
-// Sample order data
-const sampleOrders = [
-    {
-        id: 'ORD-2024-001',
-        date: '2024-01-15',
-        status: 'delivered',
-        total: 299000,
-        items: [
-            {
-                name: 'Basic Heavy Weight T-Shirt',
-                category: 'Cotton T-Shirt',
-                quantity: 2,
-                price: 199000,
-                image: 'https://buggy.yodycdn.com/images/product/3e279ed4c388b3be16807915f4abfbc0.webp?width=987&height=1316'
-            },
-            {
-                name: 'Soft Wash Straight Fit Jeans',
-                category: 'Cotton Jeans',
-                quantity: 1,
-                price: 299000,
-                image: 'https://buggy.yodycdn.com/images/product/a30d2627fbb012bbe5dfffd42e3cdff3.webp?width=987&height=1316'
-            }
-        ],
-        tracking: [
-            { title: 'Đơn hàng đã được đặt', date: '15/01/2024 10:30', completed: true },
-            { title: 'Đơn hàng đã được xác nhận', date: '15/01/2024 14:20', completed: true },
-            { title: 'Đang chuẩn bị hàng', date: '16/01/2024 09:15', completed: true },
-            { title: 'Đã giao cho đơn vị vận chuyển', date: '17/01/2024 16:45', completed: true },
-            { title: 'Đã giao hàng thành công', date: '19/01/2024 11:30', completed: true }
-        ]
-    },
-    {
-        id: 'ORD-2024-002',
-        date: '2024-01-20',
-        status: 'shipped',
-        total: 199000,
-        items: [
-            {
-                name: 'Embroidered Seersucker Shirt',
-                category: 'V-Neck T-Shirt',
-                quantity: 1,
-                price: 199000,
-                image: 'https://buggy.yodycdn.com/images/product/81a8890c1dfbbe97a2bc500604f58d72.webp?width=987&height=1316'
-            }
-        ],
-        tracking: [
-            { title: 'Đơn hàng đã được đặt', date: '20/01/2024 15:20', completed: true },
-            { title: 'Đơn hàng đã được xác nhận', date: '20/01/2024 16:45', completed: true },
-            { title: 'Đang chuẩn bị hàng', date: '21/01/2024 10:30', completed: true },
-            { title: 'Đã giao cho đơn vị vận chuyển', date: '22/01/2024 14:20', completed: true },
-            { title: 'Đang giao hàng', date: '', completed: false }
-        ]
-    },
-    {
-        id: 'ORD-2024-003',
-        date: '2024-01-22',
-        status: 'processing',
-        total: 398000,
-        items: [
-            {
-                name: 'Basic Slim Fit T-Shirt',
-                category: 'Cotton T-Shirt',
-                quantity: 2,
-                price: 199000,
-                image: 'https://buggy.yodycdn.com/images/product/feab5fe94eec59320275de33c6601515.webp?width=987&height=1316'
-            }
-        ],
-        tracking: [
-            { title: 'Đơn hàng đã được đặt', date: '22/01/2024 09:15', completed: true },
-            { title: 'Đơn hàng đã được xác nhận', date: '22/01/2024 11:30', completed: true },
-            { title: 'Đang chuẩn bị hàng', date: '', completed: false },
-            { title: 'Đã giao cho đơn vị vận chuyển', date: '', completed: false },
-            { title: 'Đã giao hàng thành công', date: '', completed: false }
-        ]
-    },
-    {
-        id: 'ORD-2024-004',
-        date: '2024-01-25',
-        status: 'pending',
-        total: 199000,
-        items: [
-            {
-                name: 'Blurred Print T-Shirt',
-                category: 'Henley T-Shirt',
-                quantity: 1,
-                price: 199000,
-                image: 'https://buggy.yodycdn.com/images/product/094fea61615890b116739f045687fd89.webp?width=987&height=1316'
-            }
-        ],
-        tracking: [
-            { title: 'Đơn hàng đã được đặt', date: '25/01/2024 16:45', completed: true },
-            { title: 'Đơn hàng đã được xác nhận', date: '', completed: false },
-            { title: 'Đang chuẩn bị hàng', date: '', completed: false },
-            { title: 'Đã giao cho đơn vị vận chuyển', date: '', completed: false },
-            { title: 'Đã giao hàng thành công', date: '', completed: false }
-        ]
+let ordersData = [];
+let filteredOrders = [];
+
+// Utility functions
+function formatPrice(priceStr) {
+    if (typeof priceStr === 'number') {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD'
+        }).format(priceStr);
     }
-];
 
-let filteredOrders = [...sampleOrders];
+    const numericValue = parseFloat(priceStr.replace(/[^0-9.-]+/g, ''));
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+    }).format(numericValue);
+}
 
-// Initialize page
-document.addEventListener('DOMContentLoaded', function() {
-    renderOrders();
+function formatDate(dateString) {
+    return new Date(dateString).toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+function getStatusText(status) {
+    const statusMap = {
+        'pending': 'Pending',
+        'confirmed': 'Confirmed',
+        'processing': 'Processing',
+        'shipped': 'Shipped',
+        'delivered': 'Delivered',
+        'cancelled': 'Cancelled'
+    };
+    return statusMap[status?.toLowerCase()] || 'Unknown';
+}
+
+// Load orders when page loads
+document.addEventListener('DOMContentLoaded', function () {
+    // Get orders from localStorage
+    const savedOrders = JSON.parse(localStorage.getItem('orders')) || [];
+    console.log('Loading orders:', savedOrders);
+
+    // Convert savedOrders to our format
+    ordersData = savedOrders.map(order => ({
+        id: order.orderNumber,
+        date: order.date,
+        status: order.status || 'pending',
+        total: order.total,
+        items: order.items,
+        shipping: order.shipping,
+        payment: order.payment,
+        tracking: order.tracking || [
+            { title: 'Order Placed', date: new Date(order.date).toLocaleString('en-US'), completed: true },
+            { title: 'Order Confirmed', date: '', completed: false },
+            { title: 'Preparing Order', date: '', completed: false },
+            { title: 'Shipped', date: '', completed: false },
+            { title: 'Delivered Successfully', date: '', completed: false }
+        ]
+    }));
+
+    // Initialize filtered orders
+    filteredOrders = [...ordersData];
+
+    // Initialize event listeners
     initializeEventListeners();
+
+    // Render orders
+    renderOrders();
 });
 
 function initializeEventListeners() {
     // Search functionality
-    const searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('input', debounce(handleSearch, 300));
-
-    // Date filter
-    const dateFilter = document.getElementById('dateFilter');
-    dateFilter.addEventListener('change', handleDateFilter);
-
-    // Status filters
-    const statusFilters = document.querySelectorAll('.status-filter');
-    statusFilters.forEach(filter => {
-        filter.addEventListener('click', handleStatusFilter);
+    document.getElementById('searchInput')?.addEventListener('input', function (e) {
+        const searchTerm = e.target.value.toLowerCase();
+        filteredOrders = ordersData.filter(order =>
+            order.id.toLowerCase().includes(searchTerm) ||
+            order.items.some(item => item.name.toLowerCase().includes(searchTerm))
+        );
+        renderOrders();
     });
 
-    // Modal close on outside click
-    const modal = document.getElementById('orderModal');
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closeModal();
+    // Date filter
+    document.getElementById('dateFilter')?.addEventListener('change', function (e) {
+        const days = parseInt(e.target.value);
+        if (!days) {
+            filteredOrders = [...ordersData];
+        } else {
+            const cutoffDate = new Date();
+            cutoffDate.setDate(cutoffDate.getDate() - days);
+            filteredOrders = ordersData.filter(order =>
+                new Date(order.date) >= cutoffDate
+            );
         }
+        renderOrders();
+    });
+
+    // Status filter
+    document.querySelectorAll('.status-filter')?.forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            const status = e.target.dataset.status;
+            document.querySelectorAll('.status-filter').forEach(b =>
+                b.classList.remove('active')
+            );
+            e.target.classList.add('active');
+
+            filteredOrders = status
+                ? ordersData.filter(order => order.status === status)
+                : [...ordersData];
+            renderOrders();
+        });
     });
 }
 
@@ -133,9 +120,11 @@ function renderOrders() {
     const ordersGrid = document.getElementById('ordersGrid');
     const emptyState = document.getElementById('emptyState');
 
+    if (!ordersGrid || !emptyState) return;
+
     if (filteredOrders.length === 0) {
         ordersGrid.style.display = 'none';
-        emptyState.style.display = 'block';
+        emptyState.style.display = 'flex';
         return;
     }
 
@@ -146,10 +135,10 @@ function renderOrders() {
         <div class="order-card" data-order-id="${order.id}">
             <div class="order-header">
                 <div class="order-info">
-                    <div class="order-number">${order.id}</div>
+                    <div class="order-number">#${order.id}</div>
                     <div class="order-date">${formatDate(order.date)}</div>
                 </div>
-                <div class="order-status status-${order.status}">
+                <div class="order-status status-${order.status.toLowerCase()}">
                     ${getStatusText(order.status)}
                 </div>
             </div>
@@ -160,8 +149,8 @@ function renderOrders() {
                         <img src="${item.image}" alt="${item.name}" class="item-image">
                         <div class="item-details">
                             <div class="item-name">${item.name}</div>
-                            <div class="item-category">${item.category}</div>
-                            <div class="item-quantity">Số lượng: ${item.quantity}</div>
+                            <div class="item-desc">Color: ${item.color || 'N/A'} / Size: ${item.size || 'N/A'}</div>
+                            <div class="item-quantity">Quantity: ${item.quantity}</div>
                         </div>
                         <div class="item-price">${formatPrice(item.price)}</div>
                     </div>
@@ -169,32 +158,14 @@ function renderOrders() {
             </div>
             
             <div class="order-footer">
-                <div class="order-total">Tổng cộng: ${formatPrice(order.total)}</div>
+                <div class="order-total">Total: ${formatPrice(order.total)}</div>
                 <div class="order-actions">
                     <button class="btn btn-primary" onclick="viewOrderDetail('${order.id}')">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                        Chi tiết
+                        View Details
                     </button>
                     ${order.status === 'pending' ? `
                         <button class="btn btn-danger" onclick="cancelOrder('${order.id}')">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="15" y1="9" x2="9" y2="15"></line>
-                                <line x1="9" y1="9" x2="15" y2="15"></line>
-                            </svg>
-                            Hủy đơn
-                        </button>
-                    ` : ''}
-                    ${order.status === 'delivered' ? `
-                        <button class="btn btn-secondary" onclick="reorder('${order.id}')">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M1 4h22l-1 7H2z"></path>
-                                <path d="M7 10v11a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V10"></path>
-                            </svg>
-                            Mua lại
+                            Cancel Order
                         </button>
                     ` : ''}
                 </div>
@@ -203,92 +174,39 @@ function renderOrders() {
     `).join('');
 }
 
-function handleSearch(e) {
-    const searchTerm = e.target.value.toLowerCase();
-    filteredOrders = sampleOrders.filter(order => 
-        order.id.toLowerCase().includes(searchTerm) ||
-        order.items.some(item => item.name.toLowerCase().includes(searchTerm))
-    );
-    applyCurrentFilters();
-}
-
-function handleDateFilter(e) {
-    const days = parseInt(e.target.value);
-    if (!days) {
-        filteredOrders = [...sampleOrders];
-    } else {
-        const cutoffDate = new Date();
-        cutoffDate.setDate(cutoffDate.getDate() - days);
-        
-        filteredOrders = sampleOrders.filter(order => 
-            new Date(order.date) >= cutoffDate
-        );
-    }
-    applyCurrentFilters();
-}
-
-function handleStatusFilter(e) {
-    // Update active status
-    document.querySelectorAll('.status-filter').forEach(btn => btn.classList.remove('active'));
-    e.target.classList.add('active');
-    
-    const status = e.target.dataset.status;
-    if (!status) {
-        filteredOrders = [...sampleOrders];
-    } else {
-        filteredOrders = sampleOrders.filter(order => order.status === status);
-    }
-    applyCurrentFilters();
-}
-
-function applyCurrentFilters() {
-    // Apply search filter if there's a search term
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    if (searchTerm) {
-        filteredOrders = filteredOrders.filter(order => 
-            order.id.toLowerCase().includes(searchTerm) ||
-            order.items.some(item => item.name.toLowerCase().includes(searchTerm))
-        );
-    }
-
-    // Apply date filter if selected
-    const dateFilter = document.getElementById('dateFilter').value;
-    if (dateFilter) {
-        const days = parseInt(dateFilter);
-        const cutoffDate = new Date();
-        cutoffDate.setDate(cutoffDate.getDate() - days);
-        
-        filteredOrders = filteredOrders.filter(order => 
-            new Date(order.date) >= cutoffDate
-        );
-    }
-
-    renderOrders();
-}
-
 function viewOrderDetail(orderId) {
-    const order = sampleOrders.find(o => o.id === orderId);
+    const order = ordersData.find(o => o.id === orderId);
     if (!order) return;
 
     const modalBody = document.getElementById('modalBody');
     modalBody.innerHTML = `
         <div class="order-info">
-            <h3>Thông tin đơn hàng</h3>
-            <p><strong>Mã đơn hàng:</strong> ${order.id}</p>
-            <p><strong>Ngày đặt:</strong> ${formatDate(order.date)}</p>
-            <p><strong>Trạng thái:</strong> <span class="order-status status-${order.status}">${getStatusText(order.status)}</span></p>
-            <p><strong>Tổng tiền:</strong> ${formatPrice(order.total)}</p>
+            <h3>Order Information</h3>
+            <p><strong>Order ID:</strong> #${order.id}</p>
+            <p><strong>Order Date:</strong> ${formatDate(order.date)}</p>
+            <p><strong>Status:</strong> <span class="status-${order.status}">${getStatusText(order.status)}</span></p>
+            <p><strong>Total Amount:</strong> ${formatPrice(order.total)}</p>
         </div>
 
-        <div class="order-items" style="margin: 24px 0;">
-            <h3>Sản phẩm đã đặt</h3>
+        <div class="shipping-info">
+            <h3>Shipping Information</h3>
+            <p><strong>Name:</strong> ${order.shipping.fullName}</p>
+            <p><strong>Email:</strong> ${order.shipping.email}</p>
+            <p><strong>Phone:</strong> ${order.shipping.phone}</p>
+            <p><strong>Address:</strong> ${order.shipping.address}</p>
+            <p><strong>City:</strong> ${order.shipping.city}</p>
+            <p><strong>Country:</strong> ${order.shipping.country}</p>
+        </div>
+
+        <div class="order-items">
+            <h3>Order Items</h3>
             ${order.items.map(item => `
                 <div class="order-item">
                     <img src="${item.image}" alt="${item.name}" class="item-image">
                     <div class="item-details">
                         <div class="item-name">${item.name}</div>
-                        <div class="item-category">${item.category}</div>
-                        <div class="item-quantity">Số lượng: ${item.quantity}</div>
+                        <div class="item-desc">Color: ${item.color || 'N/A'} / Size: ${item.size || 'N/A'}</div>
+                        <div class="item-quantity">Quantity: ${item.quantity}</div>
                     </div>
                     <div class="item-price">${formatPrice(item.price)}</div>
                 </div>
@@ -296,7 +214,7 @@ function viewOrderDetail(orderId) {
         </div>
 
         <div class="tracking-timeline">
-            <h3>Theo dõi đơn hàng</h3>
+            <h3>Order Tracking</h3>
             ${order.tracking.map(step => `
                 <div class="timeline-item">
                     <div class="timeline-dot ${step.completed ? 'active' : ''}">
@@ -319,99 +237,13 @@ function closeModal() {
 }
 
 function cancelOrder(orderId) {
-    if (confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')) {
-        // Update order status
-        const orderIndex = sampleOrders.findIndex(o => o.id === orderId);
+    if (confirm('Are you sure you want to cancel this order?')) {
+        const orderIndex = ordersData.findIndex(o => o.id === orderId);
         if (orderIndex !== -1) {
-            sampleOrders[orderIndex].status = 'cancelled';
-            filteredOrders = [...sampleOrders];
-            applyCurrentFilters();
-            showNotification('Đơn hàng đã được hủy thành công', 'success');
+            ordersData[orderIndex].status = 'cancelled';
+            localStorage.setItem('orders', JSON.stringify(ordersData));
+            filteredOrders = [...ordersData];
+            renderOrders();
         }
     }
-}
-
-function reorder(orderId) {
-    showNotification('Đã thêm sản phẩm vào giỏ hàng', 'success');
-}
-
-function goBack() {
-    window.history.back();
-}
-
-// Utility functions
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('vi-VN', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-}
-
-function formatPrice(price) {
-    return new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND'
-    }).format(price);
-}
-
-function getStatusText(status) {
-    const statusMap = {
-        'pending': 'Chờ xử lý',
-        'processing': 'Đang xử lý',
-        'shipped': 'Đã gửi',
-        'delivered': 'Đã giao',
-        'cancelled': 'Đã hủy'
-    };
-    return statusMap[status] || status;
-}
-
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-function showNotification(message, type = 'info') {
-    // Remove existing notifications
-    const existingNotifications = document.querySelectorAll('.notification');
-    existingNotifications.forEach(notif => notif.remove());
-
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
-
-    document.body.appendChild(notification);
-
-    // Show notification
-    setTimeout(() => {
-        notification.classList.add('show');
-    }, 100);
-
-    // Hide notification after 3 seconds
-    setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.remove();
-            }
-        }, 300);
-    }, 3000);
-
-    // Allow manual close
-    notification.addEventListener('click', () => {
-        notification.classList.remove('show');
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.remove();
-            }
-        }, 300);
-    });
 }
