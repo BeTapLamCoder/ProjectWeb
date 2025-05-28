@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Management - Bootstrap</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link rel="stylesheet" href="../admin.css">
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h4 class="mb-0">Dashboard</h4>
+          <button class="btn btn-sm btn-light d-md-none" id="sidebar-toggle">
+            <span class="material-symbols-outlined">menu</span>
+          </button>
+        </div>
+
+        <ul class="nav flex-column">
+          <li class="nav-item mb-2">
+            <a class="nav-link" href="../adminProfile/admin-profile.html">
+              <span class="material-symbols-outlined me-2">person</span>
+              Admin Profile
+            </a>
+          </li>
+          <li class="nav-item mb-2">
+            <a class="nav-link active" href="../productPage/product-page.html">
+              <span class="material-symbols-outlined me-2">inventory_2</span>
+              Products
+            </a>
+          </li>
+          <li class="nav-item mb-2">
+            <a class="nav-link" href="../settingsPage/settings.html">
+              <span class="material-symbols-outlined me-2">settings</span>
+              Settings
+            </a>
+          </li>
+          <li class="nav-item mt-4">
+            <a class="nav-link" href="/frontend/src/pages/homePage/homePage.html">
+              <span class="material-symbols-outlined me-2">logout</span>
+              Logout
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <div class="input-group w-50">
+            <span class="input-group-text bg-white border-end-0">
+              <span class="material-symbols-outlined">search</span>
+            </span>
+            <input type="text" class="form-control border-start-0" placeholder="Search products...">
+          </div>
+          <div class="d-flex align-items-center">
+            <img src="placeholder.svg?height=40&width=40" alt="Admin" class="admin-avatar me-2">
+            <div class="me-2">
+              <p class="mb-0 fw-bold">Admin User</p>
+              <small class="text-muted">Super Admin</small>
+            </div>
+            <span class="material-symbols-outlined">arrow_drop_down</span>
+          </div>
+        </div>
+
+        <!-- Page Title & Actions -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2>Products Management</h2>
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary">
+              <span class="material-symbols-outlined">file_upload</span> Import
+            </button>
+            <button class="btn btn-outline-secondary">
+              <span class="material-symbols-outlined">file_download</span> Export
+            </button>
+            <a href="../addProduct/add-product.html" class="btn btn-dark">
+              <span class="material-symbols-outlined">add</span> Add Product
+            </a>
+          </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="card p-3 mb-4">
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label for="category-filter" class="form-label">Category</label>
+              <select id="category-filter" class="form-select">
+                <option value="">All Categories</option>
+                <option value="shirts">Shirts</option>
+                <option value="pants">Pants</option>
+                <option value="shoes">Shoes</option>
+                <option value="accessories">Accessories</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="status-filter" class="form-label">Status</label>
+              <select id="status-filter" class="form-select">
+                <option value="">All Status</option>
+                <option value="in-stock">In Stock</option>
+                <option value="out-of-stock">Out of Stock</option>
+                <option value="low-stock">Low Stock</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="price-filter" class="form-label">Price Range</label>
+              <select id="price-filter" class="form-select">
+                <option value="">All Prices</option>
+                <option value="0-50">$0 - $50</option>
+                <option value="50-100">$50 - $100</option>
+                <option value="100-200">$100 - $200</option>
+                <option value="200+">$200+</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="sort-by" class="form-label">Sort By</label>
+              <select id="sort-by" class="form-select">
+                <option value="name-asc">Name (A-Z)</option>
+                <option value="name-desc">Name (Z-A)</option>
+                <option value="price-asc">Price (Low to High)</option>
+                <option value="price-desc">Price (High to Low)</option>
+                <option value="stock-asc">Stock (Low to High)</option>
+                <option value="stock-desc">Stock (High to Low)</option>
+              </select>
+            </div>
+          </div>
+          <div class="d-flex gap-2 mt-3">
+            <button class="btn btn-outline-secondary" id="apply-filters">
+              <span class="material-symbols-outlined">filter_alt</span> Apply Filters
+            </button>
+            <button class="btn btn-link" id="clear-filters">
+              <span class="material-symbols-outlined">clear</span> Clear
+            </button>
+          </div>
+        </div>
+
+        <!-- Products Table -->
+        <div class="table-responsive mb-4">
+          <table class="table table-bordered table-hover">
+            <thead class="table-light">
+              <tr>
+                <th><input type="checkbox" id="select-all"></th>
+                <th>#</th>
+                <th>Product Name</th>
+                <th>SKU</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="product-table-body">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <nav>
+          <ul class="pagination justify-content-center">
+            <li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><span class="page-link">...</span></li>
+            <li class="page-item"><a class="page-link" href="#">10</a></li>
+            <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+          </ul>
+        </nav>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="product-page.js"></script>
+</body>
+</html>

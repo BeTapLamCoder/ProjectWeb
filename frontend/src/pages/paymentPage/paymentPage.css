@@ -1,0 +1,270 @@
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    background: #fafafa;
+    margin: 0;
+    color: #222;
+}
+
+.payment-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 24px;
+    gap: 48px;
+}
+
+.payment-left {
+    flex: 1.2;
+    min-width: 320px;
+}
+
+.payment-right {
+    flex: 1;
+    margin-top: 115px;
+    margin-left: 30px;
+    min-width: 320px;
+    max-width: 400px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 32px 28px;
+}
+
+.back-arrow {
+    font-size: 26px;
+    margin-bottom: 24px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.payment-title {
+    font-size: 2.3rem;
+    font-weight: 800;
+    margin-bottom: 18px;
+    letter-spacing: 1px;
+}
+
+.payment-steps {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 32px;
+}
+
+.payment-step {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #222;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: border 0.2s;
+}
+
+.payment-step.active {
+    border-bottom: 2.5px solid #222;
+}
+
+.payment-step.disabled {
+    color: #bbb;
+    cursor: default;
+}
+
+.payment-section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 28px 0 10px 0;
+    letter-spacing: 0.5px;
+}
+
+.payment-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 32px;
+}
+
+.payment-method {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border: 1.5px solid #ddd;
+    border-radius: 7px;
+    background: #fff;
+    cursor: pointer;
+    transition: border 0.2s, box-shadow 0.2s;
+    font-size: 1.05rem;
+}
+
+.payment-method.selected {
+    border: 2px solid #222;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.payment-method input[type="radio"] {
+    accent-color: #222;
+    width: 18px;
+    height: 18px;
+}
+
+.payment-btn {
+    width: 100%;
+    padding: 12px 0;
+    background: #222;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: background 0.2s;
+}
+
+.payment-btn:hover {
+    background: #111;
+}
+
+/* Right: Order summary */
+.order-summary-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+    letter-spacing: 0.5px;
+}
+
+.order-summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.order-summary-header span {
+    color: #888;
+    font-size: 0.98rem;
+}
+
+.order-list {
+    margin-bottom: 18px;
+}
+
+.order-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 18px;
+}
+
+.order-item-img {
+    width: 70px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: #f5f5f5;
+}
+
+.order-item-info {
+    flex: 1;
+}
+
+.order-item-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.order-item-desc {
+    font-size: 0.98rem;
+    color: #444;
+    margin-bottom: 2px;
+}
+
+.order-item-qty {
+    font-size: 0.97rem;
+    color: #888;
+    margin-bottom: 2px;
+}
+
+.order-item-price {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-left: 8px;
+    white-space: nowrap;
+}
+
+.order-summary-totals {
+    border-top: 1px solid #eee;
+    padding-top: 16px;
+}
+
+.order-summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.order-summary-row.total {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .payment-container {
+        flex-direction: column;
+        gap: 32px;
+        padding: 0 8vw;
+    }
+
+    .payment-right {
+        max-width: 100%;
+        margin-top: 24px;
+    }
+}
+
+@media (max-width: 600px) {
+    .payment-container {
+        flex-direction: column;
+        gap: 24px;
+        padding: 0 2vw;
+    }
+
+    .payment-left,
+    .payment-right {
+        min-width: unset;
+        max-width: 100vw;
+        padding: 0;
+    }
+
+    .payment-right {
+        border: none;
+        padding: 18px 0 0 0;
+    }
+
+    .order-summary-title {
+        margin-bottom: 10px;
+    }
+
+    .order-item-img {
+        width: 60px;
+        height: 75px;
+    }
+
+    .order-item-title {
+        font-size: 0.97rem;
+    }
+
+    .order-summary-row {
+        font-size: 0.97rem;
+    }
+}

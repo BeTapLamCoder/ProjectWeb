@@ -1,47 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-commerce Product Page</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 </head>
-<body>
-    <header class="navbar">
-        <div class="navbar-left">
-            <button class="menu-btn">
-                <span class="material-symbols-outlined">menu</span>
-            </button>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="#" class="nav-link">Home</a></li>
-                    <li><a href="#" class="nav-link">Collections</a></li>
-                    <li><a href="#" class="nav-link">Deals</a></li>
-                </ul>
-            </nav>
-        </div>
-        
-        <div class="logo">
-            <div class="logo-icon">▶</div>
-        </div>
-        
-        <div class="navbar-right">
-            <button class="icon-btn wishlist-btn">
-                <span class="material-symbols-outlined">favorite</span>
-            </button>
-            <div class="cart-container">
-                <button class="cart-btn">
-                    Cart
-                    <span class="material-symbols-outlined">shopping_bag</span>
-                </button>
-            </div>
-            <button class="icon-btn account-btn">
-                <span class="material-symbols-outlined">person</span>
-            </button>
-        </div>
-    </header>
 
+<body>
+    <div id="navbar-placeholder"></div>
+
+    <script>
+        fetch('../../compoments/navbar.html')
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('navbar-placeholder').innerHTML = html;
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = '../../compoments/navbar.css';
+                document.head.appendChild(link);
+                const script = document.createElement('script');
+                script.src = '../../compoments/navbar.js';
+                script.onload = function () {
+                    window.initNavbar();
+                };
+                document.body.appendChild(script);
+            });
+    </script>
     <main class="product-container">
         <div class="product-gallery">
             <div class="main-image">
@@ -67,32 +55,32 @@
         </div>
 
         <div class="product-details">
-            <!-- Thêm nút yêu thích ở đây -->
-            <button id="favorite-btn" class="favorite-btn" aria-label="Add to favorites">
-                <span class="material-symbols-outlined">favorite</span>
-            </button>
-            
+            <!-- Cấu trúc HTML cho phần chi tiết sản phẩm -->
+
             <h1 id="product-title" class="product-title">ABSTRACT PRINT SHIRT</h1>
             <p id="product-price" class="product-price">$99</p>
             <p id="product-tax" class="product-tax">MRP incl. of all taxes</p>
-            
+
             <div id="product-description" class="product-description">
                 <p>Relaxed-fit shirt. Camp collar and short sleeves. Button-up front.</p>
             </div>
-            
+
+
             <div class="product-options">
                 <div class="color-options">
                     <h3>Color</h3>
                     <div class="color-selector">
                         <button class="color-option" style="background-color: #d3d3d3;" data-color="gray"></button>
                         <button class="color-option" style="background-color: #888888;" data-color="darkgray"></button>
-                        <button class="color-option active" style="background-color: #222222;" data-color="black"></button>
+                        <button class="color-option active" style="background-color: #222222;"
+                            data-color="black"></button>
                         <button class="color-option" style="background-color: #8dd3c7;" data-color="mint"></button>
-                        <button class="color-option" style="background-color: #ffffff; border: 1px solid #e0e0e0;" data-color="white"></button>
+                        <button class="color-option" style="background-color: #ffffff; border: 1px solid #e0e0e0;"
+                            data-color="white"></button>
                         <button class="color-option" style="background-color: #c6d9f0;" data-color="lightblue"></button>
                     </div>
                 </div>
-                
+
                 <div class="size-options">
                     <h3>Size</h3>
                     <div class="size-selector">
@@ -103,17 +91,16 @@
                         <button class="size-option" data-size="XL">XL</button>
                         <button class="size-option" data-size="2X">2X</button>
                     </div>
-                    <div class="size-guide">
-                        <a href="#" id="find-size">FIND YOUR SIZE</a> | <a href="#" id="measurement-guide">MEASUREMENT GUIDE</a>
-                    </div>
                 </div>
             </div>
-            
+
             <button id="add-to-cart" class="add-to-cart-btn">ADD</button>
+        </div>
         </div>
     </main>
 
-    <script src="addToCart.js"></script>
-       
+    <script src="./addToCart.js"></script>
+
 </body>
+
 </html>
