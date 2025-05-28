@@ -145,55 +145,13 @@ function initProductCarousel() {
       resetAutoPlay()
     }
   }
-}
 
-// Search Functionality
-function initSearch() {
-  const searchInput = document.querySelector(".search-input")
-  const searchIcon = document.querySelector(".search-icon")
-
-  if (!searchInput) return
-
-  let searchTimeout
-
-  searchInput.addEventListener("input", function () {
-    clearTimeout(searchTimeout)
-    const query = this.value.trim()
-
-    if (query.length > 2) {
-      searchTimeout = setTimeout(() => {
-        performSearch(query)
-      }, 300)
-    }
-  })
-
-  searchInput.addEventListener("keypress", function (e) {
-    if (e.key === "Enter") {
+  const shopButton = document.querySelector(".shop-button")
+  if (shopButton) {
+    shopButton.addEventListener("click", (e) => {
       e.preventDefault()
-      const query = this.value.trim()
-      if (query) {
-        performSearch(query)
-      }
-    }
-  })
-
-  if (searchIcon) {
-    searchIcon.addEventListener("click", () => {
-      const query = searchInput.value.trim()
-      if (query) {
-        performSearch(query)
-      }
+      window.location.href = "../filterAndSearch/filterAndSearch.html"
     })
-  }
-
-  function performSearch(query) {
-    console.log("Searching for:", query)
-    showNotification(`Searching for "${query}"...`, "info")
-
-    // Simulate search API call
-    setTimeout(() => {
-      showNotification(`Found results for "${query}"`, "success")
-    }, 1000)
   }
 }
 
@@ -244,23 +202,46 @@ function initCollectionFilters() {
 
   filterTabs.forEach((tab) => {
     tab.addEventListener("click", function () {
+      // Remove active class from all tabs
       filterTabs.forEach((t) => t.classList.remove("active"))
+      // Add active class to clicked tab
       this.classList.add("active")
 
+      // Get filter value
       const filter = this.textContent.toLowerCase().replace("(", "").replace(")", "")
 
-      collectionCards.forEach((card, index) => {
+      console.log("Filter selected:", filter) // Debug log
+
+      // Get ALL collection cards (including newly added ones)
+      const allCollectionCards = document.querySelectorAll(".collection-card")
+
+      // Filter products with animation
+      allCollectionCards.forEach((card, index) => {
+        const cardCategory = card.dataset.category
+
         setTimeout(() => {
-          if (filter === "all" || card.dataset.category === filter) {
+          if (filter === "all" || cardCategory === filter) {
+            // Show card
             card.style.display = "block"
-            card.style.animation = "fadeInUp 0.5s ease forwards"
+            card.style.opacity = "0"
+            card.style.transform = "translateY(20px)"
+
+            setTimeout(() => {
+              card.style.transition = "opacity 0.5s ease, transform 0.5s ease"
+              card.style.opacity = "1"
+              card.style.transform = "translateY(0)"
+            }, 50)
           } else {
-            card.style.animation = "fadeOut 0.3s ease forwards"
+            // Hide card
+            card.style.transition = "opacity 0.3s ease, transform 0.3s ease"
+            card.style.opacity = "0"
+            card.style.transform = "translateY(-20px)"
+
             setTimeout(() => {
               card.style.display = "none"
             }, 300)
           }
-        }, index * 100)
+        }, index * 50) // Giảm delay để nhanh hơn
       })
     })
   })
@@ -325,35 +306,189 @@ function initLoadMore() {
   }
 }
 
+const productDatabase = [
+  // Men Products
+  {
+    name: "Premium Cotton Hoodie",
+    category: "men",
+    price: "$299",
+    categoryDisplay: "Cotton Hoodie",
+    image: "https://buggy.yodycdn.com/images/product/3e279ed4c388b3be16807915f4abfbc0.webp?width=987&height=1316",
+  },
+  {
+    name: "Classic Denim Jacket",
+    category: "men",
+    price: "$399",
+    categoryDisplay: "Denim Jacket",
+    image: "https://buggy.yodycdn.com/images/product/a30d2627fbb012bbe5dfffd42e3cdff3.webp?width=987&height=1316",
+  },
+  {
+    name: "Casual Polo Shirt",
+    category: "men",
+    price: "$159",
+    categoryDisplay: "Polo Shirt",
+    image: "https://buggy.yodycdn.com/images/product/d712f0ca773a81df6c995e56c0da674e.webp?width=987&height=1316",
+  },
+  {
+    name: "Slim Fit Chinos",
+    category: "men",
+    price: "$229",
+    categoryDisplay: "Chinos Pants",
+    image: "https://buggy.yodycdn.com/images/product/3e279ed4c388b3be16807915f4abfbc0.webp?width=987&height=1316",
+  },
+
+  // Women Products
+  {
+    name: "Elegant Silk Blouse",
+    category: "women",
+    price: "$349",
+    categoryDisplay: "Silk Blouse",
+    image: "https://buggy.yodycdn.com/images/product/81a8890c1dfbbe97a2bc500604f58d72.webp?width=987&height=1316",
+  },
+  {
+    name: "Floral Summer Dress",
+    category: "women",
+    price: "$279",
+    categoryDisplay: "Summer Dress",
+    image: "https://buggy.yodycdn.com/images/product/feab5fe94eec59320275de33c6601515.webp?width=987&height=1316",
+  },
+  {
+    name: "Casual Knit Sweater",
+    category: "women",
+    price: "$199",
+    categoryDisplay: "Knit Sweater",
+    image: "https://buggy.yodycdn.com/images/product/094fea61615890b116739f045687fd89.webp?width=987&height=1316",
+  },
+  {
+    name: "High-Waist Jeans",
+    category: "women",
+    price: "$259",
+    categoryDisplay: "High-Waist Jeans",
+    image: "https://buggy.yodycdn.com/images/product/81a8890c1dfbbe97a2bc500604f58d72.webp?width=987&height=1316",
+  },
+
+  // Kids Products
+  {
+    name: "Colorful Graphic Tee",
+    category: "kid",
+    price: "$89",
+    categoryDisplay: "Kids T-Shirt",
+    image: "https://buggy.yodycdn.com/images/product/ec283b1650403c651eb83af735de39e7.webp?width=987&height=1316",
+  },
+  {
+    name: "Mini Denim Jacket",
+    category: "kid",
+    price: "$129",
+    categoryDisplay: "Kids Jacket",
+    image: "https://buggy.yodycdn.com/images/product/3e279ed4c388b3be16807915f4abfbc0.webp?width=987&height=1316",
+  },
+  {
+    name: "Comfortable Joggers",
+    category: "kid",
+    price: "$99",
+    categoryDisplay: "Kids Pants",
+    image: "https://buggy.yodycdn.com/images/product/a30d2627fbb012bbe5dfffd42e3cdff3.webp?width=987&height=1316",
+  },
+  {
+    name: "Cute Animal Hoodie",
+    category: "kid",
+    price: "$119",
+    categoryDisplay: "Kids Hoodie",
+    image: "https://buggy.yodycdn.com/images/product/ec283b1650403c651eb83af735de39e7.webp?width=987&height=1316",
+  },
+  {
+    name: "Rainbow Striped Dress",
+    category: "kid",
+    price: "$109",
+    categoryDisplay: "Kids Dress",
+    image: "https://buggy.yodycdn.com/images/product/3e279ed4c388b3be16807915f4abfbc0.webp?width=987&height=1316",
+  },
+  {
+    name: "Sports Shorts Set",
+    category: "kid",
+    price: "$79",
+    categoryDisplay: "Kids Sports Set",
+    image: "https://buggy.yodycdn.com/images/product/a30d2627fbb012bbe5dfffd42e3cdff3.webp?width=987&height=1316",
+  },
+]
+
+let loadedProductIndex = 0
+
 function loadMoreProducts() {
   const collectionsGrid = document.querySelector(".collections-grid")
-  const newProducts = [
-    { name: "Premium Cotton Hoodie", category: "Cotton Hoodie", price: "$299" },
-    { name: "Vintage Denim Jacket", category: "Denim Jacket", price: "$399" },
-    { name: "Classic White Sneakers", category: "Footwear", price: "$199" },
-  ]
+  const productsPerLoad = 3
 
-  newProducts.forEach((product, index) => {
+  // Lấy 3 sản phẩm tiếp theo từ database
+  const nextProducts = productDatabase.slice(loadedProductIndex, loadedProductIndex + productsPerLoad)
+
+  if (nextProducts.length === 0) {
+    // Nếu hết sản phẩm, reset về đầu
+    loadedProductIndex = 0
+    const resetProducts = productDatabase.slice(0, productsPerLoad)
+    addProductsToGrid(resetProducts, collectionsGrid)
+    loadedProductIndex = productsPerLoad
+    showNotification("Loaded more products (cycling through collection)", "info")
+  } else {
+    addProductsToGrid(nextProducts, collectionsGrid)
+    loadedProductIndex += productsPerLoad
+    showNotification(`Loaded ${nextProducts.length} more products`, "success")
+  }
+}
+
+// Thêm function này để thêm sản phẩm vào grid
+function addProductsToGrid(products, container) {
+  // Lấy tab hiện tại đang active
+  const activeTab = document.querySelector(".filter-tab.active")
+  const currentFilter = activeTab ? activeTab.textContent.toLowerCase().replace("(", "").replace(")", "") : "all"
+
+  products.forEach((product, index) => {
     setTimeout(() => {
       const productCard = createProductCard(product)
-      collectionsGrid.appendChild(productCard)
-      productCard.style.animation = "fadeInUp 0.5s ease forwards"
+      container.appendChild(productCard)
+
+      // Kiểm tra xem sản phẩm có phù hợp với filter hiện tại không
+      if (currentFilter === "all" || product.category === currentFilter) {
+        // Hiển thị sản phẩm với animation
+        productCard.style.opacity = "0"
+        productCard.style.transform = "translateY(20px)"
+        productCard.style.animation = "fadeInUp 0.5s ease forwards"
+
+        setTimeout(() => {
+          productCard.style.opacity = "1"
+          productCard.style.transform = "translateY(0)"
+        }, 100)
+      } else {
+        // Ẩn sản phẩm nếu không phù hợp với filter hiện tại
+        productCard.style.display = "none"
+      }
     }, index * 200)
   })
+}
 
-  showNotification("Loaded 3 more products", "success")
+function applyCurrentFilter() {
+  const activeTab = document.querySelector(".filter-tab.active")
+  if (activeTab) {
+    activeTab.click() // Trigger filter lại
+  }
 }
 
 function createProductCard(product) {
   const card = document.createElement("div")
   card.className = "collection-card"
+  card.dataset.category = product.category
+
+  // Thêm badge ngẫu nhiên cho một số sản phẩm
+  const hasBadge = Math.random() > 0.7
+  const badgeNumber = Math.floor(Math.random() * 5) + 2
+  const badgeHtml = hasBadge ? `<span class="badge">+${badgeNumber}</span>` : ""
+
   card.innerHTML = `
         <div class="collection-image-container">
-            <img src="/placeholder.svg?height=400&width=300" alt="${product.name}" class="collection-image">
+            <img src="${product.image}" alt="${product.name}" class="collection-image">
             <button class="add-to-cart">+</button>
         </div>
         <div class="collection-info">
-            <span class="collection-category">${product.category}</span>
+            <span class="collection-category">${product.categoryDisplay} ${badgeHtml}</span>
             <h3 class="collection-name">${product.name}</h3>
             <span class="collection-price">${product.price}</span>
         </div>
@@ -374,7 +509,16 @@ function createProductCard(product) {
       this.innerHTML = "+"
     }, 1000)
 
+    updateCartCount()
     showNotification(`Added "${product.name}" to cart`, "success")
+
+    // Store in localStorage
+    addToCartStorage({
+      name: product.name,
+      price: product.price,
+      category: product.category,
+      timestamp: Date.now(),
+    })
   })
 
   return card
@@ -809,22 +953,9 @@ function initUserDropdown() {
   })
 }
 
-// Handle dropdown actions
-function handleProfileClick() {
-  showNotification("Chuyển đến trang quản lý thông tin...", "info")
-  // Redirect to profile page
-  setTimeout(() => {
-    // window.location.href = '/profile'
-    console.log("Navigate to profile page")
-  }, 1000)
-}
-
 function handleOrdersClick() {
-  showNotification("Chuyển đến trang quản lý đơn hàng...", "info")
-  // Redirect to orders page
   setTimeout(() => {
-    // window.location.href = '/orders'
-    console.log("Navigate to orders page")
+    window.location.href = '../manageOrder/manageOrder.html'
   }, 1000)
 }   
 
