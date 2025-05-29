@@ -59,35 +59,54 @@ function initFormSubmission() {
     // Login
     const loginForm = document.querySelector('#login-form form');
     if (loginForm) {
-        loginForm.addEventListener('submit', function (e) {
+        loginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
             if (!loginForm.checkValidity()) return;
 
             const email = loginForm.querySelector('[name="email"]').value.trim();
             const password = loginForm.querySelector('[name="password"]').value;
 
-            // Get users from localStorage
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const user = users.find(u => u.email === email && u.password === password);
+            try {
+                const response = await fetch('http://localhost:8080/users/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
 
-            if (user) {
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('currentUser', JSON.stringify({
-                    id: user.id,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    email: user.email
-                }));
-                showNotification('Login successful! Redirecting...', 'success');
-                // Xác định base path tới thư mục chứa "src"
-                const pathParts = window.location.pathname.split('/');
-                const srcIndex = pathParts.indexOf('src');
-                const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
-                setTimeout(() => {
-                    window.location.href = baseURL + 'index.html'; // Redirect to home page
-                }, 1200);
-            } else {
-                showNotification('Invalid email or password', 'error');
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Lưu token vào localStorage nếu muốn
+                    localStorage.setItem('accessToken', data.accessToken);
+                    localStorage.setItem('refreshToken', data.refreshToken);
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('currentUser', JSON.stringify({ email }));
+                    // Log token to console for debugging
+                    console.log('accessToken', data.accessToken);
+                    console.log('refreshToken', data.refreshToken);
+
+                    const payload = JSON.parse(atob(data.accessToken.split('.')[1]));
+                    const role = payload.role;
+
+                    showNotification('Login successful! Redirecting...', 'success');
+                    // Xác định base path tới thư mục chứa "src"
+                    const pathParts = window.location.pathname.split('/');
+                    const srcIndex = pathParts.indexOf('src');
+                    const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
+                    setTimeout(() => {
+                        if (role === 'admin') {
+                            window.location.href = baseURL + 'pages/adminPage/productPage/product-page.html';
+                        } else {
+                            window.location.href = baseURL + 'index.html';
+                        } // Redirect to home page
+                    }, 1200);
+                } else {
+                    showNotification(data.message || 'Invalid email or password', 'error');
+                }
+            } catch (error) {
+                showNotification('Login failed: ' + error.message, 'error');
             }
         });
     }
