@@ -3,7 +3,13 @@ const userModel = require('../models/user.model');
 
 class UserService {
     async create(user) {
-        return await userModel.create(user);
+        const newUser = await userModel.create(user);
+        await db.query(
+            `INSERT INTO cart (user_id) VALUES ($1)`,
+            [newUser.user_id]
+        );
+
+        return newUser;
     }
     async findAll() {
         const users = await userModel.findAll();
