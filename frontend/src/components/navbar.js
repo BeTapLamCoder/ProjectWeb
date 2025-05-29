@@ -11,6 +11,7 @@ window.initNavbar = function () {
     // Gán click logo về trang homePage
     document.getElementById('shopLogo').addEventListener('click', () => {
         window.location.href = baseURL + 'index.html';
+
     });
 
     const userBtn = document.getElementById('userBtn');
