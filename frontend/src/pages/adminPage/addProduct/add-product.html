@@ -39,7 +39,7 @@
             <input type="text" class="form-control border-start-0" placeholder="Search...">
           </div>
           <div class="d-flex align-items-center">
-            <img src="placeholder.svg?height=40&width=40" alt="Admin" class="admin-avatar me-2">
+            <img src="/placeholder.svg?height=40&width=40" alt="Admin" class="admin-avatar me-2">
             <div class="me-2">
               <p class="mb-0 fw-bold">Admin User</p>
               <small class="text-muted">Super Admin</small>
@@ -62,6 +62,7 @@
           <div class="row">
             <!-- Main form content -->
             <div class="col-lg-8">
+              <!-- Basic Information -->
               <div class="card mb-4">
                 <div class="card-header"><strong>Basic Information</strong></div>
                 <div class="card-body">
@@ -74,44 +75,62 @@
                       <label for="product-sku" class="form-label">SKU*</label>
                       <input type="text" id="product-sku" class="form-control" required>
                     </div>
-                    <div class="col">
-                      <label for="product-barcode" class="form-label">Barcode</label>
-                      <input type="text" id="product-barcode" class="form-control">
-                    </div>
                   </div>
                   <div class="mb-3">
                     <label for="product-description" class="form-label">Description*</label>
                     <textarea id="product-description" class="form-control" rows="5" required></textarea>
                   </div>
+                  <div class="mb-3">
+                    <label for="product-category" class="form-label">Category*</label>
+                    <select id="product-category" class="form-select" required>
+                      <option value="">Select Category</option>
+                      <option value="Shirts">Shirts</option>
+                      <option value="Pants">Pants</option>
+                      <option value="Shoes">Shoes</option>
+                      <option value="Accessories">Accessories</option>                     
+                    </select>
+                  </div>
                 </div>
               </div>
 
+              <!-- Media -->
               <div class="card mb-4">
                 <div class="card-header"><strong>Media</strong></div>
                 <div class="card-body">
                   <label class="form-label">Product Images</label>
                   <input type="file" id="product-images" class="form-control" multiple accept="image/*">
+                  <small class="form-text text-muted">You can upload multiple images. First image will be used as main image.</small>
                   <div id="image-previews" class="mt-3"></div>
                 </div>
               </div>
 
+              <!-- Pricing -->
               <div class="card mb-4">
                 <div class="card-header"><strong>Pricing</strong></div>
                 <div class="card-body">
                   <div class="row mb-3">
                     <div class="col">
                       <label for="regular-price" class="form-label">Regular Price*</label>
-                      <input type="number" id="regular-price" class="form-control" min="0" step="0.01" required>
+                      <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" id="regular-price" class="form-control" min="0" step="0.01" required>
+                      </div>
                     </div>
                     <div class="col">
                       <label for="sale-price" class="form-label">Sale Price</label>
-                      <input type="number" id="sale-price" class="form-control" min="0" step="0.01">
+                      <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" id="sale-price" class="form-control" min="0" step="0.01">
+                      </div>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col">
                       <label for="cost-price" class="form-label">Cost Price</label>
-                      <input type="number" id="cost-price" class="form-control" min="0" step="0.01">
+                      <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" id="cost-price" class="form-control" min="0" step="0.01">
+                      </div>
                     </div>
                     <div class="col">
                       <label for="tax-class" class="form-label">Tax Class</label>
@@ -125,11 +144,35 @@
                 </div>
               </div>
 
-              <!-- Inventory, Shipping etc can be added similarly -->
+              <!-- Inventory -->
+              <div class="card mb-4">
+                <div class="card-header"><strong>Inventory</strong></div>
+                <div class="card-body">
+                  <div class="row mb-3">
+                    <div class="col">
+                      <label for="product-stock" class="form-label">Stock Quantity*</label>
+                      <input type="number" id="product-stock" class="form-control" min="0" required>
+                    </div>
+                    <div class="col">
+                      <label for="low-stock-threshold" class="form-label">Low Stock Threshold</label>
+                      <input type="number" id="low-stock-threshold" class="form-control" min="0" value="10">
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="track-quantity">
+                      <label class="form-check-label" for="track-quantity">
+                        Track quantity for this product
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>             
             </div>
 
             <!-- Sidebar -->
             <div class="col-lg-4">
+              <!-- Publish -->
               <div class="card mb-4">
                 <div class="card-header"><strong>Publish</strong></div>
                 <div class="card-body">
@@ -149,12 +192,20 @@
                       <option value="password">Password Protected</option>
                     </select>
                   </div>
+                  <div class="mb-3">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="featured-product">
+                      <label class="form-check-label" for="featured-product">
+                        Featured Product
+                      </label>
+                    </div>
+                  </div>
                   <div class="d-flex justify-content-between">
                     <button type="button" class="btn btn-outline-secondary" id="save-draft">Save Draft</button>
                     <button type="submit" class="btn btn-dark">Publish</button>
                   </div>
                 </div>
-              </div>
+              </div>           
             </div>
           </div>
         </form>
