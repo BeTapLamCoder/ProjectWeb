@@ -3,10 +3,10 @@ const healthRoute = require('./routes/health.route');
 const userRoute = require('./routes/user.route');
 const productRoute = require('./routes/product.route');
 const cors = require('cors');
-
+const app = express();
 app.use(cors());
 
-const app = express();
+
 
 app.use(express.json());
 
