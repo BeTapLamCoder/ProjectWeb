@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Lưu vào localStorage
                 localStorage.setItem('selectedProduct', JSON.stringify(productData));
-              
+
               // Xác định base path tới thư mục chứa "src"
                 const pathParts = window.location.pathname.split('/');
                 const srcIndex = pathParts.indexOf('src');
@@ -140,6 +140,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const srcIndex = pathParts.indexOf('src');
             const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
             window.location.href = baseURL + 'index.html'; 
+
         });
     }
 
