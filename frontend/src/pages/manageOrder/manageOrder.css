@@ -1,10 +1,4 @@
-/* Base styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
+/* Use Bootstrap's base styles, but keep your font and color palette */
 body {
     font-family: "Inter", sans-serif;
     background-color: #f5f5f5;
@@ -12,212 +6,99 @@ body {
     line-height: 1.6;
 }
 
+/* Container: let Bootstrap handle max-width and padding */
 .container {
-    max-width: 1440px;
-    margin: 0 auto;
-    padding: 20px;
-    min-height: 100vh;
+    min-height: 100px;
 }
 
-/* Header styles */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 30px;
-    border-bottom: 1px solid #e5e1dc;
-    margin-bottom: 40px;
+/* Filter/search section: Bootstrap card style */
+.input-group-text {
+    background: #fff;
+    border-right: 0;
 }
-
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.back-button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-    padding: 8px 16px;
+.form-control {
+    background: #f8f7f5;
     border: 1px solid #e5e1dc;
-    border-radius: 4px;
-    transition: all 0.3s ease;
+    font-size: 14px;
 }
-
-.back-button:hover {
-    background-color: #e5e1dc;
-}
-
-.page-title {
-    font-size: 32px;
-    font-weight: 700;
-    color: #333;
-}
-
-.logo {
-    font-size: 24px;
-    color: #000;
-}
-
-/* Filter and search section */
-.filter-section {
-    background: white;
-    padding: 24px;
-    border-radius: 8px;
-    margin-bottom: 30px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.filter-row {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.search-container {
-    position: relative;
-    flex: 1;
-    min-width: 250px;
-}
-
-.search-input {
-    width: 100%;
-    padding: 12px 12px 12px 40px;
+.form-select {
     border: 1px solid #e5e1dc;
-    background-color: #f8f7f5;
-    border-radius: 4px;
+    background: #fff;
     font-size: 14px;
 }
 
-.search-icon {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 18px;
-    height: 18px;
-    color: #777;
-}
-
-.filter-select {
-    padding: 12px 16px;
-    border: 1px solid #e5e1dc;
-    border-radius: 4px;
-    background: white;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.status-filters {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
+/* Status filter buttons: pill style, match Bootstrap's outline-primary but with custom active */
 .status-filter {
-    padding: 8px 16px;
-    border: 1px solid #e5e1dc;
-    background: white;
-    border-radius: 20px;
+    border-radius: 20px !important;
     font-size: 14px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
+    padding: 8px 16px;
+    border: 1px solid #e5e1dc !important;
+    background: #fff !important;
+    color: #333 !important;
+    transition: all 0.3s;
+}
+.status-filter.active,
+.status-filter:active,
+.status-filter:focus {
+    background: #333 !important;
+    color: #fff !important;
+    border-color: #333 !important;
 }
 
-.status-filter.active {
-    background: #333;
-    color: white;
-    border-color: #333;
+/* Orders grid: use Bootstrap's row/col, but add gap */
+#ordersGrid {
+    row-gap: 24px;
 }
 
-/* Orders grid */
-.orders-grid {
-    display: grid;
-    gap: 20px;
-}
-
+/* Order card: Bootstrap card style with custom shadow and radius */
 .order-card {
-    background: white;
-    border-radius: 8px;
-    padding: 24px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    padding: 1.5rem;
+    transition: box-shadow 0.2s, transform 0.2s;
+    border: 1px solid #e5e1dc;
 }
-
 .order-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
     transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
-.order-header {
+/* Order header/footer: use Bootstrap's flex utilities */
+.order-header,
+.order-footer {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 20px;
-    padding-bottom: 16px;
+    align-items: center;
     border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+.order-footer {
+    border-top: 1px solid #f0f0f0;
+    border-bottom: none;
+    padding-top: 1rem;
+    margin-bottom: 0;
 }
 
-.order-info {
-    flex: 1;
-}
-
-.order-number {
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 4px;
-}
-
-.order-date {
-    font-size: 14px;
-    color: #777;
-}
-
+/* Order status badges: use Bootstrap badge style with custom colors */
 .order-status {
-    padding: 6px 12px;
     border-radius: 20px;
     font-size: 12px;
     font-weight: 500;
+    padding: 6px 12px;
     text-transform: uppercase;
     white-space: nowrap;
+    background: #e9ecef;
+    color: #333;
 }
+.status-pending    { background: #fff3cd; color: #856404; }
+.status-processing { background: #d1ecf1; color: #0c5460; }
+.status-shipped    { background: #d4edda; color: #155724; }
+.status-delivered  { background: #d1ecf1; color: #0c5460; }
+.status-cancelled  { background: #f8d7da; color: #721c24; }
 
-.status-pending {
-    background: #fff3cd;
-    color: #856404;
-}
-
-.status-processing {
-    background: #d1ecf1;
-    color: #0c5460;
-}
-
-.status-shipped {
-    background: #d4edda;
-    color: #155724;
-}
-
-.status-delivered {
-    background: #d1ecf1;
-    color: #0c5460;
-}
-
-.status-cancelled {
-    background: #f8d7da;
-    color: #721c24;
-}
-
-.order-items {
-    margin-bottom: 20px;
-}
-
+/* Order item list */
 .order-item {
     display: flex;
     gap: 16px;
@@ -225,45 +106,32 @@ body {
     padding-bottom: 16px;
     border-bottom: 1px solid #f0f0f0;
 }
-
 .order-item:last-child {
     margin-bottom: 0;
     padding-bottom: 0;
     border-bottom: none;
 }
-
 .item-image {
     width: 80px;
     height: 80px;
     border-radius: 8px;
     object-fit: cover;
     background: #f8f7f5;
-    flex-shrink: 0;
 }
-
 .item-details {
     flex: 1;
-    min-width: 0; /* Allows text to wrap properly */
+    min-width: 0;
 }
-
 .item-name {
     font-weight: 500;
-    margin-bottom: 4px;
     color: #333;
-    word-wrap: break-word;
-}
-
-.item-category {
-    font-size: 14px;
-    color: #777;
     margin-bottom: 4px;
 }
-
+.item-category,
 .item-quantity {
     font-size: 14px;
     color: #777;
 }
-
 .item-price {
     font-weight: 600;
     color: #333;
@@ -271,80 +139,36 @@ body {
     white-space: nowrap;
 }
 
-.order-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 16px;
-    border-top: 1px solid #f0f0f0;
-}
-
-.order-total {
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-}
-
-.order-actions {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    white-space: nowrap;
-}
-
+/* Buttons: use Bootstrap, but keep your color scheme for .btn-primary */
 .btn-primary {
-    background: #333;
-    color: white;
+    background: #333 !important;
+    border-color: #333 !important;
+    color: #fff !important;
+}
+.btn-primary:hover,
+.btn-primary:focus {
+    background: #555 !important;
+    border-color: #555 !important;
+}
+.btn-outline-primary {
+    color: #333 !important;
+    border-color: #e5e1dc !important;
+    background: #fff !important;
+}
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+    background: #333 !important;
+    color: #fff !important;
+    border-color: #333 !important;
 }
 
-.btn-primary:hover {
-    background: #555;
-}
-
-.btn-secondary {
-    background: white;
-    color: #333;
-    border: 1px solid #e5e1dc;
-}
-
-.btn-secondary:hover {
-    background: #f8f7f5;
-}
-
-.btn-danger {
-    background: #dc3545;
-    color: white;
-}
-
-.btn-danger:hover {
-    background: #c82333;
-}
-
-/* Empty state */
+/* Empty state: Bootstrap card style */
 .empty-state {
-    text-align: center;
+    background: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     padding: 60px 20px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-.empty-content {
-    max-width: 600px;
-    margin: 0 auto;
+    margin-top: 2rem;
 }
 .empty-icon {
     width: 80px;
@@ -357,693 +181,42 @@ body {
     justify-content: center;
     color: #777;
 }
-
 .empty-title {
     font-size: 20px;
     font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
     color: #333;
-}
 
+}
 .empty-description {
     color: #777;
-    margin-bottom: 24px;
+    margin-bottom: 30px;
 }
-
-/* Modal styles */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-.modal.show {
+.empty-container {
     display: flex;
+    flex-direction: column;
+    margin-right: 100px;
 }
 
+/* Modal: let Bootstrap handle modal styling, but adjust padding if needed */
 .modal-content {
-    background: white;
-    border-radius: 8px;
-    padding: 32px;
-    max-width: 600px;
-    width: 100%;
-    max-height: 80vh;
-    overflow-y: auto;
+    border-radius: 0.5rem;
+    padding: 2rem;
 }
 
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.modal-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: #333;
-}
-
-.close-btn {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: #777;
-    padding: 0;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.tracking-timeline {
-    margin: 24px 0;
-}
-
-.timeline-item {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 24px;
-    position: relative;
-}
-
-.timeline-item:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    left: 15px;
-    top: 32px;
-    width: 2px;
-    height: calc(100% + 8px);
-    background: #e5e1dc;
-}
-
-.timeline-dot {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: #e5e1dc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    position: relative;
-    z-index: 1;
-}
-
-.timeline-dot.active {
-    background: #28a745;
-    color: white;
-}
-
-.timeline-content {
-    flex: 1;
-    padding-top: 4px;
-}
-
-.timeline-title {
-    font-weight: 500;
-    margin-bottom: 4px;
-    color: #333;
-}
-
-.timeline-date {
-    font-size: 14px;
-    color: #777;
-}
-
-/* Notification styles */
-.notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 16px 20px;
-    border-radius: 4px;
-    color: white;
-    font-weight: 500;
-    z-index: 10000;
-    max-width: 350px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-}
-
-.notification.show {
-    transform: translateX(0);
-}
-
-.notification-success {
-    background: #28a745;
-}
-
-.notification-error {
-    background: #dc3545;
-}
-
-.notification-info {
-    background: #17a2b8;
-}
-
-/* ===== RESPONSIVE DESIGN ===== */
-
-/* Large Desktop (1200px and up) */
-@media (min-width: 1200px) {
-    .container {
-        padding: 30px;
-    }
-    
-    .page-title {
-        font-size: 36px;
-    }
-    
-    .filter-section {
-        padding: 32px;
-    }
-    
-    .order-card {
-        padding: 32px;
-    }
-}
-
-/* Desktop (992px to 1199px) */
-@media (max-width: 1199px) {
-    .container {
-        padding: 25px;
-    }
-    
-    .filter-row {
-        gap: 15px;
-    }
-    
-    .search-container {
-        min-width: 200px;
-    }
-}
-
-/* Tablet (768px to 991px) */
-@media (max-width: 991px) {
-    .container {
-        padding: 20px;
-    }
-    
-    .header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
-        padding-bottom: 20px;
-        margin-bottom: 30px;
-    }
-    
-    .header-left {
-        width: 100%;
-        justify-content: space-between;
-    }
-    
-    .logo {
-        order: -1;
-    }
-    
-    .page-title {
-        font-size: 28px;
-    }
-    
-    .filter-section {
-        padding: 20px;
-    }
-    
-    .filter-row {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 16px;
-    }
-    
-    .search-container {
-        min-width: auto;
-        order: 1;
-    }
-    
-    .filter-select {
-        order: 2;
-    }
-    
-    .status-filters {
-        order: 3;
-        justify-content: center;
-    }
-    
-    .order-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-    }
-    
-    .order-status {
-        align-self: flex-start;
-    }
-    
-    .order-footer {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
-    }
-    
-    .order-actions {
-        width: 100%;
-        justify-content: flex-start;
-    }
-    
-    .modal-content {
-        padding: 24px;
-        margin: 20px;
-        max-height: 85vh;
-    }
-}
-
-/* Mobile Large (576px to 767px) */
+/* Responsive tweaks: let Bootstrap handle most, but adjust as needed */
 @media (max-width: 767px) {
-    .container {
-        padding: 15px;
-    }
-    
-    .header {
-        padding-bottom: 15px;
-        margin-bottom: 20px;
-    }
-    
-    .header-left {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-    }
-    
-    .back-button {
-        padding: 6px 12px;
-        font-size: 14px;
-    }
-    
-    .page-title {
-        font-size: 24px;
-    }
-    
-    .filter-section {
-        padding: 16px;
-        margin-bottom: 20px;
-    }
-    
-    .filter-row {
-        gap: 12px;
-    }
-    
-    .status-filters {
-        gap: 8px;
-    }
-    
-    .status-filter {
-        padding: 6px 12px;
-        font-size: 13px;
-    }
-    
-    .order-card {
-        padding: 16px;
-    }
-    
-    .order-number {
-        font-size: 16px;
-    }
-    
-    .order-item {
-        gap: 12px;
-    }
-    
-    .item-image {
-        width: 60px;
-        height: 60px;
-    }
-    
-    .item-name {
-        font-size: 14px;
-    }
-    
-    .item-category,
-    .item-quantity {
-        font-size: 13px;
-    }
-    
-    .item-price {
-        font-size: 14px;
-    }
-    
-    .order-total {
-        font-size: 16px;
-    }
-    
-    .order-actions {
-        gap: 8px;
-    }
-    
-    .btn {
-        padding: 6px 12px;
-        font-size: 13px;
-    }
-    
-    .empty-state {
-        padding: 40px 15px;
-    }
-    
-    .empty-icon {
-        width: 60px;
-        height: 60px;
-    }
-    
-    .empty-title {
-        font-size: 18px;
-    }
-    
-    .modal {
-        padding: 15px;
-    }
-    
-    .modal-content {
-        padding: 20px;
-        margin: 0;
-        max-height: 90vh;
-    }
-    
-    .modal-title {
-        font-size: 18px;
-    }
-    
-    .timeline-item {
-        gap: 12px;
-    }
-    
-    .timeline-dot {
-        width: 28px;
-        height: 28px;
-        font-size: 14px;
-    }
-    
-    .timeline-item:not(:last-child)::after {
-        left: 13px;
-    }
-    
-    .notification {
-        top: 15px;
-        right: 15px;
-        left: 15px;
-        max-width: none;
-        transform: translateY(-100%);
-    }
-    
-    .notification.show {
-        transform: translateY(0);
-    }
-}
-
-/* Mobile Small (480px to 575px) */
-@media (max-width: 575px) {
-    .container {
-        padding: 12px;
-    }
-    
-    .page-title {
-        font-size: 20px;
-    }
-    
-    .filter-section {
-        padding: 12px;
-    }
-    
-    .status-filters {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .status-filter {
-        text-align: center;
-    }
-    
-    .order-card {
-        padding: 12px;
-    }
-    
-    .order-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-    
-    .item-image {
-        width: 100%;
-        height: 120px;
-        max-width: 120px;
-        align-self: center;
-    }
-    
-    .item-price {
-        text-align: left;
-        font-size: 16px;
-        font-weight: 700;
-    }
-    
-    .order-actions {
-        flex-direction: column;
-        gap: 8px;
-    }
-    
-    .btn {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .modal-content {
-        padding: 16px;
-    }
-    
-    .timeline-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-    
-    .timeline-item:not(:last-child)::after {
-        display: none;
-    }
-    
-    .timeline-dot {
-        align-self: flex-start;
-    }
-}
-
-/* Mobile Extra Small (below 480px) */
-@media (max-width: 479px) {
-    .container {
-        padding: 10px;
-    }
-    
-    .header {
-        padding-bottom: 10px;
-        margin-bottom: 15px;
-    }
-    
-    .page-title {
-        font-size: 18px;
-    }
-    
-    .back-button {
-        padding: 4px 8px;
-        font-size: 13px;
-    }
-    
-    .filter-section {
-        padding: 10px;
-        margin-bottom: 15px;
-    }
-    
-    .search-input {
-        padding: 10px 10px 10px 35px;
-        font-size: 13px;
-    }
-    
-    .search-icon {
-        width: 16px;
-        height: 16px;
-        left: 10px;
-    }
-    
-    .filter-select {
-        padding: 10px 12px;
-        font-size: 13px;
-    }
-    
-    .status-filter {
-        padding: 5px 10px;
-        font-size: 12px;
-    }
-    
-    .order-card {
-        padding: 10px;
-    }
-    
-    .orders-grid {
-        gap: 15px;
-    }
-    
-    .order-number {
-        font-size: 14px;
-    }
-    
-    .order-date {
-        font-size: 12px;
-    }
-    
-    .order-status {
-        padding: 4px 8px;
-        font-size: 10px;
-    }
-    
-    .item-name {
-        font-size: 13px;
-    }
-    
-    .item-category,
-    .item-quantity {
-        font-size: 12px;
-    }
-    
-    .order-total {
-        font-size: 14px;
-    }
-    
-    .btn {
-        padding: 5px 10px;
-        font-size: 12px;
-    }
-    
-    .empty-state {
-        padding: 30px 10px;
-    }
-    
-    .empty-icon {
-        width: 50px;
-        height: 50px;
-    }
-    
-    .empty-title {
-        font-size: 16px;
-    }
-    
-    .empty-description {
-        font-size: 14px;
-    }
-    
-    .modal-content {
-        padding: 12px;
-        border-radius: 4px;
-    }
-    
-    .modal-title {
-        font-size: 16px;
-    }
-    
-    .close-btn {
-        width: 28px;
-        height: 28px;
-        font-size: 20px;
-    }
-}
-
-/* Landscape orientation adjustments for mobile */
-@media (max-height: 500px) and (orientation: landscape) {
-    .modal-content {
-        max-height: 95vh;
-        padding: 16px;
-    }
-    
-    .empty-state {
-        padding: 20px 15px;
-    }
-    
-    .empty-icon {
-        width: 40px;
-        height: 40px;
-        margin-bottom: 10px;
-    }
-}
-
-/* High DPI displays */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-    .item-image,
-    .empty-icon {
-        image-rendering: -webkit-optimize-contrast;
-        image-rendering: crisp-edges;
-    }
-}
-
-/* Print styles */
-@media print {
-    .header,
-    .filter-section,
-    .order-actions,
-    .modal,
-    .notification {
-        display: none !important;
-    }
-    
-    .container {
-        max-width: none;
-        padding: 0;
-    }
-    
-    .order-card {
-        break-inside: avoid;
-        box-shadow: none;
-        border: 1px solid #ddd;
-        margin-bottom: 20px;
-    }
-    
-    .order-status {
-        color: #000 !important;
-        background: transparent !important;
-        border: 1px solid #000;
-    }
-}
-
-/* Reduced motion preferences */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
-
-/* Dark mode support (if needed) */
-@media (prefers-color-scheme: dark) {
-    /* Uncomment and customize if dark mode is required
-    body {
-        background-color: #1a1a1a;
-        color: #ffffff;
-    }
-    
     .order-card,
-    .filter-section,
-    .modal-content {
-        background: #2d2d2d;
-        color: #ffffff;
+    .modal-content,
+    .empty-state {
+        padding: 1rem;
     }
-    */
+    .item-image {
+        width: 60px;
+        height: 60px;
+    }
+    .empty-icon {
+        width: 60px;
+        height: 60px;
+    }
 }
