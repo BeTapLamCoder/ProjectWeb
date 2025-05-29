@@ -80,7 +80,7 @@ function initFormSubmission() {
                 }));
                 showNotification('Login successful! Redirecting...', 'success');
                 setTimeout(() => {
-                    window.location.href = '/frontend/src/index.html'; // Redirect to home page
+                    window.location.href = 'index.html'; // Redirect to home page
                 }, 1200);
             } else {
                 showNotification('Invalid email or password', 'error');

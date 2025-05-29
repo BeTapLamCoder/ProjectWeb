@@ -106,6 +106,16 @@ function initializeEventListeners() {
             renderOrders();
         });
     });
+
+    document.getElementById('continueShoppingBtn').addEventListener('click', function (event) {
+        event.preventDefault(); // ngăn chặn href="#"
+        // Xác định base path tới thư mục chứa "src"
+        const pathParts = window.location.pathname.split('/');
+        const srcIndex = pathParts.indexOf('src');
+        const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
+
+        window.location.href = baseURL + 'pages/filterAndSearch/filterAndSearch.html';
+    });
 }
 
 function renderOrders() {

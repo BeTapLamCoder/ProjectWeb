@@ -117,9 +117,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Lưu vào localStorage
                 localStorage.setItem('selectedProduct', JSON.stringify(productData));
+              
+              // Xác định base path tới thư mục chứa "src"
+                const pathParts = window.location.pathname.split('/');
+                const srcIndex = pathParts.indexOf('src');
+                const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
 
                 // Chuyển sang trang addToCart
-                window.location.href = '../addToCart/addToCart.html';
+                window.location.href = baseURL + 'addToCart/addToCart.html';
             });
         }
     });
@@ -130,7 +135,11 @@ document.addEventListener('DOMContentLoaded', function () {
         homeButton.addEventListener('click', function (e) {
             e.preventDefault();
             console.log('Home button clicked');
-            window.location.href = '/frontend/src/index.html'; 
+          // Xác định base path tới thư mục chứa "src"
+            const pathParts = window.location.pathname.split('/');
+            const srcIndex = pathParts.indexOf('src');
+            const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
+            window.location.href = baseURL + 'index.html'; 
         });
     }
 
@@ -257,9 +266,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Lưu thông tin sản phẩm vào localStorage
                 localStorage.setItem('selectedProduct', JSON.stringify(productData));
+              
+              // Xác định base path tới thư mục chứa "src"
+                const pathParts = window.location.pathname.split('/');
+                const srcIndex = pathParts.indexOf('src');
+                const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
 
                 // Chuyển hướng đến trang addToCart
-                window.location.href = '../addToCart/addToCart.html';
+                window.location.href = baseURL + 'addToCart/addToCart.html';
             });
         });
     }
