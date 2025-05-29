@@ -9,68 +9,45 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    // Hiển thị thông tin đơn hàng
-    function displayOrderInfo() {
-        // Hiển thị shipping info
-        const infoContainer = document.querySelector('.order-info');
-        if (infoContainer) {
-            infoContainer.innerHTML = `
-                <div class="shipping-info">
-                    <h3>Shipping Information</h3>
-                    <p>${checkoutInfo.fullName}</p>
-                    <p>${checkoutInfo.email}</p>
-                    <p>${checkoutInfo.phone}</p>
-                    <p>${checkoutInfo.address}, ${checkoutInfo.city}</p>
-                    <p>${checkoutInfo.state}, ${checkoutInfo.country}</p>
+    // Hiển thị danh sách sản phẩm trong đơn hàng
+    function renderOrderList() {
+        const orderList = document.querySelector('.order-list');
+        const orderCount = document.querySelector('.order-summary-count');
+        if (!orderList) return;
+
+        orderList.innerHTML = '';
+        if (orderCount) orderCount.textContent = `(${cart.length})`;
+
+        cart.forEach(item => {
+            const itemHTML = `
+                <div class="order-item mb-2 d-flex align-items-start gap-3">
+                    <img class="order-item-img" src="${item.image}" alt="${item.name}">
+                    <div class="order-item-info flex-grow-1">
+                        <div class="order-item-title">${item.name}</div>
+                        <div class="order-item-desc text-muted small">${item.color || ''}${item.color && item.size ? ' / ' : ''}${item.size || ''}</div>
+                        <div class="order-item-qty text-muted small">Qty: ${item.quantity}</div>
+                    </div>
+                    <div class="order-item-price fw-semibold">$${parseFloat(item.price.replace(/[^0-9.]/g, '')).toFixed(2)}</div>
                 </div>
             `;
-        }
-
-        // Hiển thị danh sách sản phẩm
-        const orderList = document.querySelector('.order-list');
-        const orderCount = document.querySelector('.order-summary-header span');
-
-        if (orderList) {
-            orderList.innerHTML = '';
-            orderCount.textContent = `(${cart.length})`;
-
-            cart.forEach(item => {
-                const itemHTML = `
-                    <div class="order-item">
-                        <img class="order-item-img" src="${item.image}" alt="${item.name}">
-                        <div class="order-item-info">
-                            <div class="order-item-title">${item.name}</div>
-                            <div class="order-item-desc">${item.color}/${item.size}</div>
-                            <div class="order-item-qty">(${item.quantity})</div>
-                        </div>
-                        <div class="order-item-price">${item.price}</div>
-                    </div>
-                `;
-                orderList.insertAdjacentHTML('beforeend', itemHTML);
-            });
-        }
-
-        // Cập nhật tổng tiền
-        updateOrderTotal();
+            orderList.insertAdjacentHTML('beforeend', itemHTML);
+        });
     }
 
     // Tính và hiển thị tổng tiền
     function updateOrderTotal() {
         let subtotal = 0;
         cart.forEach(item => {
-            const price = parseFloat(item.price.replace(/[^0-9.-]+/g, ''));
-            subtotal += price * item.quantity;
+            const price = parseFloat(item.price.replace(/[^0-9.]/g, '')) || 0;
+            subtotal += price * (item.quantity || 1);
         });
 
         const shipping = 10;
         const total = subtotal + shipping;
 
-        document.querySelector('.order-summary-totals .order-summary-row:nth-child(1) span:last-child')
-            .textContent = `$${subtotal.toFixed(2)}`;
-        document.querySelector('.order-summary-totals .order-summary-row:nth-child(2) span:last-child')
-            .textContent = `$${shipping.toFixed(2)}`;
-        document.querySelector('.order-summary-totals .order-summary-row:nth-child(3) span:last-child')
-            .textContent = `$${total.toFixed(2)}`;
+        document.querySelector('.order-summary-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+        document.querySelector('.order-summary-shipping').textContent = `$${shipping.toFixed(2)}`;
+        document.querySelector('.order-summary-total').textContent = `$${total.toFixed(2)}`;
     }
 
     // Submit payment và hoàn tất đơn hàng
@@ -81,11 +58,11 @@ document.addEventListener('DOMContentLoaded', function () {
         submitBtn.disabled = true;
         submitBtn.innerHTML = 'Processing...';
 
-        const selectedPayment = document.querySelector('.payment-method input[type="radio"]:checked');
+        const selectedPayment = document.querySelector('input[name="paymethod"]:checked');
         if (!selectedPayment) {
-            alert('Vui lòng chọn phương thức thanh toán!');
+            showNotification('Please select a payment method!', 'danger');
             submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Pay Now <span style="font-size:1.3em;">→</span>';
+            submitBtn.innerHTML = 'Pay Now <span class="ms-2" style="font-size:1.3em;">&#8594;</span>';
             return;
         }
 
@@ -98,8 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 payment: selectedPayment.value,
                 status: 'pending',
                 date: new Date().toISOString(),
-                total: parseFloat(document.querySelector('.order-summary-row.total span:last-child')
-                    .textContent.replace(/[^0-9.-]+/g, '')),
+                total: parseFloat(document.querySelector('.order-summary-total').textContent.replace(/[^0-9.]/g, '')),
                 tracking: [
                     { title: 'Order Placed', date: new Date().toLocaleString(), completed: true },
                     { title: 'Order Confirmed', date: '', completed: false },
@@ -118,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
             localStorage.removeItem('checkoutInfo');
 
             // Hiển thị loading animation
-            submitBtn.innerHTML = 'Processing... <div class="loader"></div>';
+            submitBtn.innerHTML = 'Processing... <span class="spinner-border spinner-border-sm ms-2"></span>';
 
             // Delay chuyển trang để người dùng thấy trạng thái xử lý
             setTimeout(() => {
@@ -127,12 +103,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
         } catch (error) {
             console.error('Error processing order:', error);
-            alert('Có lỗi xảy ra. Vui lòng thử lại!');
+            showNotification('An error occurred. Please try again!', 'danger');
             submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Pay Now <span style="font-size:1.3em;">→</span>';
+            submitBtn.innerHTML = 'Pay Now <span class="ms-2" style="font-size:1.3em;">&#8594;</span>';
         }
     });
 
+    // Thông báo Bootstrap
+    function showNotification(message, type = 'info') {
+        document.querySelectorAll('.notification').forEach(n => n.remove());
+        const notification = document.createElement('div');
+        notification.className = `notification alert alert-${type} position-fixed top-0 end-0 m-4`;
+        notification.style.zIndex = 9999;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 3000);
+    }
+
     // Khởi tạo trang
-    displayOrderInfo();
+    renderOrderList();
+    updateOrderTotal();
 });

@@ -9,7 +9,6 @@ function formatPrice(priceStr) {
             currency: 'USD'
         }).format(priceStr);
     }
-
     const numericValue = parseFloat(priceStr.replace(/[^0-9.-]+/g, ''));
     return new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -43,8 +42,6 @@ function getStatusText(status) {
 document.addEventListener('DOMContentLoaded', function () {
     // Get orders from localStorage
     const savedOrders = JSON.parse(localStorage.getItem('orders')) || [];
-    console.log('Loading orders:', savedOrders);
-
     // Convert savedOrders to our format
     ordersData = savedOrders.map(order => ({
         id: order.orderNumber,
@@ -63,13 +60,8 @@ document.addEventListener('DOMContentLoaded', function () {
         ]
     }));
 
-    // Initialize filtered orders
     filteredOrders = [...ordersData];
-
-    // Initialize event listeners
     initializeEventListeners();
-
-    // Render orders
     renderOrders();
 });
 
@@ -138,50 +130,53 @@ function renderOrders() {
         return;
     }
 
-    ordersGrid.style.display = 'grid';
+    ordersGrid.style.display = '';
     emptyState.style.display = 'none';
 
     ordersGrid.innerHTML = filteredOrders.map(order => `
-        <div class="order-card" data-order-id="${order.id}">
-            <div class="order-header">
-                <div class="order-info">
-                    <div class="order-number">#${order.id}</div>
-                    <div class="order-date">${formatDate(order.date)}</div>
-                </div>
-                <div class="order-status status-${order.status.toLowerCase()}">
-                    ${getStatusText(order.status)}
-                </div>
-            </div>
-            
-            <div class="order-items">
-                ${order.items.map(item => `
-                    <div class="order-item">
-                        <img src="${item.image}" alt="${item.name}" class="item-image">
-                        <div class="item-details">
-                            <div class="item-name">${item.name}</div>
-                            <div class="item-desc">Color: ${item.color || 'N/A'} / Size: ${item.size || 'N/A'}</div>
-                            <div class="item-quantity">Quantity: ${item.quantity}</div>
-                        </div>
-                        <div class="item-price">${formatPrice(item.price)}</div>
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="order-card h-100 d-flex flex-column" data-order-id="${order.id}">
+                <div class="order-header">
+                    <div class="order-info">
+                        <div class="order-number fw-semibold">#${order.id}</div>
+                        <div class="order-date text-muted">${formatDate(order.date)}</div>
                     </div>
-                `).join('')}
-            </div>
-            
-            <div class="order-footer">
-                <div class="order-total">Total: ${formatPrice(order.total)}</div>
-                <div class="order-actions">
-                    <button class="btn btn-primary" onclick="viewOrderDetail('${order.id}')">
-                        View Details
-                    </button>
-                    ${order.status === 'pending' ? `
-                        <button class="btn btn-danger" onclick="cancelOrder('${order.id}')">
-                            Cancel Order
+                    <div class="order-status status-${order.status.toLowerCase()}">
+                        ${getStatusText(order.status)}
+                    </div>
+                </div>
+                <div class="order-items flex-grow-1">
+                    ${order.items.map(item => `
+                        <div class="order-item">
+                            <img src="${item.image}" alt="${item.name}" class="item-image">
+                            <div class="item-details">
+                                <div class="item-name">${item.name}</div>
+                                <div class="item-desc text-muted">Color: ${item.color || 'N/A'} / Size: ${item.size || 'N/A'}</div>
+                                <div class="item-quantity">Quantity: ${item.quantity}</div>
+                            </div>
+                            <div class="item-price">${formatPrice(item.price)}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="order-footer">
+                    <div class="order-total fw-semibold">Total: ${formatPrice(order.total)}</div>
+                    <div class="order-actions d-flex gap-2">
+                        <button class="btn btn-primary btn-sm" onclick="viewOrderDetail('${order.id}')">
+                            View Details
                         </button>
-                    ` : ''}
+                        ${order.status === 'pending' ? `
+                            <button class="btn btn-danger btn-sm" onclick="cancelOrder('${order.id}')">
+                                Cancel Order
+                            </button>
+                        ` : ''}
+                    </div>
                 </div>
             </div>
         </div>
     `).join('');
+
+    // Ensure Bootstrap grid row
+    ordersGrid.className = 'row';
 }
 
 function viewOrderDetail(orderId) {
@@ -190,16 +185,15 @@ function viewOrderDetail(orderId) {
 
     const modalBody = document.getElementById('modalBody');
     modalBody.innerHTML = `
-        <div class="order-info">
-            <h3>Order Information</h3>
+        <div class="order-info mb-4">
+            <h5 class="mb-2">Order Information</h5>
             <p><strong>Order ID:</strong> #${order.id}</p>
             <p><strong>Order Date:</strong> ${formatDate(order.date)}</p>
-            <p><strong>Status:</strong> <span class="status-${order.status}">${getStatusText(order.status)}</span></p>
+            <p><strong>Status:</strong> <span class="order-status status-${order.status.toLowerCase()}">${getStatusText(order.status)}</span></p>
             <p><strong>Total Amount:</strong> ${formatPrice(order.total)}</p>
         </div>
-
-        <div class="shipping-info">
-            <h3>Shipping Information</h3>
+        <div class="shipping-info mb-4">
+            <h5 class="mb-2">Shipping Information</h5>
             <p><strong>Name:</strong> ${order.shipping.fullName}</p>
             <p><strong>Email:</strong> ${order.shipping.email}</p>
             <p><strong>Phone:</strong> ${order.shipping.phone}</p>
@@ -207,43 +201,39 @@ function viewOrderDetail(orderId) {
             <p><strong>City:</strong> ${order.shipping.city}</p>
             <p><strong>Country:</strong> ${order.shipping.country}</p>
         </div>
-
-        <div class="order-items">
-            <h3>Order Items</h3>
+        <div class="order-items mb-4">
+            <h5 class="mb-2">Order Items</h5>
             ${order.items.map(item => `
                 <div class="order-item">
                     <img src="${item.image}" alt="${item.name}" class="item-image">
                     <div class="item-details">
                         <div class="item-name">${item.name}</div>
-                        <div class="item-desc">Color: ${item.color || 'N/A'} / Size: ${item.size || 'N/A'}</div>
+                        <div class="item-desc text-muted">Color: ${item.color || 'N/A'} / Size: ${item.size || 'N/A'}</div>
                         <div class="item-quantity">Quantity: ${item.quantity}</div>
                     </div>
                     <div class="item-price">${formatPrice(item.price)}</div>
                 </div>
             `).join('')}
         </div>
-
         <div class="tracking-timeline">
-            <h3>Order Tracking</h3>
+            <h5 class="mb-2">Order Tracking</h5>
             ${order.tracking.map(step => `
-                <div class="timeline-item">
-                    <div class="timeline-dot ${step.completed ? 'active' : ''}">
-                        ${step.completed ? '✓' : '○'}
+                <div class="timeline-item d-flex align-items-center mb-2">
+                    <div class="timeline-dot ${step.completed ? 'active' : ''} me-2">
+                        ${step.completed ? '<span class="text-success">&#10003;</span>' : '<span class="text-secondary">&#9675;</span>'}
                     </div>
                     <div class="timeline-content">
-                        <div class="timeline-title">${step.title}</div>
-                        ${step.date ? `<div class="timeline-date">${step.date}</div>` : ''}
+                        <div class="timeline-title fw-semibold">${step.title}</div>
+                        ${step.date ? `<div class="timeline-date text-muted">${step.date}</div>` : ''}
                     </div>
                 </div>
             `).join('')}
         </div>
     `;
 
-    document.getElementById('orderModal').classList.add('show');
-}
-
-function closeModal() {
-    document.getElementById('orderModal').classList.remove('show');
+    // Use Bootstrap's modal API
+    const modal = new bootstrap.Modal(document.getElementById('orderModal'));
+    modal.show();
 }
 
 function cancelOrder(orderId) {
