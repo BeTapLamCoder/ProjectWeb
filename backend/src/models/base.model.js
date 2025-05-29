@@ -33,7 +33,8 @@ class BaseModel {
         const values = Object.values(data);
 
         const setStr = columns.map((col, i) => `${col} = $${i + 1}`).join(', ');
-        const sql = `UPDATE ${this.tableName} SET ${setStr} WHERE ${this.idColumn} = $${columns.length + 1} RETURNING *`;
+        const sql = `UPDATE ${this.tableName} SET ${setStr} WHERE ${this.idColumn} = $${columns.length + 1} 
+        RETURNING *`;
         const res = await db.query(sql, [...values, id]);
         return res.rows[0];
     }
