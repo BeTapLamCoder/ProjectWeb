@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const selectedSize = document.querySelector('.size-option.active');
 
         if (!selectedColor || !selectedSize) {
-            showNotification('Vui lòng chọn màu sắc và kích thước');
+            showNotification('Please choose color and size', 'warning');
             return;
         }
 
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('cart', JSON.stringify(cart));
 
         // Hiển thị thông báo
-        showNotification('Đã thêm sản phẩm vào giỏ hàng');
+        showNotification('Add product to cart successfully', 'success');
 
         // Chuyển hướng đến trang giỏ hàng sau 1 giây
         setTimeout(() => {
@@ -79,8 +79,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 1000);
     });
 
-    // Hàm hiển thị thông báo
-    function showNotification(message) {
+    // Hàm hiển thị thông báo Bootstrap style
+    function showNotification(message, type = 'info') {
         let notification = document.querySelector('.notification');
         if (!notification) {
             notification = document.createElement('div');
@@ -88,9 +88,20 @@ document.addEventListener('DOMContentLoaded', function () {
             document.body.appendChild(notification);
         }
         notification.textContent = message;
+
+        // Màu theo Bootstrap
+        const colors = {
+            success: "#28a745",
+            error: "#dc3545",
+            warning: "#ffc107",
+            info: "#17a2b8"
+        };
+        notification.style.backgroundColor = colors[type] || colors.info;
+        notification.style.color = (type === 'warning') ? '#222' : '#fff';
+
         notification.classList.add('show');
         setTimeout(() => {
             notification.classList.remove('show');
-        }, 3000);
+        }, 2500);
     }
 });

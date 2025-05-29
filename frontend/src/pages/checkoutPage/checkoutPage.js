@@ -5,8 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Hiển thị tổng quan đơn hàng
     function displayOrderSummary() {
         const orderList = document.querySelector('.order-list');
-        const orderCount = document.querySelector('.order-summary-header span');
-
+        const orderCount = document.querySelector('.order-summary-count');
         if (!orderList) return;
 
         // Xóa nội dung mẫu
@@ -19,20 +18,19 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Cập nhật số lượng sản phẩm
-        orderCount.textContent = `(${cart.length})`;
+        if (orderCount) orderCount.textContent = `(${cart.length})`;
 
         // Hiển thị từng sản phẩm
         cart.forEach(item => {
             const itemHTML = `
-                <div class="order-item">
+                <div class="order-item d-flex gap-3 align-items-start mb-2">
                     <img class="order-item-img" src="${item.image}" alt="${item.name}">
-                    <div class="order-item-info">
-                        <div class="order-item-title">${item.type || ''}</div>
-                        <div class="order-item-name">${item.name}</div>
-                        <div class="order-item-desc">${item.color || 'N/A'} / ${item.size || 'N/A'}</div>
-                        <div class="order-item-qty">(${item.quantity})</div>
+                    <div class="order-item-info flex-grow-1">
+                        <div class="order-item-title">${item.name}</div>
+                        <div class="order-item-desc text-muted small">${item.color || ''}${item.color && item.size ? ' / ' : ''}${item.size || ''}</div>
+                        <div class="order-item-qty text-muted small">Qty: ${item.quantity}</div>
                     </div>
-                    <div class="order-item-price">${item.price}</div>
+                    <div class="order-item-price fw-semibold">$${parseFloat(item.price.replace(/[^0-9.]/g, '')).toFixed(2)}</div>
                 </div>
             `;
             orderList.insertAdjacentHTML('beforeend', itemHTML);
@@ -41,18 +39,17 @@ document.addEventListener('DOMContentLoaded', function () {
         // Tính toán tổng tiền
         let subtotal = 0;
         cart.forEach(item => {
-            const price = parseFloat(item.price.replace(/[^0-9.-]+/g, ''));
-            subtotal += price * item.quantity;
+            const price = parseFloat(item.price.replace(/[^0-9.]/g, '')) || 0;
+            subtotal += price * (item.quantity || 1);
         });
 
         const shipping = 10;
         const total = subtotal + shipping;
 
         // Cập nhật hiển thị tổng tiền
-        document.querySelector('.order-summary-totals .order-summary-row:first-child span:last-child')
-            .textContent = `$${subtotal.toFixed(2)}`;
-        document.querySelector('.order-summary-totals .order-summary-row:last-child span:last-child')
-            .textContent = `$${total.toFixed(2)}`;
+        document.querySelector('.order-summary-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+        document.querySelector('.order-summary-shipping').textContent = `$${shipping.toFixed(2)}`;
+        document.querySelector('.order-summary-total').textContent = `$${total.toFixed(2)}`;
     }
 
     // Validate form và chuyển hướng
@@ -60,9 +57,15 @@ document.addEventListener('DOMContentLoaded', function () {
     form.addEventListener('submit', function (e) {
         e.preventDefault();
 
+        // Bootstrap validation
+        if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+            return;
+        }
+
         // Kiểm tra giỏ hàng
         if (cart.length === 0) {
-            alert('Cart is empty. Please add items to your cart before proceeding.');
+            showNotification('Cart is empty. Please add items to your cart before proceeding.', 'danger');
             return;
         }
 
@@ -85,10 +88,16 @@ document.addEventListener('DOMContentLoaded', function () {
         window.location.href = '../paymentPage/paymentPage.html';
     });
 
-    // Xử lý nút back
-    document.querySelector('.back-arrow').addEventListener('click', function () {
-        window.location.href = '../cartPage/cartPage.html';
-    });
+    // Thông báo Bootstrap
+    function showNotification(message, type = 'info') {
+        document.querySelectorAll('.notification').forEach(n => n.remove());
+        const notification = document.createElement('div');
+        notification.className = `notification alert alert-${type} position-fixed top-0 end-0 m-4`;
+        notification.style.zIndex = 9999;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 3000);
+    }
 
     // Khởi tạo trang
     displayOrderSummary();
