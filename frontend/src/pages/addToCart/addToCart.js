@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const selectedSize = document.querySelector('.size-option.active');
 
         if (!selectedColor || !selectedSize) {
-            showNotification('Vui lòng chọn màu sắc và kích thước', 'warning');
+            showNotification('Please choose color and size', 'warning');
             return;
         }
 
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('cart', JSON.stringify(cart));
 
         // Hiển thị thông báo
-        showNotification('Đã thêm sản phẩm vào giỏ hàng', 'success');
+        showNotification('Add product to cart successfully', 'success');
 
         // Chuyển hướng đến trang giỏ hàng sau 1 giây
         setTimeout(() => {

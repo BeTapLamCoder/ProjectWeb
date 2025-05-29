@@ -66,41 +66,50 @@ function initHeroCarousel() {
 
 // Add to Cart Functionality
 function initAddToCart() {
-  document.body.addEventListener("click", function (e) {
-    const btn = e.target.closest(".add-to-cart")
-    if (!btn) return
+  const productContainer = document.body; 
 
-    e.preventDefault()
-    e.stopPropagation()
+  productContainer.addEventListener('click', function(e) {
+    const addToCartBtn = e.target.closest('.add-to-cart-overlay'); 
+    
+    if (!addToCartBtn) return;
 
-    const productCard = btn.closest(".product-card, .collection-card")
-    const productName = productCard?.querySelector(".product-name, .collection-name")?.textContent
-    const productPrice = productCard?.querySelector(".product-price, .collection-price")?.textContent
+    e.preventDefault();
+    e.stopPropagation();
 
-    // Add animation
-    btn.style.transform = "scale(0.8)"
-    btn.style.backgroundColor = "#28a745"
-    btn.innerHTML = "✓"
+    const card = addToCartBtn.closest('.card.h-100'); 
+    if (!card) {
+        console.error("Không tìm thấy card sản phẩm cho nút:", addToCartBtn);
+        return;
+    }
 
-    setTimeout(() => {
-      btn.style.transform = "scale(1)"
-      btn.style.backgroundColor = "#0000cc"
-      btn.innerHTML = "+"
-    }, 1000)
+    const productNameElement = card.querySelector('.card-title a');
+    const productPriceElement = card.querySelector('.card-text.fw-bold');
+    const productTypeElement = card.querySelector('.card-text.text-muted.small');
+    const productImageElement = card.querySelector('.card-img-top');
 
-    // Update cart count
-    updateCartCount()
+    const productData = {
+        id: card.dataset.productId || `product_${Date.now()}`,
+        name: productNameElement ? productNameElement.textContent.trim() : 'Sản phẩm không tên',
+        price: productPriceElement ? productPriceElement.textContent.trim() : '$0',
+        type: productTypeElement ? (productTypeElement.childNodes[0]?.textContent?.trim() || productTypeElement.textContent.trim()) : 'Chưa phân loại',
+        image: productImageElement ? productImageElement.src : 'placeholder.svg'
+    };
+    localStorage.setItem('selectedProduct', JSON.stringify(productData));
+    
+    const pathParts = window.location.pathname.split('/');
+    const srcIndex = pathParts.indexOf('src');
+    let baseURL = '';
+    if (window.location.pathname.includes('/frontend/src/')) {
 
-    // Show notification
-    showNotification(`Added "${productName}" to cart`, "success")
+        baseURL = './'; 
+    } else if (srcIndex !== -1) {
+        baseURL = pathParts.slice(0, srcIndex + 1).join('/') + '/';
+    } else {
+        baseURL = '/'; 
+    }
 
-    // Store in localStorage
-    addToCartStorage({
-      name: productName,
-      price: productPrice,
-      timestamp: Date.now(),
-    })
-  })
+    window.location.href = baseURL + 'pages/addToCart/addToCart.html';
+  });
 }
 
 // Collection Filters
