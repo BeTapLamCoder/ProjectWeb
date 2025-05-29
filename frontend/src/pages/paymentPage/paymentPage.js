@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function () {
     // Lấy thông tin checkout và giỏ hàng
     const checkoutInfo = JSON.parse(localStorage.getItem('checkoutInfo')) || {};
