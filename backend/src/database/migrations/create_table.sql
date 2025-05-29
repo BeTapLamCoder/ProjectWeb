@@ -12,7 +12,7 @@ END $$;
 -- USERS
 CREATE TABLE IF NOT EXISTS users (
     user_id VARCHAR(255) PRIMARY KEY,
-    username_name TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL UNIQUE,
     password VARCHAR(80) NOT NULL,
     email VARCHAR(320) NOT NULL CHECK (
         email ~* '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$'
