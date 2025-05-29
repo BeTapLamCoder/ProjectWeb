@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS cart_detail (
     quantity INT NOT NULL,
     color VARCHAR(255) NOT NULL,
     size VARCHAR(255) NOT NULL,
+    image_url TEXT,
     PRIMARY KEY (
         cart_id,
         product_id,
