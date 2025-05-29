@@ -1,27 +1,17 @@
 window.initNavbar = function () {
-    const currentPath = window.location.pathname;
-    const currentFolder = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
+    // Xác định base path tới thư mục chứa "src"
+    const pathParts = window.location.pathname.split('/');
+    const srcIndex = pathParts.indexOf('src');
+    const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
 
-    function countFolders(path) {
-        const srcIndex = path.indexOf('/src/');
-        if (srcIndex === -1) return 0;
-        const subPath = path.substring(srcIndex + 5);
-        const trimmed = subPath.endsWith('/') ? subPath.slice(0, -1) : subPath;
-        if (!trimmed) return 0;
-        return trimmed.split('/').length;
-    }
-
-    const upStepsCount = countFolders(currentFolder);
-
-    const upPath = '../'.repeat(upStepsCount);
-
-    document.querySelector('.navbar-icon.search').href = upPath + 'pages/filterAndSearch/filterAndSearch.html';
-    document.querySelector('.navbar-icon.cart').href = upPath + 'pages/cartPage/cartPage.html';
+    // Gán href cho các icon navbar
+    document.querySelector('.navbar-icon.search').href = baseURL + 'pages/filterAndSearch/filterAndSearch.html';
+    document.querySelector('.navbar-icon.cart').href = baseURL + 'pages/cartPage/cartPage.html';
 
     // Gán click logo về trang homePage
     document.getElementById('shopLogo').addEventListener('click', () => {
-        console.log('Logo clicked, redirecting to home page');
-        window.location.href = upPath + 'index.html';
+        window.location.href = baseURL + 'index.html';
+
     });
 
     const userBtn = document.getElementById('userBtn');
@@ -53,7 +43,7 @@ window.initNavbar = function () {
                 </div>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="${upPath}manageOrder/manageOrder.html" class="dropdown-item">
+                        <a href="${baseURL}pages/manageOrder/manageOrder.html" class="dropdown-item">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
                                 <line x1="3" y1="6" x2="21" y2="6"/>
@@ -77,7 +67,7 @@ window.initNavbar = function () {
         } else {
             dropdown.innerHTML = `
                 <div class="dropdown-menu">
-                    <a href="${upPath}loginAndRegist/loginAndRegist.html" class="dropdown-item">
+                    <a href="${baseURL}pages/loginAndRegist/loginAndRegist.html" class="dropdown-item">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
                             <polyline points="10 17 15 12 10 7"/>
@@ -89,7 +79,6 @@ window.initNavbar = function () {
             `;
         }
 
-        // Handle logout
         const logoutBtn = dropdown.querySelector('#logoutBtn');
         if (logoutBtn) {
             logoutBtn.onclick = function (e) {
@@ -98,28 +87,22 @@ window.initNavbar = function () {
                 localStorage.removeItem('currentUser');
                 updateDropdownContent();
                 dropdown.classList.remove('show');
-                window.location.href = upPath + 'loginAndRegist/loginAndRegist.html';
+                window.location.href = baseURL + 'pages/loginAndRegist/loginAndRegist.html';
             };
         }
     }
 
-    // Initialize dropdown content
     updateDropdownContent();
-
-    // Add dropdown to DOM
     userBtn.parentNode.appendChild(dropdown);
 
-    // Handle click events
     userBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         dropdown.classList.toggle('show');
     });
 
-    // Close dropdown when clicking outside
     document.addEventListener('click', function (e) {
         if (!dropdown.contains(e.target) && !userBtn.contains(e.target)) {
             dropdown.classList.remove('show');
         }
     });
-
 };
