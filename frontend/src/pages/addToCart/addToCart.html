@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-commerce Product Page</title>
-    <link rel="stylesheet" href="./styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
+<body style="font-family: 'Inter', sans-serif;">
     <div id="navbar-placeholder"></div>
-
     <script>
         fetch('../../components/navbar.html')
             .then(res => res.text())
@@ -30,77 +30,55 @@
                 document.body.appendChild(script);
             });
     </script>
-    <main class="product-container">
-        <div class="product-gallery">
-            <div class="main-image">
-                <img id="main-product-image" src="placeholder.svg?height=600&width=450" alt="Abstract Print Shirt">
-            </div>
-            <div class="thumbnail-gallery">
-                <div class="thumbnail active" data-image="placeholder.svg?height=600&width=450">
-                    <img src="placeholder.svg?height=100&width=80" alt="Product view 1">
-                </div>
-                <div class="thumbnail" data-image="placeholder.svg?height=600&width=450">
-                    <img src="placeholder.svg?height=100&width=80" alt="Product view 2">
-                </div>
-                <div class="thumbnail" data-image="placeholder.svg?height=600&width=450">
-                    <img src="placeholder.svg?height=100&width=80" alt="Product view 3">
-                </div>
-                <div class="thumbnail" data-image="placeholder.svg?height=600&width=450">
-                    <img src="placeholder.svg?height=100&width=80" alt="Product view 4">
-                </div>
-                <div class="thumbnail" data-image="placeholder.svg?height=600&width=450">
-                    <img src="placeholder.svg?height=100&width=80" alt="Product view 5">
-                </div>
-            </div>
-        </div>
 
-        <div class="product-details">
-            <!-- Cấu trúc HTML cho phần chi tiết sản phẩm -->
-
-            <h1 id="product-title" class="product-title">ABSTRACT PRINT SHIRT</h1>
-            <p id="product-price" class="product-price">$99</p>
-            <p id="product-tax" class="product-tax">MRP incl. of all taxes</p>
-
-            <div id="product-description" class="product-description">
-                <p>Relaxed-fit shirt. Camp collar and short sleeves. Button-up front.</p>
-            </div>
-
-
-            <div class="product-options">
-                <div class="color-options">
-                    <h3>Color</h3>
-                    <div class="color-selector">
-                        <button class="color-option" style="background-color: #d3d3d3;" data-color="gray"></button>
-                        <button class="color-option" style="background-color: #888888;" data-color="darkgray"></button>
-                        <button class="color-option active" style="background-color: #222222;"
-                            data-color="black"></button>
-                        <button class="color-option" style="background-color: #8dd3c7;" data-color="mint"></button>
-                        <button class="color-option" style="background-color: #ffffff; border: 1px solid #e0e0e0;"
-                            data-color="white"></button>
-                        <button class="color-option" style="background-color: #c6d9f0;" data-color="lightblue"></button>
-                    </div>
-                </div>
-
-                <div class="size-options">
-                    <h3>Size</h3>
-                    <div class="size-selector">
-                        <button class="size-option" data-size="XS">XS</button>
-                        <button class="size-option" data-size="S">S</button>
-                        <button class="size-option active" data-size="M">M</button>
-                        <button class="size-option" data-size="L">L</button>
-                        <button class="size-option" data-size="XL">XL</button>
-                        <button class="size-option" data-size="2X">2X</button>
+    <main class="container py-5">
+        <div class="row g-5 align-items-start">
+            <!-- Gallery -->
+            <div class="col-lg-6">
+                <div class="main-image-wrapper d-flex justify-content-center align-items-center">
+                    <div class="main-image-card shadow-sm">
+                        <img id="main-product-image" src="placeholder.svg?height=600&width=450" alt="Abstract Print Shirt"
+                            class="main-product-image img-fluid rounded-4 border" />
                     </div>
                 </div>
             </div>
-
-            <button id="add-to-cart" class="add-to-cart-btn">ADD</button>
-        </div>
+            <!-- Product Details -->
+            <div class="col-lg-6">
+                <div class="card shadow-sm border-0 p-4">
+                    <h1 id="product-title" class="h3 fw-bold mb-2">ABSTRACT PRINT SHIRT</h1>
+                    <p id="product-price" class="fs-4 fw-semibold text-primary mb-1">$99</p>
+                    <p id="product-tax" class="text-muted small mb-3">MRP incl. of all taxes</p>
+                    <div id="product-description" class="mb-4">
+                        <p>Relaxed-fit shirt. Camp collar and short sleeves. Button-up front.</p>
+                    </div>
+                    <div class="mb-4">
+                        <h6 class="mb-2">Color</h6>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-outline-secondary color-option" style="background-color: #d3d3d3;" data-color="gray"></button>
+                            <button class="btn btn-outline-secondary color-option" style="background-color: #888888;" data-color="darkgray"></button>
+                            <button class="btn btn-outline-secondary color-option active" style="background-color: #222222;" data-color="black"></button>
+                            <button class="btn btn-outline-secondary color-option" style="background-color: #8dd3c7;" data-color="mint"></button>
+                            <button class="btn btn-outline-secondary color-option" style="background-color: #ffffff; border: 1px solid #e0e0e0;" data-color="white"></button>
+                            <button class="btn btn-outline-secondary color-option" style="background-color: #c6d9f0;" data-color="lightblue"></button>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <h6 class="mb-2">Size</h6>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-outline-dark size-option" data-size="XS">XS</button>
+                            <button class="btn btn-outline-dark size-option" data-size="S">S</button>
+                            <button class="btn btn-outline-dark size-option active" data-size="M">M</button>
+                            <button class="btn btn-outline-dark size-option" data-size="L">L</button>
+                            <button class="btn btn-outline-dark size-option" data-size="XL">XL</button>
+                            <button class="btn btn-outline-dark size-option" data-size="2X">2X</button>
+                        </div>
+                    </div>
+                    <button id="add-to-cart" class="btn btn-dark w-100 py-3 fw-bold text-uppercase add-to-cart-btn">ADD</button>
+                </div>
+            </div>
         </div>
     </main>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./addToCart.js"></script>
-
 </body>
-
 </html>

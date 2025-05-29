@@ -97,15 +97,31 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Add to cart functionality
-    const productCards = document.querySelectorAll('.product-card');
-
+    // Add to Cart button click: chỉ khi bấm nút mới chuyển trang
+    const productCards = document.querySelectorAll('.card.h-100');
     productCards.forEach(card => {
-        card.addEventListener('click', function () {
-            const productName = this.querySelector('.product-name').textContent;
-            console.log(`Added ${productName} to cart`);
-            // In a real app, you would add the product to the cart here
-        });
+        const addToCartBtn = card.querySelector('.card-footer .btn');
+        if (addToCartBtn) {
+            addToCartBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Lấy thông tin sản phẩm
+                const productData = {
+                    id: card.dataset.productId || 'default-id',
+                    name: card.querySelector('.card-title')?.textContent || '',
+                    price: card.querySelector('.card-text.fw-bold')?.textContent || '',
+                    type: card.querySelector('.card-text.text-muted.small')?.childNodes[0]?.textContent?.trim() || '',
+                    image: card.querySelector('.card-img-top')?.src || ''
+                };
+
+                // Lưu vào localStorage
+                localStorage.setItem('selectedProduct', JSON.stringify(productData));
+
+                // Chuyển sang trang addToCart
+                window.location.href = '../addToCart/addToCart.html';
+            });
+        }
     });
 
     // Navigation to home page
@@ -114,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
         homeButton.addEventListener('click', function (e) {
             e.preventDefault();
             console.log('Home button clicked');
-            window.location.href = '../homePage/homePage.html';
+            window.location.href = '/frontend/src/index.html'; 
         });
     }
 
@@ -228,7 +244,6 @@ document.addEventListener('DOMContentLoaded', function () {
         categoryFilters.style.cursor = 'grab';
 
         const productCards = document.querySelectorAll('.product-card');
-
         productCards.forEach(card => {
             card.addEventListener('click', function () {
                 // Lấy thông tin sản phẩm

@@ -1,253 +1,253 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-commerce Product Page</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Trang Sản Phẩm E-commerce - Bootstrap</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
+    <div id="navbar-placeholder"></div>
+    <script>
+        fetch('../../components/navbar.html')
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status} while fetching navbar.html`);
+                }
+                return res.text();
+            })
+            .then(html => {
+                const navbarPlaceholder = document.getElementById('navbar-placeholder');
+                if (navbarPlaceholder) {
+                    navbarPlaceholder.innerHTML = html;
+                } else {
+                    console.error('Navbar placeholder not found.');
+                    return;
+                }
 
-    <body>
-        <div id="navbar-placeholder"></div>
-        <script>
-            fetch('../../components/navbar.html')
-                .then(res => res.text())
-                .then(html => {
-                    document.getElementById('navbar-placeholder').innerHTML = html;
-                    const link = document.createElement('link');
-                    link.rel = 'stylesheet';
-                    link.href = '../../components/navbar.css';
-                    document.head.appendChild(link);
-                    const script = document.createElement('script');
-                    script.src = '../../components/navbar.js';
-                    script.onload = function () {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = '../../components/navbar.css';
+                document.head.appendChild(link);
+
+                const script = document.createElement('script');
+                script.src = '../../components/navbar.js';
+                script.onload = function () {
+                    if (window.initNavbar) {
                         window.initNavbar();
-                    };
-                    document.body.appendChild(script);
-                });
-        </script>
+                    } else {
+                        console.error('initNavbar function not found in navbar.js.');
+                    }
+                };
+                script.onerror = function() {
+                    console.error('Failed to load navbar.js');
+                }
+                document.body.appendChild(script);
+            })
+            .catch(error => {
+                console.error('Failed to load navbar component:', error);
+                const navbarPlaceholder = document.getElementById('navbar-placeholder');
+                if (navbarPlaceholder) {
+                    navbarPlaceholder.innerHTML = '<p class="text-danger text-center">Error loading navigation bar.</p>';
+                }
+            });
+    </script>
+    
+    <main class="container mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Products</li>
+            </ol>
+        </nav>
 
-        <main>
-            <div class="breadcrumb">
-                <a href="../homePage/homePage.html">Home</a> / <span>Products</span>
-            </div>
+        <h1 class="display-5 mb-4">PRODUCTS</h1>
 
-            <h1 class="page-title">PRODUCTS</h1>
-
-            <div class="main-content">
-                <div class="search-bar">
-                    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        <div class="mb-4">
+            <div class="input-group mb-4">
+                <span class="input-group-text" id="search-addon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
                     </svg>
-                    <input type="text" placeholder="Search">
+                </span>
+                <input type="text" class="form-control" placeholder="Search products..." aria-label="Search products" aria-describedby="search-addon">
+            </div>
+
+            <div class="d-flex align-items-center mb-3">
+                <div class="scroll-indicator scroll-left me-2 hidden"> 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </div>
+                <div class="category-filters-scrollable flex-grow-1">
+                    <button type="button" class="btn btn-primary me-2">NEW</button>
+                    <button type="button" class="btn btn-outline-secondary me-2">SHIRTS</button>
+                    <button type="button" class="btn btn-outline-secondary me-2">POLO SHIRTS</button>
+                    <button type="button" class="btn btn-outline-secondary me-2">SHORTS</button>
+                    <button type="button" class="btn btn-outline-secondary me-2">SUITS</button>
+                    <button type="button" class="btn btn-outline-secondary me-2">BEST SELLERS</button>
+                    <button type="button" class="btn btn-outline-secondary me-2">T-SHIRTS</button>
+                    <button type="button" class="btn btn-outline-secondary me-2">JEANS</button>
+                    <button type="button" class="btn btn-outline-secondary me-2">JACKETS</button>
+                    <button type="button" class="btn btn-outline-secondary me-2">COATS</button>
+                </div>
+                <div class="scroll-indicator scroll-right ms-2 hidden">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Fixed: Removed premature closing div tag and kept all products in the same row -->
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                <div class="col">
+                    <div class="card h-100 shadow-sm"> 
+                        <div class="product-image">
+                            <img src="https://buggy.yodycdn.com/images/product/b742a3cdd579680ccbbd3f647bd48986.webp?width=987&height=1316" class="card-img-top" alt="Men's Long Sleeve Shirt with Stylish Pocket">
+                        </div>
+                        <div class="card-body d-flex flex-column"> 
+                            <p class="card-text text-muted small">Cotton T Shirt <span class="badge bg-secondary ms-1">+5</span></p>
+                            <h5 class="card-title">Men's Long Sleeve Shirt with Stylish Pocket</h5>
+                            <p class="card-text fw-bold mt-auto">$199</p> 
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0">
+                             <button class="btn btn-outline-primary w-100">Add to Cart</button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="category-filters">
-                    <div class="scroll-indicator scroll-left hidden">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="15 18 9 12 15 6"></polyline>
-                        </svg>
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="product-image">
+                             <img src="https://buggy.yodycdn.com/images/product/ddc43b6ac3e829dece9920bfba10c97f.webp?width=987&height=1316" class="card-img-top" alt="Men's Woven Ribbed Striped Polo Shirt">
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <p class="card-text text-muted small">Crewneck T-Shirt <span class="badge bg-secondary ms-1">+6</span></p>
+                            <h5 class="card-title">Men's Woven Ribbed Striped Polo Shirt</h5>
+                            <p class="card-text fw-bold mt-auto">$199</p>
+                        </div>
+                         <div class="card-footer bg-transparent border-top-0">
+                             <button class="btn btn-outline-primary w-100">Add to Cart</button>
+                        </div>
                     </div>
-
-                    <button class="category-btn active">NEW</button>
-                    <button class="category-btn">SHIRTS</button>
-                    <button class="category-btn">POLO SHIRTS</button>
-                    <button class="category-btn">SHORTS</button>
-                    <button class="category-btn">SUITS</button>
-                    <button class="category-btn">BEST SELLERS</button>
-                    <button class="category-btn">T-SHIRTS</button>
-                    <button class="category-btn">JEANS</button>
-                    <button class="category-btn">JACKETS</button>
-                    <button class="category-btn">COATS</button>
                 </div>
 
-                <div class="products-grid">
-                    <div class="product-card">
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
                         <div class="product-image">
-                            <img src="https://buggy.yodycdn.com/images/product/b742a3cdd579680ccbbd3f647bd48986.webp?width=987&height=1316"
-                                alt=" Men's Long Sleeve Shirt with Stylish Pocket">
+                            <img src="https://buggy.yodycdn.com/images/product/0f58acf17ddd64467cb44ada739199f8.webp?width=987&height=1316" class="card-img-top" alt="Men's Short Sleeve Nano Plaid Shirt with Chest Pocket">
                         </div>
-                        <div class="product-info">
-                            <div class="product-type">Cotton T Shirt <span class="color-option">+5</span></div>
-                            <h3 class="product-name"> Men's Long Sleeve Shirt with Stylish Pocket</h3>
-                            <div class="product-price">$ 199</div>
+                        <div class="card-body d-flex flex-column">
+                            <p class="card-text text-muted small">Cotton T Shirt</p>
+                            <h5 class="card-title">Men's Short Sleeve Nano Plaid Shirt with Chest Pocket</h5>
+                            <p class="card-text fw-bold mt-auto">$199</p>
+                        </div>
+                         <div class="card-footer bg-transparent border-top-0">
+                             <button class="btn btn-outline-primary w-100">Add to Cart</button>
                         </div>
                     </div>
+                </div>
 
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://buggy.yodycdn.com/images/product/ddc43b6ac3e829dece9920bfba10c97f.webp?width=987&height=1316"
-                                alt="Men's Woven Ribbed Striped Polo Shirt">
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                         <div class="product-image">
+                            <img src="https://buggy.yodycdn.com/images/product/17c251c27c4e8d1b6cd560181ff21107.webp?width=987&height=1316" class="card-img-top" alt="Men's Long Sleeve Nano Plaid Shirt">
                         </div>
-                        <div class="product-info">
-                            <div class="product-type">Crewneck T-Shirt <span class="color-option">+6</span>
-                            </div>
-                            <h3 class="product-name">Men's Woven Ribbed Striped Polo Shirt</h3>
-                            <div class="product-price">$ 199</div>
+                        <div class="card-body d-flex flex-column">
+                            <p class="card-text text-muted small">Cotton T Shirt</p>
+                            <h5 class="card-title">Men's Long Sleeve Nano Plaid Shirt</h5>
+                            <p class="card-text fw-bold mt-auto">$199</p>
+                        </div>
+                         <div class="card-footer bg-transparent border-top-0">
+                             <button class="btn btn-outline-primary w-100">Add to Cart</button>
                         </div>
                     </div>
+                </div>
+                
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                         <div class="product-image">
+                            <img src="https://buggy.yodycdn.com/images/product/f266631d9a63474e7de510331be17e1d.webp?width=987&height=1316" class="card-img-top" alt="Men's Short Sleeve Nano Checkered Shirt">
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <p class="card-text text-muted small">Cotton T Shirt</p>
+                            <h5 class="card-title">Men's Short Sleeve Nano Checkered Shirt</h5>
+                            <p class="card-text fw-bold mt-auto">$199</p>
+                        </div>
+                         <div class="card-footer bg-transparent border-top-0">
+                             <button class="btn btn-outline-primary w-100">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
 
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://buggy.yodycdn.com/images/product/0f58acf17ddd64467cb44ada739199f8.webp?width=987&height=1316"
-                                alt="Men's Short Sleeve Nano Plaid Shirt with Chest Pocket">
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                         <div class="product-image">
+                           <img src="https://buggy.yodycdn.com/images/product/ab01a7978591b6021fffdad365999d8c.webp?width=987&height=1316" class="card-img-top" alt="Men's Long Sleeve Nano Shirt with Contrasting Collar">
                         </div>
-                        <div class="product-info">
-                            <div class="product-type">Cotton T Shirt</div>
-                            <h3 class="product-name">Men's Short Sleeve Nano Plaid Shirt with Chest Pocket</h3>
-                            <div class="product-price">$ 199</div>
+                        <div class="card-body d-flex flex-column">
+                            <p class="card-text text-muted small">Cotton T Shirt</p>
+                            <h5 class="card-title">Men's Long Sleeve Nano Shirt with Contrasting Collar</h5>
+                            <p class="card-text fw-bold mt-auto">$199</p>
+                        </div>
+                         <div class="card-footer bg-transparent border-top-0">
+                             <button class="btn btn-outline-primary w-100">Add to Cart</button>
                         </div>
                     </div>
+                </div>
 
-                    <div class="product-card">
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
                         <div class="product-image">
-                            <img src="https://buggy.yodycdn.com/images/product/17c251c27c4e8d1b6cd560181ff21107.webp?width=431&height=575"
-                                alt="Men's Long Sleeve Nano Plaid Shirt">
+                           <img src="https://buggy.yodycdn.com/images/product/bf1bdbdf1ea8347b3070b99ba2e95726.webp?width=987&height=1316" class="card-img-top" alt="Men's Short Sleeve Nano Shirt with Contrasting Collar">
                         </div>
-                        <div class="product-info">
-                            <div class="product-type">Cotton T Shirt</div>
-                            <h3 class="product-name">Men's Long Sleeve Nano Plaid Shirt</h3>
-                            <div class="product-price">$ 199</div>
+                        <div class="card-body d-flex flex-column">
+                            <p class="card-text text-muted small">Cotton T Shirt</p>
+                            <h5 class="card-title">Men's Short Sleeve Nano Shirt with Contrasting Collar</h5>
+                            <p class="card-text fw-bold mt-auto">$199</p>
+                        </div>
+                         <div class="card-footer bg-transparent border-top-0">
+                             <button class="btn btn-outline-primary w-100">Add to Cart</button>
                         </div>
                     </div>
+                </div>
 
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://buggy.yodycdn.com/images/product/f266631d9a63474e7de510331be17e1d.webp?width=431&height=575"
-                                alt="Men's Short Sleeve Nano Checkered Shirt">
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                         <div class="product-image">
+                           <img src="https://buggy.yodycdn.com/images/product/bf1bdbdf1ea8347b3070b99ba2e95726.webp?width=987&height=1316" class="card-img-top" alt="Men's Short Sleeve Nano Shirt with Contrasting Collar duplicate">
                         </div>
-                        <div class="product-info">
-                            <div class="product-type">Cotton T Shirt</div>
-                            <h3 class="product-name">Men's Short Sleeve Nano Checkered Shirt</h3>
-                            <div class="product-price">$ 199</div>
+                        <div class="card-body d-flex flex-column">
+                            <p class="card-text text-muted small">Cotton T Shirt</p>
+                            <h5 class="card-title">Men's Short Sleeve Nano Shirt (Duplicate)</h5>
+                            <p class="card-text fw-bold mt-auto">$199</p>
                         </div>
-                    </div>
-
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://buggy.yodycdn.com/images/product/ab01a7978591b6021fffdad365999d8c.webp?width=431&height=575"
-                                alt="Men's Long Sleeve Nano Shirt with Contrasting Collar">
-                        </div>
-                        <div class="product-info">
-                            <div class="product-type">Cotton T Shirt</div>
-                            <h3 class="product-name">Men's Long Sleeve Nano Shirt with Contrasting Collar</h3>
-                            <div class="product-price">$ 199</div>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://buggy.yodycdn.com/images/product/bf1bdbdf1ea8347b3070b99ba2e95726.webp?width=431&height=575"
-                                alt="Men's Short Sleeve Nano Shirt with Contrasting Collar">
-                        </div>
-                        <div class="product-info">
-                            <div class="product-type">Cotton T Shirt</div>
-                            <h3 class="product-name">Men's Short Sleeve Nano Shirt with Contrasting Collar</h3>
-                            <div class="product-price">$ 199</div>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://buggy.yodycdn.com/images/product/bf1bdbdf1ea8347b3070b99ba2e95726.webp?width=431&height=575"
-                                alt="Men's Short Sleeve Nano Shirt with Contrasting Collar">
-                        </div>
-                        <div class="product-info">
-                            <div class="product-type">Cotton T Shirt</div>
-                            <h3 class="product-name">Men's Short Sleeve Nano Shirt with Contrasting Collar</h3>
-                            <div class="product-price">$ 199</div>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://buggy.yodycdn.com/images/product/bf1bdbdf1ea8347b3070b99ba2e95726.webp?width=431&height=575"
-                                alt="Men's Short Sleeve Nano Shirt with Contrasting Collar">
-                        </div>
-                        <div class="product-info">
-                            <div class="product-type">Cotton T Shirt</div>
-                            <h3 class="product-name">Men's Short Sleeve Nano Shirt with Contrasting Collar</h3>
-                            <div class="product-price">$ 199</div>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://buggy.yodycdn.com/images/product/bf1bdbdf1ea8347b3070b99ba2e95726.webp?width=431&height=575"
-                                alt="Men's Short Sleeve Nano Shirt with Contrasting Collar">
-                        </div>
-                        <div class="product-info">
-                            <div class="product-type">Cotton T Shirt</div>
-                            <h3 class="product-name">Men's Short Sleeve Nano Shirt with Contrasting Collar</h3>
-                            <div class="product-price">$ 199</div>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://buggy.yodycdn.com/images/product/bf1bdbdf1ea8347b3070b99ba2e95726.webp?width=431&height=575"
-                                alt="Men's Short Sleeve Nano Shirt with Contrasting Collar">
-                        </div>
-                        <div class="product-info">
-                            <div class="product-type">Cotton T Shirt</div>
-                            <h3 class="product-name">Men's Short Sleeve Nano Shirt with Contrasting Collar</h3>
-                            <div class="product-price">$ 199</div>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://buggy.yodycdn.com/images/product/bf1bdbdf1ea8347b3070b99ba2e95726.webp?width=431&height=575"
-                                alt="Men's Short Sleeve Nano Shirt with Contrasting Collar">
-                        </div>
-                        <div class="product-info">
-                            <div class="product-type">Cotton T Shirt</div>
-                            <h3 class="product-name">Men's Short Sleeve Nano Shirt with Contrasting Collar</h3>
-                            <div class="product-price">$ 199</div>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://buggy.yodycdn.com/images/product/bf1bdbdf1ea8347b3070b99ba2e95726.webp?width=431&height=575"
-                                alt="Men's Short Sleeve Nano Shirt with Contrasting Collar">
-                        </div>
-                        <div class="product-info">
-                            <div class="product-type">Cotton T Shirt</div>
-                            <h3 class="product-name">Men's Short Sleeve Nano Shirt with Contrasting Collar</h3>
-                            <div class="product-price">$ 199</div>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://buggy.yodycdn.com/images/product/bf1bdbdf1ea8347b3070b99ba2e95726.webp?width=431&height=575"
-                                alt="Men's Short Sleeve Nano Shirt with Contrasting Collar">
-                        </div>
-                        <div class="product-info">
-                            <div class="product-type">Cotton T Shirt</div>
-                            <h3 class="product-name">Men's Short Sleeve Nano Shirt with Contrasting Collar</h3>
-                            <div class="product-price">$ 199</div>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="https://buggy.yodycdn.com/images/product/bf1bdbdf1ea8347b3070b99ba2e95726.webp?width=431&height=575"
-                                alt="Men's Short Sleeve Nano Shirt with Contrasting Collar">
-                        </div>
-                        <div class="product-info">
-                            <div class="product-type">Cotton T Shirt</div>
-                            <h3 class="product-name">Men's Short Sleeve Nano Shirt with Contrasting Collar</h3>
-                            <div class="product-price">$ 199</div>
+                         <div class="card-footer bg-transparent border-top-0">
+                             <button class="btn btn-outline-primary w-100">Add to Cart</button>
                         </div>
                     </div>
                 </div>
             </div>
-            </div>
-            </div>
-        </main>
+        </div>
+    </main>
 
-        <script src="main.js"></script>
-    </body>
+    <footer class="bg-light text-center text-lg-start mt-5">
+        <div class="container p-4">
+            <p class="text-center">&copy; 2024 YODY. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="main.js"></script>
+</body>
 
 </html>
