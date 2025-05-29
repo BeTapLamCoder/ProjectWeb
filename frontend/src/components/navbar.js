@@ -1,18 +1,24 @@
 window.initNavbar = function () {
-    // Xác định base path tới thư mục chứa "src"
-    const pathParts = window.location.pathname.split('/');
-    const srcIndex = pathParts.indexOf('src');
-    const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
+  // Xác định base path tới thư mục chứa "src"
+  const pathParts = window.location.pathname.split('/');
+  const srcIndex = pathParts.indexOf('src');
+  const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
 
-    // Gán href cho các icon navbar với class đúng
+  // Gán href cho các icon navbar với class đúng
   const searchIcon = document.querySelector(".navbar-icon.search")
   const cartIcon = document.querySelector(".navbar-icon.cart")
 
   if (searchIcon) {
-    searchIcon.href = baseURL + "pages/filterAndSearch/filterAndSearch.html"
+    searchIcon.addEventListener("click", (e) => {
+      e.preventDefault()
+      window.location.href = baseURL + "pages/filterAndSearch/filterAndSearch.html"
+    })
   }
   if (cartIcon) {
-    cartIcon.href = baseURL + "pages/cartPage/cartPage.html"
+    cartIcon.addEventListener("click", (e) => {
+      e.preventDefault()
+      window.location.href = baseURL + "pages/cartPage/cartPage.html"
+    })
   }
 
   // Gán click logo về trang homePage

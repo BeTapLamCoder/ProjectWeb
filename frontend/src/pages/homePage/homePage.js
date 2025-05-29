@@ -1,7 +1,8 @@
 // Homepage JavaScript - FIXED CAROUSEL
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   initMobileMenu()
   initHeroCarousel()
+  await fetchAndRenderProducts() // Fetch products from server
   initAddToCart()
   initCollectionFilters()
   initLoadMore()
@@ -65,20 +66,20 @@ function initHeroCarousel() {
 
 // Add to Cart Functionality
 function initAddToCart() {
-  const productContainer = document.body; 
+  const productContainer = document.body;
 
-  productContainer.addEventListener('click', function(e) {
-    const addToCartBtn = e.target.closest('.add-to-cart-overlay'); 
-    
+  productContainer.addEventListener('click', function (e) {
+    const addToCartBtn = e.target.closest('.add-to-cart-overlay');
+
     if (!addToCartBtn) return;
 
     e.preventDefault();
     e.stopPropagation();
 
-    const card = addToCartBtn.closest('.card.h-100'); 
+    const card = addToCartBtn.closest('.card.h-100');
     if (!card) {
-        console.error("Không tìm thấy card sản phẩm cho nút:", addToCartBtn);
-        return;
+      console.error("Không tìm thấy card sản phẩm cho nút:", addToCartBtn);
+      return;
     }
 
     const productNameElement = card.querySelector('.card-title a');
@@ -87,24 +88,24 @@ function initAddToCart() {
     const productImageElement = card.querySelector('.card-img-top');
 
     const productData = {
-        id: card.dataset.productId || `product_${Date.now()}`,
-        name: productNameElement ? productNameElement.textContent.trim() : 'Sản phẩm không tên',
-        price: productPriceElement ? productPriceElement.textContent.trim() : '$0',
-        type: productTypeElement ? (productTypeElement.childNodes[0]?.textContent?.trim() || productTypeElement.textContent.trim()) : 'Chưa phân loại',
-        image: productImageElement ? productImageElement.src : 'placeholder.svg'
+      id: card.dataset.productId || `product_${Date.now()}`,
+      name: productNameElement ? productNameElement.textContent.trim() : 'Sản phẩm không tên',
+      price: productPriceElement ? productPriceElement.textContent.trim() : '$0',
+      type: productTypeElement ? (productTypeElement.childNodes[0]?.textContent?.trim() || productTypeElement.textContent.trim()) : 'Chưa phân loại',
+      image: productImageElement ? productImageElement.src : 'placeholder.svg'
     };
     localStorage.setItem('selectedProduct', JSON.stringify(productData));
-    
+
     const pathParts = window.location.pathname.split('/');
     const srcIndex = pathParts.indexOf('src');
     let baseURL = '';
     if (window.location.pathname.includes('/frontend/src/')) {
 
-        baseURL = './'; 
+      baseURL = './';
     } else if (srcIndex !== -1) {
-        baseURL = pathParts.slice(0, srcIndex + 1).join('/') + '/';
+      baseURL = pathParts.slice(0, srcIndex + 1).join('/') + '/';
     } else {
-        baseURL = '/'; 
+      baseURL = '/';
     }
 
     window.location.href = baseURL + 'pages/addToCart/addToCart.html';
@@ -403,108 +404,35 @@ function showNotification(message, type = "info") {
 }
 
 // Product Database (giữ nguyên như cũ)
-const productDatabase = [
-  // Men Products
-  {
-    name: "Premium Cotton Hoodie",
-    category: "men",
-    price: "$299",
-    categoryDisplay: "Cotton Hoodie",
-    image: "https://buggy.yodycdn.com/images/product/bacf8829518f24b04db2236552e9e4c9.webp?width=987&height=1316",
-  },
-  {
-    name: "Classic Denim Jacket",
-    category: "men",
-    price: "$399",
-    categoryDisplay: "Denim Jacket",
-    image: "https://buggy.yodycdn.com/images/product/3e41fdc02b1f7908a2974283fd7905ab.webp?width=987&height=1316",
-  },
-  {
-    name: "Casual Polo Shirt",
-    category: "men",
-    price: "$159",
-    categoryDisplay: "Polo Shirt",
-    image: "https://buggy.yodycdn.com/images/product/b748d34111da5399e1868f073a549404.webp?width=987&height=1316",
-  },
-  {
-    name: "Slim Fit Chinos",
-    category: "men",
-    price: "$229",
-    categoryDisplay: "Chinos Pants",
-    image: "https://buggy.yodycdn.com/images/product/427a1a554e6cb9b91fbe67d9430d8411.webp?width=987&height=1316",
-  },
+let productDatabase = [];
 
-  // Women Products
-  {
-    name: "Elegant Silk Blouse",
-    category: "women",
-    price: "$349",
-    categoryDisplay: "Silk Blouse",
-    image: "https://buggy.yodycdn.com/images/product/3e279ed4c388b3be16807915f4abfbc0.webp?width=987&height=1316",
-  },
-  {
-    name: "Floral Summer Dress",
-    category: "women",
-    price: "$279",
-    categoryDisplay: "Summer Dress",
-    image: "https://buggy.yodycdn.com/images/product/a30d2627fbb012bbe5dfffd42e3cdff3.webp?width=987&height=1316",
-  },
-  {
-    name: "Casual Knit Sweater",
-    category: "women",
-    price: "$199",
-    categoryDisplay: "Knit Sweater",
-    image: "https://buggy.yodycdn.com/images/product/d712f0ca773a81df6c995e56c0da674e.webp?width=987&height=1316",
-  },
-  {
-    name: "High-Waist Jeans",
-    category: "women",
-    price: "$259",
-    categoryDisplay: "High-Waist Jeans",
-    image: "https://buggy.yodycdn.com/images/product/3dd7b1ac0dc9a7c291cefc7c07c58d7a.webp?width=987&height=1316",
-  },
+// Hàm fetch sản phẩm từ API và render ra trang
+async function fetchAndRenderProducts() {
+  try {
+    const response = await fetch('http://localhost:8080/products'); // Đổi URL nếu cần
+    const data = await response.json();
+    productDatabase = data.map(item => ({
+      id: item.product_id,
+      name: item.product_name,
+      category: item.category_id || "all",
+      categoryDisplay: item.category_name || "All",
+      price: item.price,
+      image: item.image_url
+    }));
 
-  // Kids Products
-  {
-    name: "Colorful Graphic Tee",
-    category: "kid",
-    price: "$89",
-    categoryDisplay: "Kids T-Shirt",
-    image: "https://buggy.yodycdn.com/images/product/e3493ccb97b8279f07e663e0e2cba289.webp?width=987&height=1316",
-  },
-  {
-    name: "Mini Denim Jacket",
-    category: "kid",
-    price: "$129",
-    categoryDisplay: "Kids Jacket",
-    image: "https://buggy.yodycdn.com/images/product/f0f3cc2f66f7d351226d88e0762ae594.webp?width=987&height=1316",
-  },
-  {
-    name: "Comfortable Joggers",
-    category: "kid",
-    price: "$99",
-    categoryDisplay: "Kids Pants",
-    image: "https://buggy.yodycdn.com/images/product/b8720cd7b4a22ca3bedbe54ceb700219.webp?width=987&height=1316",
-  },
-  {
-    name: "Cute Animal Hoodie",
-    category: "kid",
-    price: "$119",
-    categoryDisplay: "Kids Hoodie",
-    image: "https://buggy.yodycdn.com/images/product/d7e1df48b2c7a678e10b2dbb8101d3e8.webp?width=987&height=1316",
-  },
-  {
-    name: "Rainbow Striped Dress",
-    category: "kid",
-    price: "$109",
-    categoryDisplay: "Kids Dress",
-    image: "https://buggy.yodycdn.com/images/product/3c59cf289ebe000508480b816917b297.webp?width=987&height=1316",
-  },
-  {
-    name: "Sports Shorts Set",
-    category: "kid",
-    price: "$79",
-    categoryDisplay: "Kids Sports Set",
-    image: "https://buggy.yodycdn.com/images/product/644c4edb9c3aa32a6b6678b511655866.webp?width=987&height=1316",
-  },
-]
+    renderInitialProducts(productDatabase);
+  } catch (error) {
+    showNotification('Không thể tải sản phẩm từ server!', 'error');
+    console.error(error);
+  }
+}
+
+// Render sản phẩm ra grid (hiển thị 9 sản phẩm đầu)
+function renderInitialProducts(products) {
+  const collectionsGrid = document.querySelector('.collections-grid');
+  if (!collectionsGrid) return;
+  collectionsGrid.innerHTML = '';
+  loadedProductIndex = 0;
+  addProductsToGrid(products.slice(0, 9), collectionsGrid);
+  loadedProductIndex = 9;
+}

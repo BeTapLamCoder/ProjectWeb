@@ -6,13 +6,12 @@ const cartDetailRoute = require('./routes/cartDetail.route');
 const orderRoute = require('./routes/order.route');
 const orderDetailRoute = require('./routes/orderDetail.route');
 const cors = require('cors');
+
 const app = express();
 app.use(cors());
 
-
-
 app.use(express.json());
-
+app.use(cors());
 app.use('/health', healthRoute);
 app.use('/users', userRoute);
 app.use('/products', productRoute);

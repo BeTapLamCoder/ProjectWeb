@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+    fetchAndRenderProducts();
     // Toggle filter groups
     const filterHeaders = document.querySelectorAll('.filter-header');
 
@@ -81,21 +82,76 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Replace placeholder with actual product images
     // This is just a simulation - in a real app you'd load actual product images
-    const productImageUrls = [
-        'https://buggy.yodycdn.com/images/product/b742a3cdd579680ccbbd3f647bd48986.webp?width=987&height=1316',
-        'https://buggy.yodycdn.com/images/product/ddc43b6ac3e829dece9920bfba10c97f.webp?width=987&height=1316',
-        'https://buggy.yodycdn.com/images/product/0f58acf17ddd64467cb44ada739199f8.webp?width=987&height=1316',
-        'https://buggy.yodycdn.com/images/product/17c251c27c4e8d1b6cd560181ff21107.webp?width=431&height=575',
-        'https://buggy.yodycdn.com/images/product/f266631d9a63474e7de510331be17e1d.webp?width=431&height=575',
-        'https://buggy.yodycdn.com/images/product/ab01a7978591b6021fffdad365999d8c.webp?width=431&height=575',
-        'https://buggy.yodycdn.com/images/product/bf1bdbdf1ea8347b3070b99ba2e95726.webp?width=431&height=575'
-    ];
+    let productDatabase = [];
 
-    productImages.forEach((img, index) => {
-        if (productImageUrls[index % productImageUrls.length]) {
-            img.src = productImageUrls[index % productImageUrls.length];
+    async function fetchAndRenderProducts() {
+        try {
+            const response = await fetch('http://localhost:8080/products');
+            const data = await response.json();
+            productDatabase = data.map(item => ({
+                id: item.product_id,
+                name: item.product_name,
+                category: item.category_id || "all",
+                price: item.price,
+                image: item.image_url,
+                description: item.description || ""
+            }));
+            renderProducts(productDatabase);
+        } catch (error) {
+            console.error('Không thể tải sản phẩm từ server!', error);
         }
-    });
+    }
+
+    function renderProducts(products) {
+        const productsGrid = document.querySelector('.row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4.g-4');
+        if (!productsGrid) return;
+        productsGrid.innerHTML = '';
+        products.forEach(product => {
+            const col = document.createElement('div');
+            col.className = 'col';
+            col.innerHTML = `
+            <div class="card h-100 shadow-sm" data-product-id="${product.id}">
+                <div class="product-image">
+                    <img src="${product.image}" class="card-img-top" alt="${product.name}">
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <p class="card-text text-muted small">${product.description}</p>
+                    <h5 class="card-title product-name">${product.name}</h5>
+                    <p class="card-text fw-bold mt-auto product-price">${product.price} đ</p>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <button class="btn btn-outline-primary w-100">Add to Cart</button>
+                </div>
+            </div>
+        `;
+            productsGrid.appendChild(col);
+        });
+
+        // Gắn lại sự kiện cho nút Add to Cart
+        const productCards = productsGrid.querySelectorAll('.card.h-100');
+        productCards.forEach(card => {
+            const addToCartBtn = card.querySelector('.card-footer .btn');
+            if (addToCartBtn) {
+                addToCartBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const productData = {
+                        id: card.dataset.productId || 'default-id',
+                        name: card.querySelector('.product-name')?.textContent || '',
+                        price: card.querySelector('.product-price')?.textContent || '',
+                        image: card.querySelector('.card-img-top')?.src || '',
+                        description: card.querySelector('.card-text.text-muted.small')?.textContent || ''
+                    };
+                    localStorage.setItem('selectedProduct', JSON.stringify(productData));
+                    // Xác định base path tới thư mục chứa "src"
+                    const pathParts = window.location.pathname.split('/');
+                    const srcIndex = pathParts.indexOf('src');
+                    const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
+                    window.location.href = baseURL + 'pages/addToCart/addToCart.html';
+                });
+            }
+        });
+    }
 
     // Add to Cart button click: chỉ khi bấm nút mới chuyển trang
     const productCards = document.querySelectorAll('.card.h-100');
@@ -118,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Lưu vào localStorage
                 localStorage.setItem('selectedProduct', JSON.stringify(productData));
 
-              // Xác định base path tới thư mục chứa "src"
+                // Xác định base path tới thư mục chứa "src"
                 const pathParts = window.location.pathname.split('/');
                 const srcIndex = pathParts.indexOf('src');
                 const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
@@ -135,11 +191,11 @@ document.addEventListener('DOMContentLoaded', function () {
         homeButton.addEventListener('click', function (e) {
             e.preventDefault();
             console.log('Home button clicked');
-          // Xác định base path tới thư mục chứa "src"
+            // Xác định base path tới thư mục chứa "src"
             const pathParts = window.location.pathname.split('/');
             const srcIndex = pathParts.indexOf('src');
             const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
-            window.location.href = baseURL + 'index.html'; 
+            window.location.href = baseURL + 'index.html';
 
         });
     }
@@ -267,8 +323,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Lưu thông tin sản phẩm vào localStorage
                 localStorage.setItem('selectedProduct', JSON.stringify(productData));
-              
-              // Xác định base path tới thư mục chứa "src"
+
+                // Xác định base path tới thư mục chứa "src"
                 const pathParts = window.location.pathname.split('/');
                 const srcIndex = pathParts.indexOf('src');
                 const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';

@@ -19,10 +19,14 @@ class productService {
         return await productModel.create(product);
     }
     async findAll() {
-        const products = await productModel.findAll();
+        const products = await db.query(
+            `SELECT product.*, category.category_name
+            FROM ${productModel.tableName}
+            JOIN category ON product.category_id = category.category_id`
+        );
         if (products.length === 0)
             return null;
-        return products;
+        return products.rows;
     }
     async findById(id) {
         const product = await productModel.findById(id);
