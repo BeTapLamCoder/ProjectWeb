@@ -79,8 +79,12 @@ function initFormSubmission() {
                     email: user.email
                 }));
                 showNotification('Login successful! Redirecting...', 'success');
+                // Xác định base path tới thư mục chứa "src"
+                const pathParts = window.location.pathname.split('/');
+                const srcIndex = pathParts.indexOf('src');
+                const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
                 setTimeout(() => {
-                    window.location.href = 'index.html'; // Redirect to home page
+                    window.location.href = baseURL + 'index.html'; // Redirect to home page
                 }, 1200);
             } else {
                 showNotification('Invalid email or password', 'error');
