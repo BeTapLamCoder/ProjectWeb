@@ -111,10 +111,11 @@ function initFormSubmission() {
         });
     }
 
+
     // Register
     const registerForm = document.querySelector('#register-form form');
     if (registerForm) {
-        registerForm.addEventListener('submit', function (e) {
+        registerForm.addEventListener('submit', async function (e) {
             e.preventDefault();
             if (!registerForm.checkValidity()) return;
 
@@ -136,30 +137,36 @@ function initFormSubmission() {
                 return;
             }
 
-            // Check if email already exists
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            if (users.find(u => u.email === email)) {
-                showNotification('Email already registered', 'error');
-                return;
-            }
+            try {
+                const response = await fetch('http://localhost:8080/users/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: firstName + ' ' + lastName,
+                        email,
+                        password
+                    })
+                });
 
-            // Save user
-            users.push({
-                id: Date.now(),
-                firstName,
-                lastName,
-                email,
-                password
-            });
-            localStorage.setItem('users', JSON.stringify(users));
-            showNotification('Registration successful! Please login.', 'success');
-            setTimeout(() => {
-                // Chuyển sang tab login
-                const loginTab = document.querySelector('#login-tab');
-                if (loginTab) new bootstrap.Tab(loginTab).show();
-                registerForm.reset();
-                registerForm.classList.remove('was-validated');
-            }, 1200);
+                const data = await response.json();
+
+                if (response.ok) {
+                    showNotification('Registration successful! Please login.', 'success');
+                    setTimeout(() => {
+                        // Chuyển sang tab login
+                        const loginTab = document.querySelector('#login-tab');
+                        if (loginTab) new bootstrap.Tab(loginTab).show();
+                        registerForm.reset();
+                        registerForm.classList.remove('was-validated');
+                    }, 1200);
+                } else {
+                    showNotification(data.message || 'Registration failed', 'error');
+                }
+            } catch (error) {
+                showNotification('Registration failed: ' + error.message, 'error');
+            }
         });
     }
 }
