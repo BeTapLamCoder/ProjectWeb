@@ -9,11 +9,13 @@ function formatPrice(priceStr) {
             currency: 'USD'
         }).format(priceStr);
     }
+
     // Cố gắng chuyển đổi an toàn hơn
     const numericValue = parseFloat(String(priceStr).replace(/[^0-9.-]+/g, ''));
     if (isNaN(numericValue)) {
         return 'N/A'; // Hoặc giá trị mặc định khác
     }
+
     return new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD'
@@ -48,7 +50,6 @@ function getStatusText(status) {
 // Load orders when page loads
 document.addEventListener('DOMContentLoaded', function () {
     const savedOrders = JSON.parse(localStorage.getItem('orders')) || [];
-    
     ordersData = savedOrders.map(order => ({
         id: order.orderNumber || `ORD${Math.floor(Math.random() * 10**5)}`, // ID phải duy nhất
         date: order.date,
@@ -107,6 +108,16 @@ function initializeEventListeners() {
             renderOrders();
         });
     });
+
+    document.getElementById('continueShoppingBtn').addEventListener('click', function (event) {
+        event.preventDefault(); // ngăn chặn href="#"
+        // Xác định base path tới thư mục chứa "src"
+        const pathParts = window.location.pathname.split('/');
+        const srcIndex = pathParts.indexOf('src');
+        const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
+
+        window.location.href = baseURL + 'pages/filterAndSearch/filterAndSearch.html';
+    });
 }
 
 function renderOrders() {
@@ -124,8 +135,8 @@ function renderOrders() {
         emptyState.style.display = 'flex';
         return;
     }
+    ordersGrid.style.display = '';
 
-    ordersGrid.style.display = ''; // Hoặc 'grid', 'flex' tùy thuộc vào CSS của bạn cho .row
     emptyState.style.display = 'none';
 
     ordersGrid.innerHTML = filteredOrders.map(order => `
@@ -136,6 +147,7 @@ function renderOrders() {
                         <div class="order-number fw-semibold">#${order.id}</div>
                         <div class="order-date text-muted">${formatDate(order.date)}</div>
                     </div>
+
                     <div class="order-status status-${(order.status || 'unknown').toLowerCase()}">
                         ${getStatusText(order.status)}
                     </div>
@@ -150,17 +162,19 @@ function renderOrders() {
                                 <div class="item-quantity">Quantity: ${item?.quantity || 0}</div>
                             </div>
                             <div class="item-price">${formatPrice(item?.price || 0)}</div>
+
                         </div>
                     `).join('')}
                 </div>
                 <div class="order-footer">
-                    <div class="order-total fw-semibold">Total: ${formatPrice(order.total || 0)}</div>
+
+                    <div class="order-total fw-semibold">Total: ${formatPrice(order.total)}</div>
                     <div class="order-actions d-flex gap-2">
-                        <button class="btn btn-primary btn-sm view-detail-btn" data-order-id="${order.id}">
+                        <button class="btn btn-primary btn-sm" onclick="viewOrderDetail('${order.id}')">
                             View Details
                         </button>
-                        ${order.status !== 'delivered' && order.status !== 'cancelled' ? `
-                            <button class="btn btn-danger btn-sm cancel-order-btn" data-order-id="${order.id}">
+                        ${order.status === 'pending' ? `
+                            <button class="btn btn-danger btn-sm" onclick="cancelOrder('${order.id}')">
                                 Cancel Order
                             </button>
                         ` : ''}
@@ -169,7 +183,6 @@ function renderOrders() {
             </div>
         </div>
     `).join('');
-
     ordersGrid.className = 'row'; // Đảm bảo ordersGrid luôn có class 'row'
 
     // Gán lại sự kiện cho các nút sau khi render
@@ -185,6 +198,7 @@ function renderOrders() {
             cancelOrder(orderId);
         });
     });
+
 }
 
 function viewOrderDetail(orderId) {
@@ -208,6 +222,7 @@ function viewOrderDetail(orderId) {
     orderModalLabel.textContent = `Order Details - #${order.id}`;
 
     modalBody.innerHTML = `
+
         <div class="order-info-modal mb-4">
             <h5 class="mb-2">Order Information</h5>
             <p><strong>Order ID:</strong> #${order.id}</p>
@@ -227,12 +242,15 @@ function viewOrderDetail(orderId) {
         <div class="order-items-modal mb-4">
             <h5 class="mb-2">Order Items</h5>
             ${(order.items || []).map(item => `
+
                 <div class="order-item">
                     <img src="${item?.image || './img/default-product.png'}" alt="${item?.name || 'Product Image'}" class="item-image">
                     <div class="item-details">
+
                         <div class="item-name">${item?.name || 'N/A'}</div>
                         <div class="item-desc text-muted">Color: ${item?.color || 'N/A'} / Size: ${item?.size || 'N/A'}</div>
                         <div class="item-quantity">Quantity: ${item?.quantity || 0}</div>
+
                     </div>
                     <div class="item-price">${formatPrice(item?.price || 0)}</div>
                 </div>
@@ -240,6 +258,7 @@ function viewOrderDetail(orderId) {
         </div>
         <div class="tracking-timeline">
             <h5 class="mb-2">Order Tracking</h5>
+
             ${(order.tracking || []).map(step => `
                 <div class="timeline-item d-flex align-items-center mb-2">
                     <div class="timeline-dot ${step?.completed ? 'active' : ''} me-2">
@@ -248,17 +267,20 @@ function viewOrderDetail(orderId) {
                     <div class="timeline-content">
                         <div class="timeline-title fw-semibold">${step?.title || 'N/A'}</div>
                         ${step?.date ? `<div class="timeline-date text-muted">${step.date}</div>` : ''}
+
                     </div>
                 </div>
             `).join('')}
         </div>
     `;
 
+
     const orderModalElement = document.getElementById('orderModal');
     if (orderModalElement) {
         const modal = bootstrap.Modal.getOrCreateInstance(orderModalElement); // Sử dụng getOrCreateInstance
         modal.show();
     }
+
 }
 
 function cancelOrder(orderId) {

@@ -1,6 +1,5 @@
 // Homepage JavaScript - FIXED CAROUSEL
 document.addEventListener("DOMContentLoaded", () => {
-  // Initialize all functionality
   initMobileMenu()
   initHeroCarousel()
   initAddToCart()
