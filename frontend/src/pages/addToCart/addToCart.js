@@ -3,7 +3,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const selectedProduct = JSON.parse(localStorage.getItem('selectedProduct')) || null;
 
     if (!selectedProduct) {
-        window.location.href = '../filterAndSearch/filterAndSearch.html';
+        // Xác định base path tới thư mục chứa "src"
+        const pathParts = window.location.pathname.split('/');
+        const srcIndex = pathParts.indexOf('src');
+        const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
+        window.location.href = baseURL + 'pages/filterAndSearch/filterAndSearch.html';
         return;
     }
 

@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
 
                 // Chuyển sang trang addToCart
-                window.location.href = baseURL + 'addToCart/addToCart.html';
+                window.location.href = baseURL + 'pages/addToCart/addToCart.html';
             });
         }
     });
@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
 
                 // Chuyển hướng đến trang addToCart
-                window.location.href = baseURL + 'addToCart/addToCart.html';
+                window.location.href = baseURL + 'pages/addToCart/addToCart.html';
             });
         });
     }
