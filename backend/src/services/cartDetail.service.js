@@ -58,18 +58,26 @@ class cartDetailService {
 
 
     //Xoá một item trong giỏ hàng
-    async delete(keys) {
-        const conditions = Object.keys(keys);
-        const values = Object.values(keys);
+    async removeFromCart(cartId, productId, size, color) {
+        try {
+            const result = await db.query(
+                `DELETE FROM cart_detail 
+                 WHERE cart_id = $1 
+                 AND product_id = $2 
+                 AND size = $3 
+                 AND color = $4 
+                 RETURNING *`,
+                [cartId, productId, size, color]
+            );
 
-        const whereClause = conditions
-            .map((col, idx) => `${col} = $${idx + 1}`)
-            .join(' AND ');
+            if (result.rowCount === 0) {
+                throw new Error('Cart item not found');
+            }
 
-        const sql = `DELETE FROM ${this.tableName} WHERE ${whereClause} RETURNING *`;
-
-        const res = await db.query(sql, values);
-        return res.rows[0];
+            return result.rows[0];
+        } catch (error) {
+            throw new Error(`Failed to remove item from cart: ${error.message}`);
+        }
     }
 
 
