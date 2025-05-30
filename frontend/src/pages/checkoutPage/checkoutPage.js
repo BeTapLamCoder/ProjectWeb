@@ -1,6 +1,36 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // Lấy thông tin giỏ hàng
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+const serverBaseURL =
+    window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+        ? "http://localhost:8080"
+        : "https://server-project-web.vercel.app";
+
+document.addEventListener('DOMContentLoaded', async function () {
+    const accessToken = localStorage.getItem('accessToken');
+    let cartId = null;
+    if (accessToken) {
+        try {
+            const payload = JSON.parse(atob(accessToken.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+            cartId = payload.cart_id || payload.cartId;
+        } catch (e) {
+            cartId = localStorage.getItem('cartId');
+        }
+    }
+
+    // Lấy thông tin giỏ hàng từ backend
+    let cart = [];
+    if (cartId) {
+        try {
+            const response = await fetch(`${serverBaseURL}/cart-details/${cartId}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken
+                }
+            });
+            if (response.ok) {
+                cart = await response.json();
+            }
+        } catch (err) {
+            console.error("Error fetching cart:", err);
+        }
+    }
 
     // Hiển thị tổng quan đơn hàng
     function displayOrderSummary() {
@@ -13,7 +43,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Kiểm tra giỏ hàng trống
         if (cart.length === 0) {
-            window.location.href = '../cartPage/cartPage.html';
+            const pathParts = window.location.pathname.split('/');
+            const srcIndex = pathParts.indexOf('src');
+            const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
+            window.location.href = baseURL + 'pages/cartPage/cartPage.html';
             return;
         }
 
@@ -22,24 +55,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Hiển thị từng sản phẩm
         cart.forEach(item => {
+            // Lấy đúng trường hình ảnh và tên sản phẩm
+            const image = item.image || item.image_url || '';
+            const name = item.name || item.product_name || '';
+            // Giá tiền: ép kiểu về string trước khi replace
+            const priceValue = parseFloat((item.price || '').toString().replace(/[^0-9.]/g, '')) || 0;
+
             const itemHTML = `
-                <div class="order-item d-flex gap-3 align-items-start mb-2">
-                    <img class="order-item-img" src="${item.image}" alt="${item.name}">
-                    <div class="order-item-info flex-grow-1">
-                        <div class="order-item-title">${item.name}</div>
-                        <div class="order-item-desc text-muted small">${item.color || ''}${item.color && item.size ? ' / ' : ''}${item.size || ''}</div>
-                        <div class="order-item-qty text-muted small">Qty: ${item.quantity}</div>
-                    </div>
-                    <div class="order-item-price fw-semibold">$${parseFloat(item.price.replace(/[^0-9.]/g, '')).toFixed(2)}</div>
-                </div>
-            `;
+        <div class="order-item d-flex gap-3 align-items-start mb-2">
+            <img class="order-item-img" src="${image}" alt="${name}">
+            <div class="order-item-info flex-grow-1">
+                <div class="order-item-title">${name}</div>
+                <div class="order-item-desc text-muted small">${item.color || ''}${item.color && item.size ? ' / ' : ''}${item.size || ''}</div>
+                <div class="order-item-qty text-muted small">Quantity: ${item.quantity}</div>
+            </div>
+            <div class="order-item-price fw-semibold">$${priceValue.toFixed(2)}</div>
+        </div>
+    `;
             orderList.insertAdjacentHTML('beforeend', itemHTML);
         });
 
         // Tính toán tổng tiền
         let subtotal = 0;
         cart.forEach(item => {
-            const price = parseFloat(item.price.replace(/[^0-9.]/g, '')) || 0;
+            const price = parseFloat((item.price || '').toString().replace(/[^0-9.]/g, '')) || 0;
             subtotal += price * (item.quantity || 1);
         });
 
@@ -84,8 +123,11 @@ document.addEventListener('DOMContentLoaded', function () {
         // Lưu thông tin vào localStorage
         localStorage.setItem('checkoutInfo', JSON.stringify(checkoutInfo));
 
+        const pathParts = window.location.pathname.split('/');
+        const srcIndex = pathParts.indexOf('src');
+        const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
         // Chuyển đến trang payment
-        window.location.href = '../paymentPage/paymentPage.html';
+        window.location.href = baseURL + 'pages/paymentPage/paymentPage.html';
     });
 
     // Thông báo Bootstrap

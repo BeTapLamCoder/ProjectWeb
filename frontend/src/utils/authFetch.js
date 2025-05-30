@@ -1,4 +1,9 @@
-async function fetchWithAuth(url, options = {}) {
+const serverBaseURL =
+    window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+        ? "http://localhost:8080"
+        : "https://server-project-web.vercel.app";
+
+const fetchWithAuth = async (url, options = {}) => {
     let accessToken = localStorage.getItem('accessToken');
     let refreshToken = localStorage.getItem('refreshToken');
 
@@ -9,7 +14,7 @@ async function fetchWithAuth(url, options = {}) {
 
     if (response.status === 401 || response.status === 403) {
         // Gọi API refreshToken
-        const refreshResponse = await fetch('http://localhost:8080/users/refresh-token', {
+        const refreshResponse = await fetch(`${serverBaseURL}/users/refresh-token`, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + refreshToken
@@ -41,4 +46,4 @@ async function fetchWithAuth(url, options = {}) {
 
     return response;
 }
-module.exports = { fetchWithAuth };
+export { fetchWithAuth };

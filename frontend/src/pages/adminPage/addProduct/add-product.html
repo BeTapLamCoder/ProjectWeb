@@ -71,10 +71,6 @@
                     <input type="text" id="product-name" class="form-control" required>
                   </div>
                   <div class="row mb-3">
-                    <div class="col">
-                      <label for="product-sku" class="form-label">SKU*</label>
-                      <input type="text" id="product-sku" class="form-control" required>
-                    </div>
                   </div>
                   <div class="mb-3">
                     <label for="product-description" class="form-label">Description*</label>
@@ -84,10 +80,9 @@
                     <label for="product-category" class="form-label">Category*</label>
                     <select id="product-category" class="form-select" required>
                       <option value="">Select Category</option>
-                      <option value="Shirts">Shirts</option>
-                      <option value="Pants">Pants</option>
-                      <option value="Shoes">Shoes</option>
-                      <option value="Accessories">Accessories</option>                     
+                      <option value="CAT0001">Shirts</option>
+                      <option value="CAT0002">Polo Shirts</option>
+                      <option value="CAT0003">Jeans</option>
                     </select>
                   </div>
                 </div>
@@ -106,69 +101,18 @@
 
               <!-- Pricing -->
               <div class="card mb-4">
-                <div class="card-header"><strong>Pricing</strong></div>
-                <div class="card-body">
-                  <div class="row mb-3">
-                    <div class="col">
-                      <label for="regular-price" class="form-label">Regular Price*</label>
-                      <div class="input-group">
-                        <span class="input-group-text">$</span>
-                        <input type="number" id="regular-price" class="form-control" min="0" step="0.01" required>
-                      </div>
-                    </div>
-                    <div class="col">
-                      <label for="sale-price" class="form-label">Sale Price</label>
-                      <div class="input-group">
-                        <span class="input-group-text">$</span>
-                        <input type="number" id="sale-price" class="form-control" min="0" step="0.01">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col">
-                      <label for="cost-price" class="form-label">Cost Price</label>
-                      <div class="input-group">
-                        <span class="input-group-text">$</span>
-                        <input type="number" id="cost-price" class="form-control" min="0" step="0.01">
-                      </div>
-                    </div>
-                    <div class="col">
-                      <label for="tax-class" class="form-label">Tax Class</label>
-                      <select id="tax-class" class="form-select">
-                        <option value="standard">Standard</option>
-                        <option value="reduced">Reduced Rate</option>
-                        <option value="zero">Zero Rate</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Inventory -->
-              <div class="card mb-4">
-                <div class="card-header"><strong>Inventory</strong></div>
-                <div class="card-body">
-                  <div class="row mb-3">
-                    <div class="col">
-                      <label for="product-stock" class="form-label">Stock Quantity*</label>
-                      <input type="number" id="product-stock" class="form-control" min="0" required>
-                    </div>
-                    <div class="col">
-                      <label for="low-stock-threshold" class="form-label">Low Stock Threshold</label>
-                      <input type="number" id="low-stock-threshold" class="form-control" min="0" value="10">
-                    </div>
-                  </div>
-                  <div class="mb-3">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="track-quantity">
-                      <label class="form-check-label" for="track-quantity">
-                        Track quantity for this product
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>             
+        <div class="card-header"><strong>Pricing</strong></div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label for="regular-price" class="form-label">Price*</label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input type="number" id="regular-price" class="form-control" min="0" step="0.01" required>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
             <!-- Sidebar -->
             <div class="col-lg-4">
@@ -177,31 +121,13 @@
                 <div class="card-header"><strong>Publish</strong></div>
                 <div class="card-body">
                   <div class="mb-3">
-                    <label for="product-status" class="form-label">Status</label>
+                    <label for="product-status" class="form-label">Is Active</label>
                     <select id="product-status" class="form-select">
-                      <option value="published">Published</option>
-                      <option value="draft">Draft</option>
-                      <option value="pending">Pending Review</option>
+                      <option value="true">True</option>
+                      <option value="false">False</option>
                     </select>
-                  </div>
-                  <div class="mb-3">
-                    <label for="visibility" class="form-label">Visibility</label>
-                    <select id="visibility" class="form-select">
-                      <option value="public">Public</option>
-                      <option value="private">Private</option>
-                      <option value="password">Password Protected</option>
-                    </select>
-                  </div>
-                  <div class="mb-3">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="featured-product">
-                      <label class="form-check-label" for="featured-product">
-                        Featured Product
-                      </label>
-                    </div>
                   </div>
                   <div class="d-flex justify-content-between">
-                    <button type="button" class="btn btn-outline-secondary" id="save-draft">Save Draft</button>
                     <button type="submit" class="btn btn-dark">Publish</button>
                   </div>
                 </div>

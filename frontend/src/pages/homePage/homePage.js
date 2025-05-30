@@ -1,13 +1,35 @@
+const serverBaseURL =
+  window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "http://localhost:8080"
+    : "https://server-project-web.vercel.app";
+
+let newThisWeekProducts = [];
+let newThisWeekIndex = 0;
+const PRODUCTS_PER_VIEW = 4;
 // Homepage JavaScript - FIXED CAROUSEL
 document.addEventListener("DOMContentLoaded", async () => {
   initMobileMenu()
   initHeroCarousel()
   await fetchAndRenderProducts() // Fetch products from server
+  await fetchAndRenderNewThisWeek() // Fetch new products for "New This Week" section
   initAddToCart()
   initCollectionFilters()
   initLoadMore()
   initPagination()
   initUserDropdown()
+
+  console.log(localStorage.getItem('accessToken'));
+  console.log(localStorage.getItem('refreshToken'));
+  const seeAllBtn = document.querySelector('.see-all');
+  if (seeAllBtn) {
+    seeAllBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      const pathParts = window.location.pathname.split('/');
+      const srcIndex = pathParts.indexOf('src');
+      const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
+      window.location.href = baseURL + "pages/filterAndSearch/filterAndSearch.html";
+    });
+  }
 })
 
 // Mobile Menu Toggle
@@ -59,57 +81,39 @@ function initHeroCarousel() {
   if (shopButton) {
     shopButton.addEventListener("click", (e) => {
       e.preventDefault()
-      window.location.href = "./pages/filterAndSearch/filterAndSearch.html"
+      const pathParts = window.location.pathname.split('/');
+      const srcIndex = pathParts.indexOf('src');
+      const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
+      window.location.href = baseURL + "pages/filterAndSearch/filterAndSearch.html"
     })
   }
 }
 
 // Add to Cart Functionality
 function initAddToCart() {
-  const productContainer = document.body;
+    const productContainer = document.body;
+    
+    productContainer.addEventListener('click', function (e) {
+        const addToCartBtn = e.target.closest('.add-to-cart-overlay');
+        if (!addToCartBtn) return;
+        
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const card = addToCartBtn.closest('.card.h-100');
+        if (!card) return;
 
-  productContainer.addEventListener('click', function (e) {
-    const addToCartBtn = e.target.closest('.add-to-cart-overlay');
-
-    if (!addToCartBtn) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    const card = addToCartBtn.closest('.card.h-100');
-    if (!card) {
-      console.error("Không tìm thấy card sản phẩm cho nút:", addToCartBtn);
-      return;
-    }
-
-    const productNameElement = card.querySelector('.card-title a');
-    const productPriceElement = card.querySelector('.card-text.fw-bold');
-    const productTypeElement = card.querySelector('.card-text.text-muted.small');
-    const productImageElement = card.querySelector('.card-img-top');
-
-    const productData = {
-      id: card.dataset.productId || `product_${Date.now()}`,
-      name: productNameElement ? productNameElement.textContent.trim() : 'Sản phẩm không tên',
-      price: productPriceElement ? productPriceElement.textContent.trim() : '$0',
-      type: productTypeElement ? (productTypeElement.childNodes[0]?.textContent?.trim() || productTypeElement.textContent.trim()) : 'Chưa phân loại',
-      image: productImageElement ? productImageElement.src : 'placeholder.svg'
-    };
-    localStorage.setItem('selectedProduct', JSON.stringify(productData));
-
-    const pathParts = window.location.pathname.split('/');
-    const srcIndex = pathParts.indexOf('src');
-    let baseURL = '';
-    if (window.location.pathname.includes('/frontend/src/')) {
-
-      baseURL = './';
-    } else if (srcIndex !== -1) {
-      baseURL = pathParts.slice(0, srcIndex + 1).join('/') + '/';
-    } else {
-      baseURL = '/';
-    }
-
-    window.location.href = baseURL + 'pages/addToCart/addToCart.html';
-  });
+        const productData = {
+            product_id: card.dataset.productId,
+            name: card.querySelector('.card-title a')?.textContent?.trim() || '',
+            price: card.querySelector('.card-text.fw-bold')?.textContent?.trim() || '',
+            image_url: card.querySelector('.card-img-top')?.src || '',
+            description: card.querySelector('.card-text.text-muted.small')?.textContent?.trim() || ''
+        };
+        
+        localStorage.setItem('selectedProduct', JSON.stringify(productData));
+        window.location.href = './pages/addToCart/addToCart.html';
+    });
 }
 
 // Collection Filters
@@ -207,7 +211,7 @@ function addProductsToGrid(products, container) {
       const badgeHtml = hasBadge ? `<span class="badge bg-light text-dark border ms-1">+${badgeNumber}</span>` : "";
 
       col.innerHTML = `
-        <div class="card h-100 border-0 shadow-sm">
+        <div class="card h-100 border-0 shadow-sm" data-product-id="${product.product_id}">
           <div class="card-img-top-wrapper">
             <img src="${product.image}" alt="${product.name}" class="card-img-top">
             <button class="add-to-cart-overlay">+</button>
@@ -215,7 +219,7 @@ function addProductsToGrid(products, container) {
           <div class="card-body text-center">
             <p class="card-text text-muted small mb-1">${product.categoryDisplay} ${badgeHtml}</p>
             <h5 class="card-title fs-6"><a href="#" class="text-dark text-decoration-none">${product.name}</a></h5>
-            <p class="card-text fw-bold">${product.price}</p>
+            <p class="card-text fw-bold">$${product.price}</p>
           </div>
         </div>
       `;
@@ -236,7 +240,7 @@ function createProductCard(product) {
   const badgeHtml = hasBadge ? `<span class="badge">+${badgeNumber}</span>` : ""
 
   card.innerHTML = `
-        <div class="collection-image-container">
+        <div class="collection-image-container" data-product-id="${product.productId}">
             <img src="${product.image}" alt="${product.name}" class="collection-image">
             <button class="add-to-cart">+</button>
         </div>
@@ -312,8 +316,11 @@ function initUserDropdown() {
 }
 
 function handleOrdersClick() {
+  const pathParts = window.location.pathname.split('/');
+  const srcIndex = pathParts.indexOf('src');
+  const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
   setTimeout(() => {
-    window.location.href = "./pages/manageOrder/manageOrder.html"
+    window.location.href = baseURL + "pages/manageOrder/manageOrder.html"
   }, 500)
 }
 
@@ -409,16 +416,17 @@ let productDatabase = [];
 // Hàm fetch sản phẩm từ API và render ra trang
 async function fetchAndRenderProducts() {
   try {
-    const response = await fetch('http://localhost:8080/products'); // Đổi URL nếu cần
+    const response = await fetch(`${serverBaseURL}/products`); // Đổi URL nếu cần
     const data = await response.json();
-    productDatabase = data.map(item => ({
-      id: item.product_id,
-      name: item.product_name,
-      category: item.category_id || "all",
-      categoryDisplay: item.category_name || "All",
-      price: item.price,
-      image: item.image_url
-    }));
+    productDatabase = data.filter(item => item.is_active === true)
+      .map(item => ({
+        product_id: item.product_id,
+        name: item.product_name,
+        category: item.category_id || "all",
+        categoryDisplay: item.category_name || "All",
+        price: item.price,
+        image: item.image_url
+      }));
 
     renderInitialProducts(productDatabase);
   } catch (error) {
@@ -427,7 +435,68 @@ async function fetchAndRenderProducts() {
   }
 }
 
-// Render sản phẩm ra grid (hiển thị 9 sản phẩm đầu)
+async function fetchAndRenderNewThisWeek() {
+  try {
+    const response = await fetch(`${serverBaseURL}/products`);
+    const products = await response.json();
+    newThisWeekProducts = products.filter(p => p.is_active === true);
+    newThisWeekIndex = 0;
+    renderNewThisWeek();
+    initNewThisWeekPagination();
+  } catch (error) {
+    console.error('Không thể tải sản phẩm mới:', error);
+  }
+}
+function renderNewThisWeek() {
+  const container = document.getElementById('new-this-week-list');
+  if (!container) return;
+
+  // Thêm class để fade out
+  container.classList.add('new-this-week-fade');
+
+  setTimeout(() => {
+    container.innerHTML = '';
+    const productsToShow = newThisWeekProducts.slice(newThisWeekIndex, newThisWeekIndex + PRODUCTS_PER_VIEW);
+    productsToShow.forEach(product => {
+      container.innerHTML += `
+        <div class="col">
+          <div class="card h-100 border-0 shadow-sm" data-product-id="${product.product_id}">
+            <div class="card-img-top-wrapper">
+              <img src="${product.image_url}" class="card-img-top" alt="${product.product_name}">
+              <button class="add-to-cart-overlay">+</button>
+            </div>
+            <div class="card-body text-center">
+              <p class="card-text text-muted small mb-1">${product.description || ''}</p>
+              <h5 class="card-title fs-6"><a href="#" class="text-dark text-decoration-none">${product.product_name}</a></h5>
+              <p class="card-text fw-bold">$${Number(product.price).toLocaleString()}</p>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    // Loại bỏ class để fade in
+    container.classList.remove('new-this-week-fade');
+  }, 400);
+}
+
+function initNewThisWeekPagination() {
+  const prevBtn = document.querySelector('.pagination-btn.prev');
+  const nextBtn = document.querySelector('.pagination-btn.next');
+  if (!prevBtn || !nextBtn) return;
+
+  prevBtn.onclick = () => {
+    if (newThisWeekIndex > 0) {
+      newThisWeekIndex -= PRODUCTS_PER_VIEW;
+      renderNewThisWeek();
+    }
+  };
+  nextBtn.onclick = () => {
+    if (newThisWeekIndex + PRODUCTS_PER_VIEW < newThisWeekProducts.length) {
+      newThisWeekIndex += PRODUCTS_PER_VIEW;
+      renderNewThisWeek();
+    }
+  };
+}
 function renderInitialProducts(products) {
   const collectionsGrid = document.querySelector('.collections-grid');
   if (!collectionsGrid) return;

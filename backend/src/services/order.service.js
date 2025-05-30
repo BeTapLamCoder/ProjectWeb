@@ -53,19 +53,24 @@ class OrderService {
     async findByUserId(userId) {
         const query = {
             text: `
-            SELECT o.*, 
-                   json_agg(json_build_object(
+        SELECT o.*, 
+               json_agg(
+                   json_build_object(
                        'product_id', od.product_id,
+                       'product_name', p.product_name,
                        'quantity', od.quantity,
                        'price', od.price,
                        'color', od.color,
-                       'size', od.size
-                   )) as items
-            FROM "order" o
-            LEFT JOIN order_detail od ON o.order_id = od.order_id
-            WHERE o.user_id = $1
-            GROUP BY o.order_id
-            ORDER BY o.order_date DESC`,
+                       'size', od.size,
+                       'image_url', p.image_url
+                   )
+               ) as items
+        FROM "order" o
+        LEFT JOIN order_detail od ON o.order_id = od.order_id
+        LEFT JOIN product p ON od.product_id = p.product_id
+        WHERE o.user_id = $1
+        GROUP BY o.order_id, o.order_date
+        ORDER BY o.order_date DESC`,
             values: [userId]
         };
         const result = await db.query(query);
@@ -81,7 +86,8 @@ class OrderService {
                        'quantity', od.quantity,
                        'price', od.price,
                        'color', od.color,
-                       'size', od.size
+                       'size', od.size,
+                        'image_url', od.image_url
                    )) as items
             FROM "order" o
             LEFT JOIN order_detail od ON o.order_id = od.order_id
