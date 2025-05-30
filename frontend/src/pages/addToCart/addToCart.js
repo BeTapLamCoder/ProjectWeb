@@ -1,3 +1,8 @@
+const serverBaseURL =
+    window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+        ? "http://localhost:8080"
+        : "https://server-project-web.vercel.app";
+
 document.addEventListener('DOMContentLoaded', function () {
     const selectedProduct = JSON.parse(localStorage.getItem('selectedProduct')) || null;
     // Update UI
@@ -54,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return null;
         }
     }
- 
+
     document.getElementById('add-to-cart').addEventListener('click', async function () {
         const selectedColor = document.querySelector('.color-option.active');
         const selectedSize = document.querySelector('.size-option.active');
@@ -79,10 +84,10 @@ document.addEventListener('DOMContentLoaded', function () {
             image_url: selectedProduct.image_url
         };
 
-        console.log('cartItem:', cartItem); 
+        console.log('cartItem:', cartItem);
 
         try {
-            const response = await fetch('http://localhost:8080/cart-details', {
+            const response = await fetch(`${serverBaseURL}/cart-details`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
