@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const data = await response.json();
             productDatabase = data.filter(item => item.is_active === true)
             .map(item => ({
-                id: item.product_id,
+                product_id: item.product_id,
                 name: item.product_name,
                 category: item.category_id || "all",
                 price: item.price,
@@ -106,19 +106,20 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function renderProducts(products) {
-        const productsGrid = document.querySelector('.row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4.g-4');
-        if (!productsGrid) return;
-        productsGrid.innerHTML = '';
-        products.forEach(product => {
-            const col = document.createElement('div');
-            col.className = 'col';
-            col.innerHTML = `
-            <div class="card h-100 shadow-sm" data-product-id="${product.id}">
+    const productsGrid = document.querySelector('.row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4.g-4');
+    if (!productsGrid) return;
+    productsGrid.innerHTML = '';
+    
+    products.forEach(product => {
+        const col = document.createElement('div');
+        col.className = 'col';
+        col.innerHTML = `
+            <div class="card h-100 shadow-sm" data-product-id="${product.product_id}">
                 <div class="product-image">
                     <img src="${product.image}" class="card-img-top" alt="${product.name}">
                 </div>
                 <div class="card-body d-flex flex-column">
-                    <p class="card-text text-muted small">${product.description}</p>
+                    <p class="card-text text-muted small">${product.description || ''}</p>
                     <h5 class="card-title product-name">${product.name}</h5>
                     <p class="card-text fw-bold mt-auto product-price">${product.price} đ</p>
                 </div>
@@ -127,34 +128,35 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             </div>
         `;
-            productsGrid.appendChild(col);
-        });
+        productsGrid.appendChild(col);
+    });
 
-        // Gắn lại sự kiện cho nút Add to Cart
-        const productCards = productsGrid.querySelectorAll('.card.h-100');
-        productCards.forEach(card => {
-            const addToCartBtn = card.querySelector('.card-footer .btn');
-            if (addToCartBtn) {
-                addToCartBtn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const productData = {
-                        id: card.dataset.productId || 'default-id',
-                        name: card.querySelector('.product-name')?.textContent || '',
-                        price: card.querySelector('.product-price')?.textContent || '',
-                        image: card.querySelector('.card-img-top')?.src || '',
-                        description: card.querySelector('.card-text.text-muted.small')?.textContent || ''
-                    };
-                    localStorage.setItem('selectedProduct', JSON.stringify(productData));
-                    // Xác định base path tới thư mục chứa "src"
-                    const pathParts = window.location.pathname.split('/');
-                    const srcIndex = pathParts.indexOf('src');
-                    const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
-                    window.location.href = baseURL + 'pages/addToCart/addToCart.html';
-                });
-            }
-        });
-    }
+    // Chỉ giữ lại một event listener cho Add to Cart
+    const productCards = document.querySelectorAll('.card.h-100');
+    productCards.forEach(card => {
+        const addToCartBtn = card.querySelector('.card-footer .btn');
+        if (addToCartBtn) {
+            addToCartBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const productData = {
+                    product_id: card.dataset.productId, // Luôn dùng product_id
+                    name: card.querySelector('.product-name')?.textContent || '',
+                    price: card.querySelector('.product-price')?.textContent || '',
+                    image_url: card.querySelector('.card-img-top')?.src || '',
+                    description: card.querySelector('.card-text.text-muted.small')?.textContent || ''
+                };
+                
+                // Log để kiểm tra
+                console.log('Saving to localStorage:', productData);
+                
+                localStorage.setItem('selectedProduct', JSON.stringify(productData));
+                window.location.href = '../addToCart/addToCart.html';
+            });
+        }
+    });
+}
 
     // Add to Cart button click: chỉ khi bấm nút mới chuyển trang
     const productCards = document.querySelectorAll('.card.h-100');
@@ -317,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function () {
             card.addEventListener('click', function () {
                 // Lấy thông tin sản phẩm
                 const productData = {
-                    id: this.dataset.productId || 'default-id',
+                    id: this.dataset.product_id || 'default-id',
                     name: this.querySelector('.product-name').textContent,
                     price: this.querySelector('.product-price').textContent,
                     type: this.querySelector('.product-type').textContent,
