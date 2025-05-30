@@ -58,14 +58,18 @@ class cartDetailService {
 
 
     //Xoá một item trong giỏ hàng
-    async removeFromCart(cartId, productId, size, color) {
-        const keys = {
-            cart_id: cartId,
-            product_id: productId,
-            size,
-            color
-        };
-        return await cartDetailModel.delete(keys);
+    async delete(keys) {
+        const conditions = Object.keys(keys);
+        const values = Object.values(keys);
+
+        const whereClause = conditions
+            .map((col, idx) => `${col} = $${idx + 1}`)
+            .join(' AND ');
+
+        const sql = `DELETE FROM ${this.tableName} WHERE ${whereClause} RETURNING *`;
+
+        const res = await db.query(sql, values);
+        return res.rows[0];
     }
 
 
