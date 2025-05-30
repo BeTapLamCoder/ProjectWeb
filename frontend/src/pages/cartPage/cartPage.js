@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (!cartId) return;
     try {
       const response = await fetch(
-        `http://localhost:8080/cart-details/${cartId}/${item.product_id}/${item.size}/${item.color}`,
+        `${serverBaseURL}/cart-details/${cartId}/${item.product_id}/${item.size}/${item.color}`,
         {
           method: 'PUT',
           headers: {
@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       return;
     }
     try {
-      const res = await fetch(`http://localhost:8080/cart-details/${cartId}/${productId}/${size}/${color}`, {
+      const res = await fetch(`${serverBaseURL}/cart-details/${cartId}/${productId}/${size}/${color}`, {
         method: 'DELETE',
         headers: {
           'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
