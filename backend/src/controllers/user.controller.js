@@ -52,7 +52,8 @@ class UserController {
     //Login
     async login(req, res) {
         try {
-            const { email, password } = req.body;
+            let { email, password } = req.body;
+            email = email.trim();
             if (!email || !password) {
                 return res.status(400).json({ message: 'Email and password are required' });
             }

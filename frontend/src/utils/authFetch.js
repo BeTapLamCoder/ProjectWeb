@@ -9,7 +9,7 @@ const fetchWithAuth = async (url, options = {}) => {
 
     if (response.status === 401 || response.status === 403) {
         // Gọi API refreshToken
-        const refreshResponse = await fetch('http://localhost:8080/users/refresh-token', {
+        const refreshResponse = await fetch(`${serverBaseURL}/users/refresh-token`, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + refreshToken

@@ -56,7 +56,6 @@ class cartDetailService {
     }
 
 
-
     //Xoá một item trong giỏ hàng
     async removeFromCart(cartId, productId, size, color) {
         const keys = {
