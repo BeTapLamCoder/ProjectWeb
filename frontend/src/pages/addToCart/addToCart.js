@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return null;
         }
     }
+
     document.getElementById('add-to-cart').addEventListener('click', async function () {
         const selectedColor = document.querySelector('.color-option.active');
         const selectedSize = document.querySelector('.size-option.active');
