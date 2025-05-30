@@ -104,7 +104,7 @@ function initAddToCart() {
         if (!card) return;
 
         const productData = {
-            product_id: card.dataset.productId,
+            product_id: card.dataset.product_id,
             name: card.querySelector('.card-title a')?.textContent?.trim() || '',
             price: card.querySelector('.card-text.fw-bold')?.textContent?.trim() || '',
             image_url: card.querySelector('.card-img-top')?.src || '',
@@ -460,7 +460,7 @@ function renderNewThisWeek() {
     productsToShow.forEach(product => {
       container.innerHTML += `
         <div class="col">
-          <div class="card h-100 border-0 shadow-sm data-product-id="${product.product_id}">
+          <div class="card h-100 border-0 shadow-sm" data-product-id="${product.product_id}">
             <div class="card-img-top-wrapper">
               <img src="${product.image_url}" class="card-img-top" alt="${product.product_name}">
               <button class="add-to-cart-overlay">+</button>
