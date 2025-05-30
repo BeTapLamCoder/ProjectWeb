@@ -1,4 +1,3 @@
--- Tạo ENUM type cho role và order status nếu chưa có
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role_enum') THEN
@@ -53,6 +52,7 @@ CREATE TABLE IF NOT EXISTS cart_detail (
     quantity INT NOT NULL,
     color VARCHAR(255) NOT NULL,
     size VARCHAR(255) NOT NULL,
+    image_url TEXT,
     PRIMARY KEY (
         cart_id,
         product_id,
@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS cart_detail (
         color
     )
 );
+
 
 -- ORDER
 CREATE TABLE IF NOT EXISTS "order" (
@@ -81,6 +82,7 @@ CREATE TABLE IF NOT EXISTS order_detail (
     price NUMERIC(10, 2) NOT NULL,
     color VARCHAR(255) NOT NULL,
     size VARCHAR(255) NOT NULL,
+    image_url TEXT,
     PRIMARY KEY (
         order_id,
         product_id,
@@ -141,3 +143,50 @@ SET DEFAULT 'ORD' || LPAD(
     5,
     '0'
 );
+
+-- USERS
+INSERT INTO users (name, password, email, phone_number, role)
+VALUES
+  ('Super Admin', '$2b$10$4kC5QQAdURfxYQNnotjiGurrXhTufvbKExPkgERqTDFqHVxjLft7K', 'admin@gmail.vn', '0123456789', 'admin'),
+  ('Nguyen Danh', '$2b$10$4kC5QQAdURfxYQNnotjiGurrXhTufvbKExPkgERqTDFqHVxjLft7K', 'usera@yody.vn', '0987654321', 'customer'),
+  ('Tran Huy', '$2b$10$4kC5QQAdURfxYQNnotjiGurrXhTufvbKExPkgERqTDFqHVxjLft7K', 'userb@yody.vn', '0911222333', 'customer');
+
+-- CATEGORY
+INSERT INTO category (category_name, description)
+VALUES
+  ('Shirts', 'All kinds of shirts'),
+  ('Polo Shirts', 'Polo shirts for men and women'),
+  ('Jeans', 'Various jeans styles');
+-- PRODUCT
+INSERT INTO product (product_name, description, price, category_id, is_active, image_url)
+VALUES
+  ('Basic White Shirt', 'A classic white shirt', 199, (SELECT category_id FROM category WHERE category_name = 'Shirts'), TRUE, 'https://buggy.yodycdn.com/images/product/81a8890c1dfbbe97a2bc500604f58d72.webp?width=987&height=1316'),
+  ('Blue Polo', 'Comfortable blue polo shirt', 199, (SELECT category_id FROM category WHERE category_name = 'Polo Shirts'), TRUE, 'https://buggy.yodycdn.com/images/product/feab5fe94eec59320275de33c6601515.webp?width=987&height=1316'),
+  ('Slim Fit Jeans', 'Trendy slim fit jeans', 199, (SELECT category_id FROM category WHERE category_name = 'Jeans'), TRUE, 'https://buggy.yodycdn.com/images/product/094fea61615890b116739f045687fd89.webp?width=987&height=1316');
+-- CART
+INSERT INTO cart (user_id)
+VALUES
+  ((SELECT user_id FROM users WHERE email = 'usera@yody.vn')),
+  ((SELECT user_id FROM users WHERE email = 'userb@yody.vn'));
+
+-- CART_DETAIL
+INSERT INTO cart_detail (cart_id, product_id, quantity, color, size, image_url)
+VALUES
+  ((SELECT cart_id FROM cart LIMIT 1), (SELECT product_id FROM product WHERE product_name = 'Basic White Shirt'), 2, 'White', 'M', 'https://buggy.yodycdn.com/images/product/81a8890c1dfbbe97a2bc500604f58d72.webp?width=987&height=1316'),
+  ((SELECT cart_id FROM cart LIMIT 1), (SELECT product_id FROM product WHERE product_name = 'Blue Polo'), 1, 'Blue', 'L', 'https://buggy.yodycdn.com/images/product/feab5fe94eec59320275de33c6601515.webp?width=987&height=1316');
+
+-- ORDER
+INSERT INTO "order" (user_id, total_amount, status, shipping_address, receiver_name, receiver_phone)
+VALUES
+  ((SELECT user_id FROM users WHERE email = 'usera@yody.vn'), 698000, 'pending', '123 Main St, Hanoi', 'Nguyen Van A', '0987654321');
+
+-- ORDER_DETAIL
+INSERT INTO order_detail (order_id, product_id, quantity, price, color, size, image_url)
+VALUES
+  ((SELECT order_id FROM "order" LIMIT 1), (SELECT product_id FROM product WHERE product_name = 'Basic White Shirt'), 2, 299000, 'White', 'M', 'https://buggy.yodycdn.com/images/product/81a8890c1dfbbe97a2bc500604f58d72.webp?width=987&height=1316'),
+  ((SELECT order_id FROM "order" LIMIT 1), (SELECT product_id FROM product WHERE product_name = 'Blue Polo'), 1, 399000, 'Blue', 'L', 'https://buggy.yodycdn.com/images/product/feab5fe94eec59320275de33c6601515.webp?width=987&height=1316');-- Tạo ENUM type cho role và order status nếu chưa có
+
+
+
+
+

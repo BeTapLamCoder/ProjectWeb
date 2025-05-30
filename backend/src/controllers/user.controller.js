@@ -72,6 +72,7 @@ class UserController {
                 email: user.email,
                 role: user.role,
                 phone_number: user.phone_number || null,
+                cart_id: user.cart_id || null
             }
 
             const accessToken = jwt.sign(payload, SECRET_KEY, { expiresIn: '2m' });
@@ -123,6 +124,7 @@ class UserController {
                     email: user.email,
                     role: user.role,
                     phone_number: user.phone_number || null,
+                    cart_id: user.cart_id || null,
                 },
                 SECRET_KEY,
                 { expiresIn: '2m' }
@@ -134,6 +136,7 @@ class UserController {
                     email: user.email,
                     role: user.role,
                     phone_number: user.phone_number || null,
+                    cart_id: user.cart_id || null,
                     token_type: 'refresh_token'
                 },
                 SECRET_KEY,
