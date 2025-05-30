@@ -20,7 +20,9 @@ class UserService {
 
     async findByEmail(email) {
         const res = await db.query(
-            `SELECT * FROM ${userModel.tableName} WHERE email = $1`,
+            `SELECT users.*, cart.cart_id FROM ${userModel.tableName}
+            JOIN cart ON users.user_id = cart.user_id
+            WHERE email = $1`,
             [email]
         );
 
