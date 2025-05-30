@@ -3,24 +3,33 @@ const serverBaseURL =
         ? "http://localhost:8080"
         : "https://server-project-web.vercel.app";
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
     // Get all necessary data from localStorage
     const checkoutInfo = JSON.parse(localStorage.getItem('checkoutInfo')) || {};
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
     const accessToken = localStorage.getItem('accessToken');
     const isLoggedIn = localStorage.getItem('isLoggedIn');
+
+    // Lấy cartId từ token
+    let cartId = null;
+    if (accessToken) {
+        try {
+            const payload = JSON.parse(atob(accessToken.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+            cartId = payload.cart_id || payload.cartId;
+        } catch (e) {
+            cartId = localStorage.getItem('cartId');
+        }
+    }
 
     // Debug logs
     console.log('Initial data:', {
         accessToken: accessToken ? 'Present' : 'Missing',
         isLoggedIn,
         checkoutInfo,
-        cartItems: cart.length
+        cartId
     });
 
     // Check login status
     if (!accessToken || !isLoggedIn) {
-        console.log('Login check failed:', { accessToken, isLoggedIn });
         showNotification('Please login to continue', 'danger');
         const pathParts = window.location.pathname.split('/');
         const srcIndex = pathParts.indexOf('src');
@@ -31,18 +40,28 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
+    // Lấy sản phẩm trong giỏ hàng từ backend
+    let cart = [];
+    if (cartId) {
+        try {
+            const response = await fetch(`${serverBaseURL}/cart-details/${cartId}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken
+                }
+            });
+            if (response.ok) {
+                cart = await response.json();
+            }
+        } catch (err) {
+            console.error("Error fetching cart:", err);
+        }
+    }
+
     // Get user info from token
     try {
-        // Decode token and get user info
         const payload = JSON.parse(atob(accessToken.split('.')[1]));
-        console.log('Token payload:', payload);
-
-        if (!payload.id) {
-            throw new Error('User ID not found in token');
-        }
-
+        if (!payload.id) throw new Error('User ID not found in token');
         const userId = payload.id;
-        console.log('Extracted userId:', userId);
 
         const pathParts = window.location.pathname.split('/');
         const srcIndex = pathParts.indexOf('src');
@@ -56,7 +75,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // Create order via API
         async function createOrder(orderData) {
             try {
-                console.log('Creating order with data:', orderData);
                 const response = await fetch(`${serverBaseURL}/orders`, {
                     method: 'POST',
                     headers: {
@@ -68,8 +86,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    console.error('API Error:', errorData);
-
                     if (response.status === 401) {
                         localStorage.removeItem('isLoggedIn');
                         localStorage.removeItem('accessToken');
@@ -80,7 +96,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 return await response.json();
             } catch (error) {
-                console.error('Order creation error:', error);
                 throw error;
             }
         }
@@ -95,15 +110,18 @@ document.addEventListener('DOMContentLoaded', function () {
             if (orderCount) orderCount.textContent = `(${cart.length})`;
 
             cart.forEach(item => {
+                const image = item.image || item.image_url || '';
+                const name = item.name || item.product_name || '';
+                const priceValue = parseFloat((item.price || '').toString().replace(/[^0-9.]/g, '')) || 0;
                 const itemHTML = `
                     <div class="order-item mb-2 d-flex align-items-start gap-3">
-                        <img class="order-item-img" src="${item.image}" alt="${item.name}">
+                        <img class="order-item-img" src="${image}" alt="${name}">
                         <div class="order-item-info flex-grow-1">
-                            <div class="order-item-title">${item.name}</div>
+                            <div class="order-item-title">${name}</div>
                             <div class="order-item-desc text-muted small">${item.color || ''}${item.color && item.size ? ' / ' : ''}${item.size || ''}</div>
                             <div class="order-item-qty text-muted small">Quantity: ${item.quantity}</div>
                         </div>
-                        <div class="order-item-price fw-semibold">$${parseFloat(item.price.replace(/[^0-9.]/g, '')).toFixed(2)}</div>
+                        <div class="order-item-price fw-semibold">$${priceValue.toFixed(2)}</div>
                     </div>
                 `;
                 orderList.insertAdjacentHTML('beforeend', itemHTML);
@@ -114,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
         function updateOrderTotal() {
             let subtotal = 0;
             cart.forEach(item => {
-                const price = parseFloat(item.price.replace(/[^0-9.]/g, '')) || 0;
+                const price = parseFloat((item.price || '').toString().replace(/[^0-9.]/g, '')) || 0;
                 subtotal += price * (item.quantity || 1);
             });
 
@@ -149,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Prepare order data
                 const orderData = {
-                    user_id: userId, // Using userId from token
+                    user_id: userId,
                     total_amount: total,
                     shipping_address: `${checkoutInfo.address}, ${checkoutInfo.city}, ${checkoutInfo.state}, ${checkoutInfo.country}`,
                     receiver_name: checkoutInfo.fullName,
@@ -159,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     items: cart.map(item => ({
                         product_id: item.product_id || item.id,
                         quantity: parseInt(item.quantity),
-                        price: parseFloat(item.price.replace(/[^0-9.]/g, '')),
+                        price: parseFloat((item.price || '').toString().replace(/[^0-9.]/g, '')),
                         color: item.color || null,
                         size: item.size || null
                     }))
@@ -170,19 +188,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     throw new Error('Missing required order information');
                 }
 
-                console.log('Sending order data:', orderData);
-
                 const newOrder = await createOrder(orderData);
-                console.log('Order created:', newOrder);
 
                 // Clear cart and checkout info
                 localStorage.removeItem('cart');
                 localStorage.removeItem('checkoutInfo');
-
-                // Save order ID
                 localStorage.setItem('currentOrderId', newOrder.order_id);
 
-                // Show success and redirect
                 showNotification('Order placed successfully!', 'success');
                 submitBtn.innerHTML = 'Processing... <span class="spinner-border spinner-border-sm ms-2"></span>';
 
@@ -195,7 +207,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }, 1500);
 
             } catch (error) {
-                console.error('Error creating order:', error);
                 showNotification(error.message, 'danger');
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Pay Now <span class="ms-2" style="font-size:1.3em;">&#8594;</span>';
@@ -217,7 +228,6 @@ document.addEventListener('DOMContentLoaded', function () {
         updateOrderTotal();
 
     } catch (error) {
-        console.error('Error processing token:', error);
         showNotification('Session expired. Please login again.', 'danger');
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('accessToken');
