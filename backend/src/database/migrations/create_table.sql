@@ -118,6 +118,7 @@ CREATE TABLE IF NOT EXISTS order_detail (
     price NUMERIC(10, 2) NOT NULL,
     color VARCHAR(255) NOT NULL,
     size VARCHAR(255) NOT NULL,
+    image_url TEXT,
     PRIMARY KEY (
         order_id,
         product_id,
