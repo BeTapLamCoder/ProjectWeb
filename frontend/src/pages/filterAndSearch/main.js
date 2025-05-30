@@ -1,3 +1,8 @@
+const serverBaseURL =
+    window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+        ? "http://localhost:8080"
+        : "https://server-project-web.vercel.app";
+
 document.addEventListener('DOMContentLoaded', function () {
     fetchAndRenderProducts();
     // Toggle filter groups
@@ -77,18 +82,16 @@ document.addEventListener('DOMContentLoaded', function () {
     initMobileView();
     window.addEventListener('resize', initMobileView);
 
-    // Simulate loading product images
     const productImages = document.querySelectorAll('.product-image img');
 
-    // Replace placeholder with actual product images
-    // This is just a simulation - in a real app you'd load actual product images
     let productDatabase = [];
 
     async function fetchAndRenderProducts() {
         try {
-            const response = await fetch('http://localhost:8080/products');
+            const response = await fetch(`${serverBaseURL}/products`);
             const data = await response.json();
-            productDatabase = data.map(item => ({
+            productDatabase = data.filter(item => item.is_active === true)
+            .map(item => ({
                 id: item.product_id,
                 name: item.product_name,
                 category: item.category_id || "all",
