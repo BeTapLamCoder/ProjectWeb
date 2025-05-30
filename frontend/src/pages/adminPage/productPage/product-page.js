@@ -11,6 +11,21 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   }
 
+  const logoutBtn = document.querySelector('.nav-link[href="#"]');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      const pathParts = window.location.pathname.split('/');
+      const srcIndex = pathParts.indexOf('src');
+      const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
+      localStorage.removeItem("isLoggedIn")
+      localStorage.removeItem("currentUser")
+      localStorage.removeItem("fashionCart")
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      window.location.href = baseURL + 'index.html';
+    });
+  }
   // Load products from localStorage
   function loadProducts() {
     console.log("Loading products from localStorage...")
@@ -124,11 +139,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>${index + 1}</td>
                 <td>
                     <div class="d-flex align-items-center">
-                        ${
-                          product.images && product.images.length > 0
-                            ? `<img src="${product.images[0].data}" alt="${product.name}" style="width: 40px; height: 40px; object-fit: cover; margin-right: 10px; border-radius: 4px;">`
-                            : '<div style="width: 40px; height: 40px; background: #f8f9fa; margin-right: 10px; border-radius: 4px; display: flex; align-items: center; justify-content: center;"><span class="material-symbols-outlined text-muted">image</span></div>'
-                        }
+                        ${product.images && product.images.length > 0
+          ? `<img src="${product.images[0].data}" alt="${product.name}" style="width: 40px; height: 40px; object-fit: cover; margin-right: 10px; border-radius: 4px;">`
+          : '<div style="width: 40px; height: 40px; background: #f8f9fa; margin-right: 10px; border-radius: 4px; display: flex; align-items: center; justify-content: center;"><span class="material-symbols-outlined text-muted">image</span></div>'
+        }
                         <div>
                             <div class="fw-bold">${product.name}</div>
                             <small class="text-muted">${statusBadge}</small>
@@ -214,11 +228,10 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-6">
-                                    ${
-                                      product.images && product.images.length > 0
-                                        ? `<img src="${product.images[0].data}" alt="${product.name}" class="img-fluid rounded mb-3">`
-                                        : '<div class="bg-light rounded mb-3 d-flex align-items-center justify-content-center" style="height: 200px;"><span class="material-symbols-outlined text-muted" style="font-size: 48px;">image</span></div>'
-                                    }
+                                    ${product.images && product.images.length > 0
+        ? `<img src="${product.images[0].data}" alt="${product.name}" class="img-fluid rounded mb-3">`
+        : '<div class="bg-light rounded mb-3 d-flex align-items-center justify-content-center" style="height: 200px;"><span class="material-symbols-outlined text-muted" style="font-size: 48px;">image</span></div>'
+      }
                                 </div>
                                 <div class="col-md-6">
                                     <h4>${product.name}</h4>
