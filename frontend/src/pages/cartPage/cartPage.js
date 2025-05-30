@@ -1,4 +1,8 @@
-// Updated version with delete API call to backend
+const serverBaseURL =
+  window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "http://localhost:8080"
+    : "https://server-project-web.vercel.app";
+
 
 document.addEventListener("DOMContentLoaded", async function () {
   const cartItemsContainer = document.querySelector(".cart-items");
@@ -20,8 +24,25 @@ document.addEventListener("DOMContentLoaded", async function () {
     const cartId = getCartId();
     if (!cartId) return renderEmptyCart();
 
+    const continueBtn = document.querySelector(".summary-btn");
+    if (continueBtn) {
+      continueBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        // Kiểm tra đã đồng ý điều khoản chưa
+        const agree = document.getElementById("agree");
+        if (!agree || !agree.checked) {
+          alert("Bạn cần đồng ý với điều khoản trước khi tiếp tục!");
+          return;
+        }
+        const pathParts = window.location.pathname.split('/');
+        const srcIndex = pathParts.indexOf('src');
+        const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
+        window.location.href = baseURL + "pages/checkoutPage/checkoutPage.html";
+      });
+    }
+
     try {
-      const response = await fetch(`http://localhost:8080/cart-details/${cartId}`, {
+      const response = await fetch(`${serverBaseURL}/cart-details/${cartId}`, {
         headers: {
           'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
         }
@@ -62,7 +83,7 @@ document.addEventListener("DOMContentLoaded", async function () {
           <img class="cart-item-img" src="${item.image_url}" alt="${item.name || 'Product'}">
           <div class="cart-item-info">
             <div class="cart-item-title text-muted small mb-1">${item.type || ""}</div>
-            <div class="cart-item-name fw-semibold mb-2">${item.product_name || item.name ||"Unnamed Product"}</div>
+            <div class="cart-item-name fw-semibold mb-2">${item.product_name || item.name || "Unnamed Product"}</div>
             <div class="cart-item-options mb-2">
               <span class="cart-item-size badge bg-light text-dark border">${item.size || ""}</span>
               ${item.color ? `<span class="cart-item-color ms-2" style="background:${item.color};"></span>` : ""}
@@ -122,23 +143,23 @@ document.addEventListener("DOMContentLoaded", async function () {
     const cartId = getCartId();
     if (!cartId) return;
     try {
-        const response = await fetch(
-            `http://localhost:8080/cart-details/${cartId}/${item.product_id}/${item.size}/${item.color}`,
-            {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
-                },
-                body: JSON.stringify({ quantity: newQty })
-            }
-        );
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error("Failed to update quantity:", errorData);
+      const response = await fetch(
+        `http://localhost:8080/cart-details/${cartId}/${item.product_id}/${item.size}/${item.color}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+          },
+          body: JSON.stringify({ quantity: newQty })
         }
+      );
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Failed to update quantity:", errorData);
+      }
     } catch (err) {
-        console.error("Failed to update quantity", err);
+      console.error("Failed to update quantity", err);
     }
   }
 
