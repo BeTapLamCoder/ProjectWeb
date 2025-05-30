@@ -104,7 +104,7 @@ function initAddToCart() {
         if (!card) return;
 
         const productData = {
-            product_id: card.dataset.product_id,
+            product_id: card.dataset.productId,
             name: card.querySelector('.card-title a')?.textContent?.trim() || '',
             price: card.querySelector('.card-text.fw-bold')?.textContent?.trim() || '',
             image_url: card.querySelector('.card-img-top')?.src || '',
@@ -211,7 +211,7 @@ function addProductsToGrid(products, container) {
       const badgeHtml = hasBadge ? `<span class="badge bg-light text-dark border ms-1">+${badgeNumber}</span>` : "";
 
       col.innerHTML = `
-        <div class="card h-100 border-0 shadow-sm">
+        <div class="card h-100 border-0 shadow-sm" data-product-id="${product.product_id}">
           <div class="card-img-top-wrapper">
             <img src="${product.image}" alt="${product.name}" class="card-img-top">
             <button class="add-to-cart-overlay">+</button>
@@ -240,7 +240,7 @@ function createProductCard(product) {
   const badgeHtml = hasBadge ? `<span class="badge">+${badgeNumber}</span>` : ""
 
   card.innerHTML = `
-        <div class="collection-image-container">
+        <div class="collection-image-container" data-product-id="${product.productId}">
             <img src="${product.image}" alt="${product.name}" class="collection-image">
             <button class="add-to-cart">+</button>
         </div>

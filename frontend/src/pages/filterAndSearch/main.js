@@ -319,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function () {
             card.addEventListener('click', function () {
                 // Lấy thông tin sản phẩm
                 const productData = {
-                    id: this.dataset.productId || 'default-id',
+                    id: this.dataset.product_id || 'default-id',
                     name: this.querySelector('.product-name').textContent,
                     price: this.querySelector('.product-price').textContent,
                     type: this.querySelector('.product-type').textContent,
