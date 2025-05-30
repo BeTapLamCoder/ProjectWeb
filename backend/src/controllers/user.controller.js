@@ -52,7 +52,8 @@ class UserController {
     //Login
     async login(req, res) {
         try {
-            const { email, password } = req.body;
+            let { email, password } = req.body;
+            email = email.trim();
             if (!email || !password) {
                 return res.status(400).json({ message: 'Email and password are required' });
             }
@@ -72,6 +73,7 @@ class UserController {
                 email: user.email,
                 role: user.role,
                 phone_number: user.phone_number || null,
+                cart_id: user.cart_id || null
             }
 
             const accessToken = jwt.sign(payload, SECRET_KEY, { expiresIn: '2m' });
@@ -123,6 +125,7 @@ class UserController {
                     email: user.email,
                     role: user.role,
                     phone_number: user.phone_number || null,
+                    cart_id: user.cart_id || null,
                 },
                 SECRET_KEY,
                 { expiresIn: '2m' }
@@ -134,6 +137,7 @@ class UserController {
                     email: user.email,
                     role: user.role,
                     phone_number: user.phone_number || null,
+                    cart_id: user.cart_id || null,
                     token_type: 'refresh_token'
                 },
                 SECRET_KEY,

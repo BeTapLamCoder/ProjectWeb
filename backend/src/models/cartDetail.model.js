@@ -5,5 +5,4 @@ class CartDetailModel extends BaseModel {
         super('cart_detail', ['cart_id', 'product_id', 'size', 'color']);
     }
 }
-
 module.exports = new CartDetailModel();

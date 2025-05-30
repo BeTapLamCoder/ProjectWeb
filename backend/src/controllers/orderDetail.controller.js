@@ -11,7 +11,15 @@ class OrderDetailController {
                     message: 'No products found in this order'
                 });
             }
-            res.status(200).json(orderDetails);
+            const response = {
+                items: orderDetails,
+                confirmed_at: orderDetails[0]?.confirmed_at || null,
+                processing_at: orderDetails[0]?.processing_at || null,
+                shipped_at: orderDetails[0]?.shipped_at || null,
+                delivered_at: orderDetails[0]?.delivered_at || null
+            };
+
+            res.status(200).json(response);
         } catch (error) {
             res.status(500).json({
                 message: 'Error retrieving order details',
