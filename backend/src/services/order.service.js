@@ -59,7 +59,8 @@ class OrderService {
                        'quantity', od.quantity,
                        'price', od.price,
                        'color', od.color,
-                       'size', od.size
+                       'size', od.size,
+                       'image_url', od.image_url,
                    )) as items
             FROM "order" o
             LEFT JOIN order_detail od ON o.order_id = od.order_id
@@ -81,7 +82,8 @@ class OrderService {
                        'quantity', od.quantity,
                        'price', od.price,
                        'color', od.color,
-                       'size', od.size
+                       'size', od.size,
+                        'image_url', od.image_url
                    )) as items
             FROM "order" o
             LEFT JOIN order_detail od ON o.order_id = od.order_id
