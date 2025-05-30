@@ -1,13 +1,33 @@
+const serverBaseURL =
+  window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "http://localhost:8080"
+    : "https://server-project-web.vercel.app";
+
+let newThisWeekProducts = [];
+let newThisWeekIndex = 0;
+const PRODUCTS_PER_VIEW = 4;
 // Homepage JavaScript - FIXED CAROUSEL
 document.addEventListener("DOMContentLoaded", async () => {
   initMobileMenu()
   initHeroCarousel()
   await fetchAndRenderProducts() // Fetch products from server
+  await fetchAndRenderNewThisWeek() // Fetch new products for "New This Week" section
   initAddToCart()
   initCollectionFilters()
   initLoadMore()
   initPagination()
   initUserDropdown()
+
+  const seeAllBtn = document.querySelector('.see-all');
+  if (seeAllBtn) {
+    seeAllBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      const pathParts = window.location.pathname.split('/');
+      const srcIndex = pathParts.indexOf('src');
+      const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
+      window.location.href = baseURL + "pages/filterAndSearch/filterAndSearch.html";
+    });
+  }
 })
 
 // Mobile Menu Toggle
@@ -59,7 +79,10 @@ function initHeroCarousel() {
   if (shopButton) {
     shopButton.addEventListener("click", (e) => {
       e.preventDefault()
-      window.location.href = "./pages/filterAndSearch/filterAndSearch.html"
+      const pathParts = window.location.pathname.split('/');
+      const srcIndex = pathParts.indexOf('src');
+      const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
+      window.location.href = baseURL + "pages/filterAndSearch/filterAndSearch.html"
     })
   }
 }
@@ -215,7 +238,7 @@ function addProductsToGrid(products, container) {
           <div class="card-body text-center">
             <p class="card-text text-muted small mb-1">${product.categoryDisplay} ${badgeHtml}</p>
             <h5 class="card-title fs-6"><a href="#" class="text-dark text-decoration-none">${product.name}</a></h5>
-            <p class="card-text fw-bold">${product.price}</p>
+            <p class="card-text fw-bold">$${product.price}</p>
           </div>
         </div>
       `;
@@ -312,8 +335,11 @@ function initUserDropdown() {
 }
 
 function handleOrdersClick() {
+  const pathParts = window.location.pathname.split('/');
+  const srcIndex = pathParts.indexOf('src');
+  const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
   setTimeout(() => {
-    window.location.href = "./pages/manageOrder/manageOrder.html"
+    window.location.href = baseURL + "pages/manageOrder/manageOrder.html"
   }, 500)
 }
 
@@ -409,16 +435,17 @@ let productDatabase = [];
 // Hàm fetch sản phẩm từ API và render ra trang
 async function fetchAndRenderProducts() {
   try {
-    const response = await fetch('http://localhost:8080/products'); // Đổi URL nếu cần
+    const response = await fetch(`${serverBaseURL}/products`); // Đổi URL nếu cần
     const data = await response.json();
-    productDatabase = data.map(item => ({
-      id: item.product_id,
-      name: item.product_name,
-      category: item.category_id || "all",
-      categoryDisplay: item.category_name || "All",
-      price: item.price,
-      image: item.image_url
-    }));
+    productDatabase = data.filter(item => item.is_active === true)
+      .map(item => ({
+        id: item.product_id,
+        name: item.product_name,
+        category: item.category_id || "all",
+        categoryDisplay: item.category_name || "All",
+        price: item.price,
+        image: item.image_url
+      }));
 
     renderInitialProducts(productDatabase);
   } catch (error) {
@@ -427,7 +454,68 @@ async function fetchAndRenderProducts() {
   }
 }
 
-// Render sản phẩm ra grid (hiển thị 9 sản phẩm đầu)
+async function fetchAndRenderNewThisWeek() {
+  try {
+    const response = await fetch(`${serverBaseURL}/products`);
+    const products = await response.json();
+    newThisWeekProducts = products.filter(p => p.is_active === true);
+    newThisWeekIndex = 0;
+    renderNewThisWeek();
+    initNewThisWeekPagination();
+  } catch (error) {
+    console.error('Không thể tải sản phẩm mới:', error);
+  }
+}
+function renderNewThisWeek() {
+  const container = document.getElementById('new-this-week-list');
+  if (!container) return;
+
+  // Thêm class để fade out
+  container.classList.add('new-this-week-fade');
+
+  setTimeout(() => {
+    container.innerHTML = '';
+    const productsToShow = newThisWeekProducts.slice(newThisWeekIndex, newThisWeekIndex + PRODUCTS_PER_VIEW);
+    productsToShow.forEach(product => {
+      container.innerHTML += `
+        <div class="col">
+          <div class="card h-100 border-0 shadow-sm product-card-custom">
+            <div class="card-img-top-wrapper">
+              <img src="${product.image_url}" class="card-img-top" alt="${product.product_name}">
+              <button class="add-to-cart-overlay">+</button>
+            </div>
+            <div class="card-body text-center">
+              <p class="card-text text-muted small mb-1">${product.description || ''}</p>
+              <h5 class="card-title fs-6"><a href="#" class="text-dark text-decoration-none">${product.product_name}</a></h5>
+              <p class="card-text fw-bold">$${Number(product.price).toLocaleString()}</p>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    // Loại bỏ class để fade in
+    container.classList.remove('new-this-week-fade');
+  }, 400);
+}
+
+function initNewThisWeekPagination() {
+  const prevBtn = document.querySelector('.pagination-btn.prev');
+  const nextBtn = document.querySelector('.pagination-btn.next');
+  if (!prevBtn || !nextBtn) return;
+
+  prevBtn.onclick = () => {
+    if (newThisWeekIndex > 0) {
+      newThisWeekIndex -= PRODUCTS_PER_VIEW;
+      renderNewThisWeek();
+    }
+  };
+  nextBtn.onclick = () => {
+    if (newThisWeekIndex + PRODUCTS_PER_VIEW < newThisWeekProducts.length) {
+      newThisWeekIndex += PRODUCTS_PER_VIEW;
+      renderNewThisWeek();
+    }
+  };
+}
 function renderInitialProducts(products) {
   const collectionsGrid = document.querySelector('.collections-grid');
   if (!collectionsGrid) return;
