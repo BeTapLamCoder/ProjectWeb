@@ -1,5 +1,20 @@
+import { fetchWithAuth } from '../../utils/authFetch.js';
+
+
+window.viewOrderDetail = viewOrderDetail;
+window.cancelOrder = cancelOrder;
+window.showNotification = showNotification;
+
 let ordersData = [];
 let filteredOrders = [];
+let refreshInterval;
+
+Object.assign(window, {
+    viewOrderDetail,
+    cancelOrder,
+    showNotification
+});
+
 
 // Utility functions
 function formatPrice(priceStr) {
@@ -10,10 +25,10 @@ function formatPrice(priceStr) {
         }).format(priceStr);
     }
 
-    // Cố gắng chuyển đổi an toàn hơn
+
     const numericValue = parseFloat(String(priceStr).replace(/[^0-9.-]+/g, ''));
     if (isNaN(numericValue)) {
-        return 'N/A'; // Hoặc giá trị mặc định khác
+        return 'N/A';
     }
 
     return new Intl.NumberFormat('en-US', {
@@ -47,96 +62,286 @@ function getStatusText(status) {
     return statusMap[status?.toLowerCase()] || 'Unknown';
 }
 
-// Load orders when page loads
-document.addEventListener('DOMContentLoaded', function () {
-    const savedOrders = JSON.parse(localStorage.getItem('orders')) || [];
-    ordersData = savedOrders.map(order => ({
-        id: order.orderNumber || `ORD${Math.floor(Math.random() * 10**5)}`, // ID phải duy nhất
-        date: order.date,
-        status: order.status || 'pending',
-        total: order.total || 0,
+function showLoading() {
+    const loading = document.createElement('div');
+    loading.id = 'loading';
+    loading.className = 'position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75';
+    loading.innerHTML = `
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    `;
+    document.body.appendChild(loading);
+}
+
+function hideLoading() {
+    document.getElementById('loading')?.remove();
+}
+
+async function fetchOrderDetail(orderId) {
+    try {
+        const response = await fetchWithAuth(`http://localhost:8080/order-details/${orderId}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch order details');
+        }
+        const data = await response.json();
+        // Thêm log để kiểm tra response
+        console.log('Raw order details response:', data);
+
+
+        return {
+            ...data,
+            items: Array.isArray(data.items) ? data.items : [],
+            confirmed_at: data.confirmed_at || null,
+            processing_at: data.processing_at || null,
+            shipped_at: data.shipped_at || null,
+            delivered_at: data.delivered_at || null
+        };
+    } catch (error) {
+        console.error('Error fetching order details:', error);
+        throw error;
+    }
+}
+
+
+async function fetchOrders() {
+    try {
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) {
+            throw new Error('Not logged in');
+        }
+
+        // Lấy userId từ token
+        const payload = JSON.parse(atob(accessToken.split('.')[1]));
+        const userId = payload.id;
+
+        if (!userId) {
+            throw new Error('User ID not found');
+        }
+
+        console.log('Fetching orders for userId:', userId); // Debug log
+
+        const response = await fetchWithAuth(`http://localhost:8080/orders/user/${userId}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch orders');
+        }
+
+        const orders = await response.json();
+        console.log('Fetched orders:', orders); // Debug log
+        return orders;
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+        handleError(error);
+        return [];
+    }
+}
+
+
+async function cancelOrderAPI(orderId) {
+    try {
+        const response = await fetchWithAuth(`http://localhost:8080/orders/${orderId}/status`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status: 'cancelled' })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to cancel order');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error cancelling order:', error);
+        throw error;
+    }
+}
+
+function handleError(error) {
+    console.error('Error:', error);
+    if (error.message.includes('token') || error.message.includes('login')) {
+        showNotification('Session expired. Please login again.', 'danger');
+        setTimeout(() => {
+            window.location.href = '../loginAndRegist/loginAndRegist.html';
+        }, 1500);
+    } else {
+        showNotification(error.message || 'An error occurred', 'danger');
+    }
+}
+
+function startAutoRefresh() {
+    refreshInterval = setInterval(async () => {
+        try {
+            const orders = await fetchOrders();
+            if (orders) {
+                ordersData = orders.map(mapOrderData);
+                filteredOrders = [...ordersData];
+                renderOrders();
+            }
+        } catch (error) {
+            handleError(error);
+        }
+    }, 30000);
+}
+
+function stopAutoRefresh() {
+    clearInterval(refreshInterval);
+}
+
+function mapOrderData(order) {
+    return {
+        id: order.order_id,
+        date: order.created_at,
+        status: order.status,
+        total: order.total_amount,
         items: order.items || [],
-        shipping: order.shipping || { fullName: 'N/A', email: 'N/A', phone: 'N/A', address: 'N/A', city: 'N/A', country: 'N/A' },
-        payment: order.payment || { method: 'N/A', transactionId: 'N/A' },
-        tracking: order.tracking || [
-            { title: 'Order Placed', date: order.date ? new Date(order.date).toLocaleString('en-US') : 'N/A', completed: order.status !== 'cancelled' }, // Đã đặt hàng nếu không bị hủy
+        shipping: {
+            fullName: order.receiver_name,
+            phone: order.receiver_phone,
+            address: order.shipping_address
+        },
+        payment: {
+            method: order.payment_method
+        },
+        tracking: [
+            { title: 'Order Placed', date: formatDate(order.created_at), completed: true },
             { title: 'Order Confirmed', date: '', completed: ['confirmed', 'processing', 'shipped', 'delivered'].includes(order.status) },
             { title: 'Preparing Order', date: '', completed: ['processing', 'shipped', 'delivered'].includes(order.status) },
             { title: 'Shipped', date: '', completed: ['shipped', 'delivered'].includes(order.status) },
             { title: 'Delivered Successfully', date: '', completed: order.status === 'delivered' }
         ]
-    }));
+    };
+}
+document.addEventListener('DOMContentLoaded', async function () {
+    console.log('DOMContentLoaded fired');
+    try {
 
-    filteredOrders = [...ordersData];
-    initializeEventListeners();
-    renderOrders();
+        await initializeEventListeners();
+
+        const orders = await fetchOrders();
+        console.log('Orders fetched:', orders);
+
+        ordersData = orders.map(mapOrderData);
+        filteredOrders = [...ordersData];
+
+        renderOrders();
+        startAutoRefresh();
+    } catch (error) {
+        console.error('Initialization error:', error);
+        handleError(error);
+    } finally {
+        hideLoading();
+    }
 });
 
+// Clean up when leaving page
+window.addEventListener('beforeunload', () => {
+    stopAutoRefresh();
+});
+
+
 function initializeEventListeners() {
-    document.getElementById('searchInput')?.addEventListener('input', function (e) {
-        const searchTerm = e.target.value.toLowerCase();
-        filteredOrders = ordersData.filter(order =>
-            String(order.id).toLowerCase().includes(searchTerm) || // Chuyển order.id sang string
-            (order.items || []).some(item => (item.name || '').toLowerCase().includes(searchTerm))
-        );
-        renderOrders();
-    });
+    console.log('Initializing event listeners');
 
-    document.getElementById('dateFilter')?.addEventListener('change', function (e) {
-        const days = parseInt(e.target.value);
-        if (isNaN(days) || !days) { // Kiểm tra nếu không phải số hoặc là 0/rỗng
-            filteredOrders = [...ordersData];
-        } else {
-            const cutoffDate = new Date();
-            cutoffDate.setDate(cutoffDate.getDate() - days);
-            filteredOrders = ordersData.filter(order => {
-                const orderDate = new Date(order.date);
-                return !isNaN(orderDate.getTime()) && orderDate >= cutoffDate;
-            });
-        }
-        renderOrders();
-    });
+    // Search input
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', function (e) {
+            const searchTerm = e.target.value.toLowerCase();
+            filteredOrders = ordersData.filter(order =>
+                String(order.id).toLowerCase().includes(searchTerm) ||
+                (order.items || []).some(item =>
+                    (item?.name || '').toLowerCase().includes(searchTerm))
+            );
+            renderOrders();
+        });
+    }
 
-    document.querySelectorAll('.status-filter').forEach(btn => { // Bỏ dấu ? vì các nút này phải tồn tại
+    // Date filter
+    const dateFilter = document.getElementById('dateFilter');
+    if (dateFilter) {
+        dateFilter.addEventListener('change', function (e) {
+            const days = parseInt(e.target.value);
+            filteredOrders = !days ? [...ordersData] :
+                ordersData.filter(order => {
+                    const orderDate = new Date(order.date);
+                    const cutoffDate = new Date();
+                    cutoffDate.setDate(cutoffDate.getDate() - days);
+                    return orderDate >= cutoffDate;
+                });
+            renderOrders();
+        });
+    }
+
+    // Status filters
+    const statusFilters = document.querySelectorAll('.status-filter');
+    statusFilters.forEach(btn => {
         btn.addEventListener('click', function (e) {
-            document.querySelectorAll('.status-filter').forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-            const status = e.target.dataset.status;
-            filteredOrders = status
-                ? ordersData.filter(order => order.status === status)
-                : [...ordersData];
+            statusFilters.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            const status = this.dataset.status;
+            filteredOrders = status ?
+                ordersData.filter(order => order.status === status) :
+                [...ordersData];
             renderOrders();
         });
     });
 
-    document.getElementById('continueShoppingBtn').addEventListener('click', function (event) {
-        event.preventDefault(); // ngăn chặn href="#"
-        // Xác định base path tới thư mục chứa "src"
-        const pathParts = window.location.pathname.split('/');
-        const srcIndex = pathParts.indexOf('src');
-        const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
-
-        window.location.href = baseURL + 'pages/filterAndSearch/filterAndSearch.html';
-    });
+    // Continue shopping button
+    const continueShoppingBtn = document.getElementById('continueShoppingBtn');
+    if (continueShoppingBtn) {
+        continueShoppingBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+            const pathParts = window.location.pathname.split('/');
+            const srcIndex = pathParts.indexOf('src');
+            const baseURL = srcIndex !== -1 ?
+                pathParts.slice(0, srcIndex + 1).join('/') + '/' :
+                '/';
+            window.location.href = baseURL + 'pages/filterAndSearch/filterAndSearch.html';
+        });
+    }
 }
-
 function renderOrders() {
     const ordersGrid = document.getElementById('ordersGrid');
     const emptyState = document.getElementById('emptyState');
 
     if (!ordersGrid || !emptyState) {
-        console.error("Required elements for rendering orders are missing.");
+        console.error("Required elements not found");
         return;
     }
 
-    if (filteredOrders.length === 0) {
-        ordersGrid.innerHTML = ''; // Xóa các order cũ nếu có
+    if (!filteredOrders || filteredOrders.length === 0) {
         ordersGrid.style.display = 'none';
-        emptyState.style.display = 'flex';
+        emptyState.style.display = 'block';
         return;
-    }
-    ordersGrid.style.display = '';
+    } async function fetchOrderDetail(orderId) {
+        try {
+            const response = await fetchWithAuth(`http://localhost:8080/order-details/${orderId}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch order details');
+            }
+            const data = await response.json();
+            // Thêm log để kiểm tra response
+            console.log('Raw order details response:', data);
 
+            // Đảm bảo trả về đúng cấu trúc dữ liệu
+            return {
+                ...data,
+                items: Array.isArray(data.items) ? data.items : [],
+                confirmed_at: data.confirmed_at || null,
+                processing_at: data.processing_at || null,
+                shipped_at: data.shipped_at || null,
+                delivered_at: data.delivered_at || null
+            };
+        } catch (error) {
+            console.error('Error fetching order details:', error);
+            throw error;
+        }
+    }
+
+
+    ordersGrid.style.display = 'block';
     emptyState.style.display = 'none';
 
     ordersGrid.innerHTML = filteredOrders.map(order => `
@@ -201,134 +406,216 @@ function renderOrders() {
 
 }
 
-function viewOrderDetail(orderId) {
-    const order = ordersData.find(o => String(o.id) === String(orderId));
+async function viewOrderDetail(orderId) {
+    try {
+        showLoading();
+        const orderDetails = await fetchOrderDetail(orderId);
 
-    if (!order) {
-        alert("Order not found!");
-        console.error("Order not found for ID:", orderId, "in ordersData:", ordersData);
-        return;
-    }
+        // Kiểm tra và log dữ liệu
+        console.log('Order details:', orderDetails);
+        console.log('Items array before mapping:', orderDetails.items);
 
-    const modalBody = document.getElementById('modalBody');
-    const orderModalLabel = document.getElementById('orderModalLabel'); // Lấy title của modal
+        if (!orderDetails || !orderDetails.items) {
+            console.warn('No order details or items found');
+            orderDetails.items = [];
+        }
 
-    if (!modalBody || !orderModalLabel) {
-        console.error("Modal body or label element not found!");
-        return;
-    }
+        const order = ordersData.find(o => String(o.id) === String(orderId));
+        if (!order) {
+            throw new Error('Order not found');
+        }
 
-    // Cập nhật tiêu đề modal
-    orderModalLabel.textContent = `Order Details - #${order.id}`;
+        // Map dữ liệu items
+        const mappedItems = orderDetails.items.map(item => ({
+            name: item.product_name || 'Unknown Product',
+            image: item.image_url || './img/default-product.png',
+            color: item.color || 'N/A',
+            size: item.size || 'N/A',
+            price: parseFloat(item.price) || 0,
+            quantity: parseInt(item.quantity) || 0
+        }));
 
-    modalBody.innerHTML = `
+        console.log('Mapped items:', mappedItems);
 
-        <div class="order-info-modal mb-4">
-            <h5 class="mb-2">Order Information</h5>
-            <p><strong>Order ID:</strong> #${order.id}</p>
-            <p><strong>Order Date:</strong> ${formatDate(order.date)}</p>
-            <p><strong>Status:</strong> <span class="order-status status-${(order.status || 'unknown').toLowerCase()}">${getStatusText(order.status)}</span></p>
-            <p><strong>Total Amount:</strong> ${formatPrice(order.total || 0)}</p>
-        </div>
-        <div class="shipping-info mb-4">
-            <h5 class="mb-2">Shipping Information</h5>
-            <p><strong>Name:</strong> ${order.shipping?.fullName || 'N/A'}</p>
-            <p><strong>Email:</strong> ${order.shipping?.email || 'N/A'}</p>
-            <p><strong>Phone:</strong> ${order.shipping?.phone || 'N/A'}</p>
-            <p><strong>Address:</strong> ${order.shipping?.address || 'N/A'}</p>
-            <p><strong>City:</strong> ${order.shipping?.city || 'N/A'}</p>
-            <p><strong>Country:</strong> ${order.shipping?.country || 'N/A'}</p>
-        </div>
-        <div class="order-items-modal mb-4">
-            <h5 class="mb-2">Order Items</h5>
-            ${(order.items || []).map(item => `
+        const fullOrderData = {
+            ...order,
+            items: orderDetails.items || [],
+            tracking: [
+                { title: 'Order Placed', date: formatDate(order.date), completed: true },
+                { title: 'Order Confirmed', date: formatDate(orderDetails.confirmed_at), completed: ['confirmed', 'processing', 'shipped', 'delivered'].includes(order.status) },
+                { title: 'Preparing Order', date: formatDate(orderDetails.processing_at), completed: ['processing', 'shipped', 'delivered'].includes(order.status) },
+                { title: 'Shipped', date: formatDate(orderDetails.shipped_at), completed: ['shipped', 'delivered'].includes(order.status) },
+                { title: 'Delivered Successfully', date: formatDate(orderDetails.delivered_at), completed: order.status === 'delivered' }
+            ]
+        };
 
-                <div class="order-item">
-                    <img src="${item?.image || './img/default-product.png'}" alt="${item?.name || 'Product Image'}" class="item-image">
-                    <div class="item-details">
+        const modalBody = document.getElementById('modalBody');
+        const orderModalLabel = document.getElementById('orderModalLabel');
 
-                        <div class="item-name">${item?.name || 'N/A'}</div>
-                        <div class="item-desc text-muted">Color: ${item?.color || 'N/A'} / Size: ${item?.size || 'N/A'}</div>
-                        <div class="item-quantity">Quantity: ${item?.quantity || 0}</div>
+        if (!modalBody || !orderModalLabel) {
+            throw new Error("Modal elements not found");
+        }
 
+        orderModalLabel.textContent = `Order #${orderId}`;
+
+        modalBody.innerHTML = `
+            <div class="order-detail p-3">
+                <!-- Order Status -->
+                <div class="order-status-section mb-4">
+                    <h5 class="section-title mb-3">Order Status</h5>
+                    <div class="status-badge mb-2 ${order.status.toLowerCase()}">
+                        ${getStatusText(order.status)}
                     </div>
-                    <div class="item-price">${formatPrice(item?.price || 0)}</div>
-                </div>
-            `).join('')}
-        </div>
-        <div class="tracking-timeline">
-            <h5 class="mb-2">Order Tracking</h5>
-
-            ${(order.tracking || []).map(step => `
-                <div class="timeline-item d-flex align-items-center mb-2">
-                    <div class="timeline-dot ${step?.completed ? 'active' : ''} me-2">
-                        ${step?.completed ? '<span class="text-success">&#10003;</span>' : '<span class="text-secondary">&#9675;</span>'}
-                    </div>
-                    <div class="timeline-content">
-                        <div class="timeline-title fw-semibold">${step?.title || 'N/A'}</div>
-                        ${step?.date ? `<div class="timeline-date text-muted">${step.date}</div>` : ''}
-
+                    <div class="order-date">
+                        Ordered on: ${formatDate(order.date)}
                     </div>
                 </div>
-            `).join('')}
-        </div>
-    `;
 
+                <!-- Tracking Steps -->
+                <div class="tracking-section mb-4">
+                    <h5 class="section-title mb-3">Order Timeline</h5>
+                    <div class="tracking-steps">
+                        ${fullOrderData.tracking.map((step, index) => `
+                            <div class="step ${step.completed ? 'completed' : ''} ${index < fullOrderData.tracking.length - 1 ? 'with-line' : ''}">
+                                <div class="step-indicator">
+                                    <div class="step-icon">
+                                        ${step.completed ? '✓' : (index + 1)}
+                                    </div>
+                                </div>
+                                <div class="step-content">
+                                    <div class="step-title">${step.title}</div>
+                                    <div class="step-date">${step.date || 'Pending'}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
 
-    const orderModalElement = document.getElementById('orderModal');
-    if (orderModalElement) {
-        const modal = bootstrap.Modal.getOrCreateInstance(orderModalElement); // Sử dụng getOrCreateInstance
-        modal.show();
+                <!-- Shipping Information -->
+                <div class="shipping-section mb-4">
+                    <h5 class="section-title mb-3">Shipping Details</h5>
+                    <div class="shipping-info">
+                        <p><strong>Recipient:</strong> ${fullOrderData.shipping.fullName}</p>
+                        <p><strong>Phone:</strong> ${fullOrderData.shipping.phone}</p>
+                        <p><strong>Address:</strong> ${fullOrderData.shipping.address}</p>
+                        <p><strong>Payment Method:</strong> ${fullOrderData.payment.method}</p>
+                    </div>
+                </div>
+
+                <!-- Order Items -->
+                <div class="order-items-section mb-4">
+                    <h5 class="section-title mb-3">Order Items</h5>
+                    <div class="order-items">
+                        ${Array.isArray(fullOrderData.items) && fullOrderData.items.length > 0 ?
+                fullOrderData.items.map(item => `
+                                <div class="order-item mb-3 p-3 border rounded">
+                                    <div class="d-flex align-items-center">
+                                        <img src="${item.image}" 
+                                             alt="${item.name}" 
+                                             class="item-image me-3" 
+                                             style="width: 80px; height: 80px; object-fit: cover;">
+                                        <div class="item-details flex-grow-1">
+                                            <h6 class="item-name mb-1">${item.name}</h6>
+                                            <div class="item-meta text-muted small">
+                                                <span>Color: ${item.color}</span>
+                                                <span class="mx-2">|</span>
+                                                <span>Size: ${item.size}</span>
+                                            </div>
+                                            <div class="item-price mt-1">
+                                                ${formatPrice(item.price)} × ${item.quantity}
+                                            </div>
+                                        </div>
+                                        <div class="item-total text-end">
+                                            <strong>${formatPrice(item.price * item.quantity)}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')
+                : '<div class="text-muted">No items found</div>'
+            }
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="order-summary-section">
+                    <h5 class="section-title mb-3">Order Summary</h5>
+                    <div class="order-summary p-3 bg-light rounded">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span>
+                            <span>${formatPrice(fullOrderData.total - 10)}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping Fee:</span>
+                            <span>${formatPrice(10)}</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between fw-bold">
+                            <span>Total:</span>
+                            <span>${formatPrice(fullOrderData.total)}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Show modal
+        const orderModal = new bootstrap.Modal(document.getElementById('orderModal'));
+        orderModal.show();
+
+    } catch (error) {
+        console.error('Error viewing order detail:', error);
+        showNotification(error.message, 'danger');
+    } finally {
+        hideLoading();
     }
-
 }
 
-function cancelOrder(orderId) {
-    const orderIndex = ordersData.findIndex(o => String(o.id) === String(orderId));
-    if (orderIndex !== -1) {
-        if (confirm(`Are you sure you want to cancel order #${orderId}?`)) {
+async function cancelOrder(orderId) {
+    try {
+        if (!confirm(`Are you sure you want to cancel order #${orderId}?`)) {
+            return;
+        }
+
+        showLoading();
+        await cancelOrderAPI(orderId);
+
+        const orderIndex = ordersData.findIndex(o => String(o.id) === String(orderId));
+        if (orderIndex !== -1) {
             ordersData[orderIndex].status = 'cancelled';
-            
-            // Cập nhật trạng thái tracking khi hủy
-            if (ordersData[orderIndex].tracking && Array.isArray(ordersData[orderIndex].tracking)) {
-                ordersData[orderIndex].tracking = ordersData[orderIndex].tracking.map(step => ({
-                    ...step,
-                    completed: false // Đặt lại tất cả các bước tracking thành chưa hoàn thành
-                }));
-                // Hoặc bạn có thể thêm một bước "Order Cancelled"
-                // ordersData[orderIndex].tracking.push({ title: 'Order Cancelled', date: new Date().toLocaleString('en-US'), completed: true });
-            }
+            ordersData[orderIndex].tracking = ordersData[orderIndex].tracking.map(step => ({
+                ...step,
+                completed: false
+            }));
 
-
-            // Cập nhật lại localStorage
-            // Giả sử cấu trúc trong localStorage giống ordersData (id, date, status, total, items, shipping, payment, tracking)
-            localStorage.setItem('orders', JSON.stringify(ordersData.map(o => ({
-                orderNumber: o.id, // Lưu id của ordersData vào orderNumber của localStorage
-                date: o.date,
-                status: o.status,
-                total: o.total,
-                items: o.items,
-                shipping: o.shipping,
-                payment: o.payment,
-                tracking: o.tracking
-            }))));
-            
-            // Cập nhật filteredOrders để phản ánh thay đổi ngay lập tức nếu cần
             const currentActiveStatusFilter = document.querySelector('.status-filter.active')?.dataset.status;
-            if (currentActiveStatusFilter && currentActiveStatusFilter !== "") {
-                 // Nếu đang filter theo một status cụ thể, và đơn hàng vừa hủy không còn khớp, nó sẽ bị loại bỏ
+            if (currentActiveStatusFilter) {
                 filteredOrders = ordersData.filter(order => order.status === currentActiveStatusFilter);
             } else {
-                // Nếu đang xem "All" hoặc không filter, filteredOrders vẫn giữ nguyên và chỉ cập nhật status
-                 const filteredOrderIndex = filteredOrders.findIndex(o => String(o.id) === String(orderId));
-                 if(filteredOrderIndex !== -1) {
+                const filteredOrderIndex = filteredOrders.findIndex(o => String(o.id) === String(orderId));
+                if (filteredOrderIndex !== -1) {
                     filteredOrders[filteredOrderIndex].status = 'cancelled';
-                 }
+                }
             }
-            renderOrders(); // Render lại danh sách
+
+            renderOrders();
+            showNotification('Order cancelled successfully', 'success');
         }
-    } else {
-        alert("Order not found for cancellation.");
-        console.error("Order not found for cancellation with ID:", orderId);
+    } catch (error) {
+        console.error('Error cancelling order:', error);
+        showNotification('Failed to cancel order', 'danger');
+    } finally {
+        hideLoading();
     }
 }
+function showNotification(message, type = 'info') {
+    document.querySelectorAll('.notification').forEach(n => n.remove());
+    const notification = document.createElement('div');
+    notification.className = `notification alert alert-${type} position-fixed top-0 end-0 m-4`;
+    notification.style.zIndex = 9999;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+}
+
+window.viewOrderDetail = viewOrderDetail;
+window.cancelOrder = cancelOrder;

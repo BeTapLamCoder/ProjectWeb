@@ -1,4 +1,4 @@
-async function fetchWithAuth(url, options = {}) {
+const fetchWithAuth = async (url, options = {}) => {
     let accessToken = localStorage.getItem('accessToken');
     let refreshToken = localStorage.getItem('refreshToken');
 
@@ -41,4 +41,4 @@ async function fetchWithAuth(url, options = {}) {
 
     return response;
 }
-module.exports = { fetchWithAuth };
+export { fetchWithAuth };

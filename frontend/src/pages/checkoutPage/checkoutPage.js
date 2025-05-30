@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div class="order-item-info flex-grow-1">
                         <div class="order-item-title">${item.name}</div>
                         <div class="order-item-desc text-muted small">${item.color || ''}${item.color && item.size ? ' / ' : ''}${item.size || ''}</div>
-                        <div class="order-item-qty text-muted small">Qty: ${item.quantity}</div>
+                        <div class="order-item-qty text-muted small">Quantity: ${item.quantity}</div>
                     </div>
                     <div class="order-item-price fw-semibold">$${parseFloat(item.price.replace(/[^0-9.]/g, '')).toFixed(2)}</div>
                 </div>
