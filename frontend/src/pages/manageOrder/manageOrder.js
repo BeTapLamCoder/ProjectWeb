@@ -192,17 +192,25 @@ function stopAutoRefresh() {
 function mapOrderData(order) {
     return {
         id: order.order_id,
-        date: order.created_at,
+        date: order.order_date, // Sửa từ created_at thành order_date
         status: order.status,
         total: order.total_amount,
-        items: order.items || [],
+        items: order.items ? order.items.map(item => ({
+            product_id: item.product_id,
+            name: item.product_name,
+            image: item.image_url,
+            color: item.color,
+            size: item.size,
+            price: item.price,
+            quantity: item.quantity
+        })) : [],
         shipping: {
             fullName: order.receiver_name,
             phone: order.receiver_phone,
             address: order.shipping_address
         },
         payment: {
-            method: order.payment_method
+            method: order.payment_method || 'N/A'
         },
         tracking: [
             { title: 'Order Placed', date: formatDate(order.created_at), completed: true },
@@ -410,36 +418,33 @@ async function viewOrderDetail(orderId) {
     try {
         showLoading();
         const orderDetails = await fetchOrderDetail(orderId);
-
-        // Kiểm tra và log dữ liệu
-        console.log('Order details:', orderDetails);
-        console.log('Items array before mapping:', orderDetails.items);
-
-        if (!orderDetails || !orderDetails.items) {
-            console.warn('No order details or items found');
-            orderDetails.items = [];
-        }
-
         const order = ordersData.find(o => String(o.id) === String(orderId));
+
         if (!order) {
             throw new Error('Order not found');
         }
 
-        // Map dữ liệu items
-        const mappedItems = orderDetails.items.map(item => ({
+        // Map dữ liệu items với đầy đủ thông tin
+        const mappedItems = (orderDetails.items || []).map(item => ({
             name: item.product_name || 'Unknown Product',
-            image: item.image_url || './img/default-product.png',
+            image_url: item.image_url || './img/default-product.png',
             color: item.color || 'N/A',
             size: item.size || 'N/A',
             price: parseFloat(item.price) || 0,
             quantity: parseInt(item.quantity) || 0
         }));
 
-        console.log('Mapped items:', mappedItems);
-
         const fullOrderData = {
             ...order,
-            items: orderDetails.items || [],
+            items: mappedItems,
+            shipping: {
+                fullName: order.shipping.fullName || 'N/A',
+                phone: order.shipping.phone || 'N/A',
+                address: order.shipping.address || 'N/A'
+            },
+            payment: {
+                method: order.payment.method || 'N/A'
+            },
             tracking: [
                 { title: 'Order Placed', date: formatDate(order.date), completed: true },
                 { title: 'Order Confirmed', date: formatDate(orderDetails.confirmed_at), completed: ['confirmed', 'processing', 'shipped', 'delivered'].includes(order.status) },
@@ -506,14 +511,15 @@ async function viewOrderDetail(orderId) {
                 <div class="order-items-section mb-4">
                     <h5 class="section-title mb-3">Order Items</h5>
                     <div class="order-items">
-                        ${Array.isArray(fullOrderData.items) && fullOrderData.items.length > 0 ?
+                        ${fullOrderData.items.length > 0 ?
                 fullOrderData.items.map(item => `
                                 <div class="order-item mb-3 p-3 border rounded">
                                     <div class="d-flex align-items-center">
-                                        <img src="${item.image}" 
+                                        <img src="${item.image_url}" 
                                              alt="${item.name}" 
                                              class="item-image me-3" 
-                                             style="width: 80px; height: 80px; object-fit: cover;">
+                                             style="width: 80px; height: 80px; object-fit: cover;"
+                                             onerror="this.src='./img/default-product.png'">
                                         <div class="item-details flex-grow-1">
                                             <h6 class="item-name mb-1">${item.name}</h6>
                                             <div class="item-meta text-muted small">
