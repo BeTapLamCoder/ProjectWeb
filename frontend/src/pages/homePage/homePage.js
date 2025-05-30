@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   initPagination()
   initUserDropdown()
 
+  console.log(localStorage.getItem('accessToken'));
+  console.log(localStorage.getItem('refreshToken'));
   const seeAllBtn = document.querySelector('.see-all');
   if (seeAllBtn) {
     seeAllBtn.addEventListener('click', function (e) {

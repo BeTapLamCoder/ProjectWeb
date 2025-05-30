@@ -1,5 +1,9 @@
 import { fetchWithAuth } from '../../utils/authFetch.js';
 
+const serverBaseURL =
+    window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+        ? "http://localhost:8080"
+        : "https://server-project-web.vercel.app";
 
 window.viewOrderDetail = viewOrderDetail;
 window.cancelOrder = cancelOrder;
@@ -80,7 +84,7 @@ function hideLoading() {
 
 async function fetchOrderDetail(orderId) {
     try {
-        const response = await fetchWithAuth(`http://localhost:8080/order-details/${orderId}`);
+        const response = await fetchWithAuth(`${serverBaseURL}/order-details/${orderId}`);
         if (!response.ok) {
             throw new Error('Failed to fetch order details');
         }
@@ -121,7 +125,7 @@ async function fetchOrders() {
 
         console.log('Fetching orders for userId:', userId); // Debug log
 
-        const response = await fetchWithAuth(`http://localhost:8080/orders/user/${userId}`);
+        const response = await fetchWithAuth(`${serverBaseURL}/orders/user/${userId}`);
         if (!response.ok) {
             throw new Error('Failed to fetch orders');
         }
@@ -139,7 +143,7 @@ async function fetchOrders() {
 
 async function cancelOrderAPI(orderId) {
     try {
-        const response = await fetchWithAuth(`http://localhost:8080/orders/${orderId}/status`, {
+        const response = await fetchWithAuth(`${serverBaseURL}/orders/${orderId}/status`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -162,8 +166,11 @@ function handleError(error) {
     console.error('Error:', error);
     if (error.message.includes('token') || error.message.includes('login')) {
         showNotification('Session expired. Please login again.', 'danger');
+        const pathParts = window.location.pathname.split('/');
+        const srcIndex = pathParts.indexOf('src');
+        const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
         setTimeout(() => {
-            window.location.href = '../loginAndRegist/loginAndRegist.html';
+            window.location.href = baseURL + 'pages/loginAndRegist/loginAndRegist.html';
         }, 1500);
     } else {
         showNotification(error.message || 'An error occurred', 'danger');
@@ -317,15 +324,12 @@ function renderOrders() {
         return;
     } async function fetchOrderDetail(orderId) {
         try {
-            const response = await fetchWithAuth(`http://localhost:8080/order-details/${orderId}`);
+            const response = await fetchWithAuth(`${serverBaseURL}/order-details/${orderId}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch order details');
             }
             const data = await response.json();
-            // Thêm log để kiểm tra response
             console.log('Raw order details response:', data);
-
-            // Đảm bảo trả về đúng cấu trúc dữ liệu
             return {
                 ...data,
                 items: Array.isArray(data.items) ? data.items : [],
@@ -388,9 +392,8 @@ function renderOrders() {
             </div>
         </div>
     `).join('');
-    ordersGrid.className = 'row'; // Đảm bảo ordersGrid luôn có class 'row'
+    ordersGrid.className = 'row';
 
-    // Gán lại sự kiện cho các nút sau khi render
     ordersGrid.querySelectorAll('.view-detail-btn').forEach(btn => {
         btn.addEventListener('click', function () {
             const orderId = this.getAttribute('data-order-id');

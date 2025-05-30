@@ -13,7 +13,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Kiểm tra giỏ hàng trống
         if (cart.length === 0) {
-            window.location.href = '../cartPage/cartPage.html';
+            const pathParts = window.location.pathname.split('/');
+            const srcIndex = pathParts.indexOf('src');
+            const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
+            window.location.href = baseURL + 'pages/cartPage/cartPage.html';
             return;
         }
 
@@ -84,8 +87,11 @@ document.addEventListener('DOMContentLoaded', function () {
         // Lưu thông tin vào localStorage
         localStorage.setItem('checkoutInfo', JSON.stringify(checkoutInfo));
 
+        const pathParts = window.location.pathname.split('/');
+        const srcIndex = pathParts.indexOf('src');
+        const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
         // Chuyển đến trang payment
-        window.location.href = '../paymentPage/paymentPage.html';
+        window.location.href = baseURL + 'pages/paymentPage/paymentPage.html';
     });
 
     // Thông báo Bootstrap

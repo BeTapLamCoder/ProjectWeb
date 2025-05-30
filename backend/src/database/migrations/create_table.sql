@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS cart_detail (
 CREATE TABLE IF NOT EXISTS "order" (
     order_id VARCHAR(255) PRIMARY KEY,
     user_id VARCHAR(255) NOT NULL REFERENCES users (user_id),
-    total_amount NUMERIC(10, 2) NOT NULL,
+    total_amount INT NOT NULL,
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status order_status_enum NOT NULL,
     shipping_address TEXT NOT NULL,
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS order_detail (
     order_id VARCHAR(255) NOT NULL REFERENCES "order" (order_id),
     product_id VARCHAR(255) NOT NULL REFERENCES product (product_id),
     quantity INT NOT NULL,
-    price NUMERIC(10, 2) NOT NULL,
+    price INT NOT NULL,
     color VARCHAR(255) NOT NULL,
     size VARCHAR(255) NOT NULL,
     image_url TEXT,
