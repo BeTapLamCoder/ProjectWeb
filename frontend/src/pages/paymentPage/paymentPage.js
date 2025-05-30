@@ -1,3 +1,8 @@
+const serverBaseURL =
+    window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+        ? "http://localhost:8080"
+        : "https://server-project-web.vercel.app";
+
 document.addEventListener('DOMContentLoaded', function () {
     // Get all necessary data from localStorage
     const checkoutInfo = JSON.parse(localStorage.getItem('checkoutInfo')) || {};
@@ -17,8 +22,11 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!accessToken || !isLoggedIn) {
         console.log('Login check failed:', { accessToken, isLoggedIn });
         showNotification('Please login to continue', 'danger');
+        const pathParts = window.location.pathname.split('/');
+        const srcIndex = pathParts.indexOf('src');
+        const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
         setTimeout(() => {
-            window.location.href = '../loginAndRegist/loginAndRegist.html';
+            window.location.href = baseURL + 'pages/loginAndRegist/loginAndRegist.html';
         }, 1500);
         return;
     }
@@ -36,9 +44,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const userId = payload.id;
         console.log('Extracted userId:', userId);
 
+        const pathParts = window.location.pathname.split('/');
+        const srcIndex = pathParts.indexOf('src');
+        const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
         // Check required info
         if (!checkoutInfo.fullName || cart.length === 0) {
-            window.location.href = '../cartPage/cartPage.html';
+            window.location.href = baseURL + 'pages/cartPage/cartPage.html';
             return;
         }
 
@@ -46,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
         async function createOrder(orderData) {
             try {
                 console.log('Creating order with data:', orderData);
-                const response = await fetch('http://localhost:8080/orders', {
+                const response = await fetch(`${serverBaseURL}/orders`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -175,8 +186,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 showNotification('Order placed successfully!', 'success');
                 submitBtn.innerHTML = 'Processing... <span class="spinner-border spinner-border-sm ms-2"></span>';
 
+                const pathParts = window.location.pathname.split('/');
+                const srcIndex = pathParts.indexOf('src');
+                const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
+
                 setTimeout(() => {
-                    window.location.href = `../successPage/successPage.html?order=${newOrder.order_id}`;
+                    window.location.href = baseURL + `pages/successPage/successPage.html?order=${newOrder.order_id}`;
                 }, 1500);
 
             } catch (error) {
@@ -206,8 +221,11 @@ document.addEventListener('DOMContentLoaded', function () {
         showNotification('Session expired. Please login again.', 'danger');
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('accessToken');
+        const pathParts = window.location.pathname.split('/');
+        const srcIndex = pathParts.indexOf('src');
+        const baseURL = srcIndex !== -1 ? pathParts.slice(0, srcIndex + 1).join('/') + '/' : '/';
         setTimeout(() => {
-            window.location.href = '../loginAndRegist/loginAndRegist.html';
+            window.location.href = baseURL + 'pages/loginAndRegist/loginAndRegist.html';
         }, 1500);
     }
 });

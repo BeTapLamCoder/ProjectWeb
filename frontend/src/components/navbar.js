@@ -91,11 +91,12 @@ window.initNavbar = function () {
             localStorage.removeItem("isLoggedIn")
             localStorage.removeItem("currentUser")
             localStorage.removeItem("fashionCart")
-            localStorage.removeItem("userToken")
+            localStorage.removeItem("accessToken")
+            localStorage.removeItem("refreshToken")
 
             // Hiển thị thông báo và chuyển hướng
             alert("Đã đăng xuất thành công!")
-            window.location.href = baseURL + "pages/loginAndRegist/loginAndRegist.html"
+            window.location.href = baseURL + "index.html"
           }
         })
       }

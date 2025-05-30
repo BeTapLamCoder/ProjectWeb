@@ -21,8 +21,8 @@ class UserService {
     async findByEmail(email) {
         const res = await db.query(
             `SELECT users.*, cart.cart_id FROM ${userModel.tableName}
-            JOIN cart ON users.user_id = cart.user_id
-            WHERE email = $1`,
+            LEFT JOIN cart ON users.user_id = cart.user_id
+            WHERE TRIM(email) = $1`,
             [email]
         );
 
