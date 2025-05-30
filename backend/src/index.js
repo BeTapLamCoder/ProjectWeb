@@ -19,9 +19,12 @@ app.use('/cart-details', cartDetailRoute);
 app.use('/orders', orderRoute);
 app.use('/order-details', orderDetailRoute);
 
-
-
 const PORT = process.env.PORT || 8080;
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}: ${process.env.NODE_ENV}`);
+    });
+}
 
 module.exports = app;
 
