@@ -1,18 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
-
     const selectedProduct = JSON.parse(localStorage.getItem('selectedProduct')) || null;
-
-    if (!selectedProduct) {
-        window.location.href = '../filterAndSearch/filterAndSearch.html';
-        return;
-    }
-
-    // Cập nhật UI với thông tin sản phẩm
+    // Update UI
     document.getElementById('product-title').textContent = selectedProduct.name;
     document.getElementById('product-price').textContent = selectedProduct.price;
-    document.getElementById('main-product-image').src = selectedProduct.image;
+    document.getElementById('main-product-image').src = selectedProduct.image_url;
 
-    // Xử lý sự kiện cho tùy chọn màu sắc
     document.querySelectorAll('.color-option').forEach(option => {
         option.addEventListener('click', function () {
             document.querySelectorAll('.color-option').forEach(o => o.classList.remove('active'));
@@ -77,16 +69,17 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!currentCartId) {
             currentCartId = localStorage.getItem('cartId') || null;
         }
-         
-        const cartItem = ({
+
+        const cartItem = {
             cart_id: currentCartId,
-            product_id: selectedProduct.id || selectedProduct.productId,
+            product_id: selectedProduct.product_id,
             color: selectedColor.getAttribute('data-color'),
             size: selectedSize.getAttribute('data-size'),
             quantity: 1,
             image_url: selectedProduct.image_url
-        });
-        console.log('cartItem:', cartItem);
+        };
+
+        console.log('cartItem:', cartItem); 
 
         try {
             const response = await fetch('http://localhost:8080/cart-details', {

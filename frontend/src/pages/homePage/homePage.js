@@ -89,50 +89,29 @@ function initHeroCarousel() {
 
 // Add to Cart Functionality
 function initAddToCart() {
-  const productContainer = document.body;
+    const productContainer = document.body;
+    
+    productContainer.addEventListener('click', function (e) {
+        const addToCartBtn = e.target.closest('.add-to-cart-overlay');
+        if (!addToCartBtn) return;
+        
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const card = addToCartBtn.closest('.card.h-100');
+        if (!card) return;
 
-  productContainer.addEventListener('click', function (e) {
-    const addToCartBtn = e.target.closest('.add-to-cart-overlay');
-
-    if (!addToCartBtn) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    const card = addToCartBtn.closest('.card.h-100');
-    if (!card) {
-      console.error("Không tìm thấy card sản phẩm cho nút:", addToCartBtn);
-      return;
-    }
-
-    const productNameElement = card.querySelector('.card-title a');
-    const productPriceElement = card.querySelector('.card-text.fw-bold');
-    const productTypeElement = card.querySelector('.card-text.text-muted.small');
-    const productImageElement = card.querySelector('.card-img-top');
-
-    const productData = {
-      id: card.dataset.productId || `product_${Date.now()}`,
-      name: productNameElement ? productNameElement.textContent.trim() : 'Sản phẩm không tên',
-      price: productPriceElement ? productPriceElement.textContent.trim() : '$0',
-      type: productTypeElement ? (productTypeElement.childNodes[0]?.textContent?.trim() || productTypeElement.textContent.trim()) : 'Chưa phân loại',
-      image: productImageElement ? productImageElement.src : 'placeholder.svg'
-    };
-    localStorage.setItem('selectedProduct', JSON.stringify(productData));
-
-    const pathParts = window.location.pathname.split('/');
-    const srcIndex = pathParts.indexOf('src');
-    let baseURL = '';
-    if (window.location.pathname.includes('/frontend/src/')) {
-
-      baseURL = './';
-    } else if (srcIndex !== -1) {
-      baseURL = pathParts.slice(0, srcIndex + 1).join('/') + '/';
-    } else {
-      baseURL = '/';
-    }
-
-    window.location.href = baseURL + 'pages/addToCart/addToCart.html';
-  });
+        const productData = {
+            product_id: card.dataset.productId,
+            name: card.querySelector('.card-title a')?.textContent?.trim() || '',
+            price: card.querySelector('.card-text.fw-bold')?.textContent?.trim() || '',
+            image_url: card.querySelector('.card-img-top')?.src || '',
+            description: card.querySelector('.card-text.text-muted.small')?.textContent?.trim() || ''
+        };
+        
+        localStorage.setItem('selectedProduct', JSON.stringify(productData));
+        window.location.href = './pages/addToCart/addToCart.html';
+    });
 }
 
 // Collection Filters
@@ -439,7 +418,7 @@ async function fetchAndRenderProducts() {
     const data = await response.json();
     productDatabase = data.filter(item => item.is_active === true)
       .map(item => ({
-        id: item.product_id,
+        product_id: item.product_id,
         name: item.product_name,
         category: item.category_id || "all",
         categoryDisplay: item.category_name || "All",
@@ -479,7 +458,7 @@ function renderNewThisWeek() {
     productsToShow.forEach(product => {
       container.innerHTML += `
         <div class="col">
-          <div class="card h-100 border-0 shadow-sm product-card-custom">
+          <div class="card h-100 border-0 shadow-sm data-product-id="${product.product_id}">
             <div class="card-img-top-wrapper">
               <img src="${product.image_url}" class="card-img-top" alt="${product.product_name}">
               <button class="add-to-cart-overlay">+</button>
