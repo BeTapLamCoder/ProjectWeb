@@ -1,4 +1,8 @@
-// Auth Page JavaScript
+const serverBaseURL =
+    window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+        ? "http://localhost:8080"
+        : "https://server-project-web.vercel.app";
+
 document.addEventListener('DOMContentLoaded', function () {
     // Bootstrap tab: không cần JS custom, chỉ cần data-bs-toggle/tab
     // Form validation
@@ -67,7 +71,7 @@ function initFormSubmission() {
             const password = loginForm.querySelector('[name="password"]').value;
 
             try {
-                const response = await fetch('http://localhost:8080/users/login', {
+                const response = await fetch(`${serverBaseURL}/users/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -138,7 +142,7 @@ function initFormSubmission() {
             }
 
             try {
-                const response = await fetch('http://localhost:8080/users/register', {
+                const response = await fetch(`${serverBaseURL}/users/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
